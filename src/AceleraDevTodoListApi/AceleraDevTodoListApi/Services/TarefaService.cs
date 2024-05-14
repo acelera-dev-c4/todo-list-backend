@@ -28,5 +28,10 @@
         {
             return _tarefaRepository.GetAll();
         }
+
+        public Tarefa Update(Tarefa tarefa, int id)
+        {
+            return _tarefaRepository.Update(tarefa, id);
+        }
     }
 }
