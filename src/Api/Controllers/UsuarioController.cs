@@ -16,7 +16,7 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost("Cadastro")]
-    public IActionResult Post(Usuario usuario)
+    public IActionResult Post([FromBody] Usuario usuario)
     {
         try
         {
