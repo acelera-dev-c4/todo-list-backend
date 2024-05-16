@@ -1,4 +1,5 @@
 ﻿using AceleraDevTodoListApi.DB;
+using Domain.Entitys;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,34 @@ public class TarefaController : ControllerBase
     public TarefaController(MyDBContext context)
     {
         _context = context;
+    }
+
+    [HttpGet("Lista")]
+    public IActionResult Get()
+    {
+        try
+        {
+            return Ok(_context.Tarefas);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");
+        }
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult Get(int idUsuario)
+    {
+        try
+        {
+            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).FirstOrDefault();
+            return tarefa is null ? NotFound() : Ok(tarefa);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Falha ao mostrar a Tarefa. {ex.Message}");
+        }
+
     }
 
     [HttpPost("Criacao")]
@@ -32,31 +61,26 @@ public class TarefaController : ControllerBase
         }
     }
 
-    [HttpGet("Lista")]
-    public IActionResult Get()
+    [HttpPut("Update/{Id}")]
+    public IActionResult Put(int Id, [FromBody]string updateDescription)
     {
         try
         {
-            return Ok(_context.Tarefas);
+            var tarefa = _context.Tarefas.Find(Id);
+            if (tarefa is null)
+                return NotFound($"Tarefa não encontrada.");
+
+            tarefa.Descricao = updateDescription;
+
+            _context.Update(tarefa);
+            _context.SaveChanges();
+
+            return Ok(tarefa);
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");
+            return BadRequest(ex.Message);
         }
-    }
-    [HttpGet("{id}")]
-    public IActionResult Get(int idUsuario)
-    {
-        try
-        {
-            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).FirstOrDefault();
-            return tarefa is null ? NotFound() : Ok(tarefa);
-        }
-          catch (Exception ex)
-        {
-            return BadRequest($"Falha ao mostrar a Tarefa. {ex.Message}");   
-        }
-        
     }
 
     [HttpDelete("Delete")]
