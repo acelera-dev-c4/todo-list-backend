@@ -40,13 +40,21 @@ public class TarefaController : ControllerBase
         }
         catch (Exception ex)
         {
-            return NotFound("Nenhuma tarefa encontrada");
+            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");
         }
     }
     [HttpGet("{id}")]
     public IActionResult Get(int id)
     {
-        var tarefa = _context.Tarefas.Where(x => x.Id == id);
-        return tarefa is null ? NotFound() : Ok(tarefa);
+        try
+        {
+            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == id).FirstOrDefault();
+            return tarefa is null ? NotFound() : Ok(tarefa);
+        }
+          catch (Exception ex)
+        {
+            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");   
+        }
+        
     }
 }
