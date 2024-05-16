@@ -64,7 +64,7 @@ bash git clone https://github.com/raffacabofrio/acelera-dev-todo-list
 
 ## Autores
 
-- [Rafael Cabo Frio](https://github.com/raffacabofrio)
+- [Raffaello Cabo Frio](https://github.com/raffacabofrio)
 - [Vinícius Silva](https://github.com/viniciusapsilva)
 - [Paulo Ewerson](https://github.com/PauloEwerson)
 - [Maurício Mafra](https://github.com/Mauricio-Mafra)
