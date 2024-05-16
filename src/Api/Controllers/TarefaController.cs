@@ -1,4 +1,5 @@
 ﻿using AceleraDevTodoListApi.DB;
+using Domain.Entitys;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,28 @@ public class TarefaController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest($"Falha na criação da tarefa. {ex.Message}");
+        }
+    }
+
+    [HttpPut("Update/{Id}")]
+    public IActionResult Put(int Id, [FromBody]string updateDescription)
+    {
+        try
+        {
+            var tarefa = _context.Tarefas.Find(Id);
+            if (tarefa is null)
+                return NotFound($"Tarefa não encontrada.");
+
+            tarefa.Descricao = updateDescription;
+
+            _context.Update(tarefa);
+            _context.SaveChanges();
+
+            return Ok(tarefa);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 
