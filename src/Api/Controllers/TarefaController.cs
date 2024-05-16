@@ -44,16 +44,16 @@ public class TarefaController : ControllerBase
         }
     }
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public IActionResult Get(int idUsuario)
     {
         try
         {
-            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == id).FirstOrDefault();
+            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).FirstOrDefault();
             return tarefa is null ? NotFound() : Ok(tarefa);
         }
           catch (Exception ex)
         {
-            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");   
+            return BadRequest($"Falha ao mostrar a Tarefa. {ex.Message}");   
         }
         
     }
