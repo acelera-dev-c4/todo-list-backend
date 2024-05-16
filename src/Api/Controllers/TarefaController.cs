@@ -17,6 +17,34 @@ public class TarefaController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("Lista")]
+    public IActionResult Get()
+    {
+        try
+        {
+            return Ok(_context.Tarefas);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");
+        }
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult Get(int idUsuario)
+    {
+        try
+        {
+            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).FirstOrDefault();
+            return tarefa is null ? NotFound() : Ok(tarefa);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Falha ao mostrar a Tarefa. {ex.Message}");
+        }
+
+    }
+
     [HttpPost("Criacao")]
     public IActionResult Post(RequisicaoTarefa requisicaoTarefa)
     {
