@@ -32,15 +32,14 @@ public class TarefaController : ControllerBase
         }
     }
 
-    [HttpDelete("Deletar")]
+    [HttpDelete("Delete")]
     public IActionResult Delete(int Id)
     {
         try
         {
             var tarefa = _context.Tarefas.Find(Id);
             if (tarefa is null)
-                //return NotFound($"Tarefa com Id {Id} não encontrada.");
-                return BadRequest();
+                return NotFound($"Tarefa não encontrada.");
 
             _context.Remove(tarefa);
             _context.SaveChanges();
