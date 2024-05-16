@@ -15,8 +15,14 @@ public class UsuarioController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("Lista")]
+    public IActionResult List()
+    {
+        return Ok(_context.Usuarios.ToList());
+    }
+
     [HttpPost("Cadastro")]
-    public IActionResult Post(Usuario usuario)
+    public IActionResult Post([FromBody]Usuario usuario)
     {
         try
         {
@@ -28,6 +34,5 @@ public class UsuarioController : ControllerBase
         {
             return BadRequest($"Falha no cadastro. {ex.Message}");
         }
-        
     }
 }
