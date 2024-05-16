@@ -31,4 +31,22 @@ public class TarefaController : ControllerBase
             return BadRequest($"Falha na criação da tarefa. {ex.Message}");
         }
     }
+    [HttpGet("Lista")]
+    public IActionResult Get()
+    {
+        try
+        {
+            return Ok(_context.Tarefas);
+        }
+        catch (Exception ex)
+        {
+            return NotFound("Nenhuma tarefa encontrada");
+        }
+    }
+    [HttpGet("{id}")]
+    public IActionResult Get(int id)
+    {
+        var tarefa = _context.Tarefas.Where(x => x.Id == id);
+        return tarefa is null ? NotFound() : Ok(tarefa);
+    }
 }
