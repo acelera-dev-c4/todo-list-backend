@@ -1,13 +1,11 @@
 ## Controle de Modificações
 
+
+-[16/05/24 - Incluído imagem do Modelo no README.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/8)
 -[15/05/24 - Incluida configuração do DB.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/5)
-
 -[15/05/24 - Reorganização do Projeto.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/4)
-
 -[14/05/24 - Criação da camada de infraestrutura.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/34)
-
 -[14/05/24 - Criação das camadas Domain e Models.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/1)
-
 -14/05/24 - Criação do projeto.
 
 
@@ -22,7 +20,7 @@ Esse projeto é um modelo de aprendizagem do Projeto Acelera Dev, do Grupo Carre
 ## Obter o appsettings com o time.
 appsettings.Development.json
 ## Modelo de Dados
-placeholder para imagem de modelo
+![alt_text](https://github.com/raffacabofrio/acelera-dev-todo-list/blob/main/docs/MODELO.drawio.png)
 ## Autores
 
 - [Rafael Cabo Frio](https://github.com/raffacabofrio)
