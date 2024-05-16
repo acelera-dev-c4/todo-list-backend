@@ -31,4 +31,24 @@ public class TarefaController : ControllerBase
             return BadRequest($"Falha na criação da tarefa. {ex.Message}");
         }
     }
+
+    [HttpDelete("Delete")]
+    public IActionResult Delete(int Id)
+    {
+        try
+        {
+            var tarefa = _context.Tarefas.Find(Id);
+            if (tarefa is null)
+                return NotFound($"Tarefa não encontrada.");
+
+            _context.Remove(tarefa);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Falha ao deletar tarefa. {ex.Message}");
+        }
+    }
 }
