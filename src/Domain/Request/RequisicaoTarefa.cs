@@ -1,8 +1,7 @@
-﻿namespace Domain.Entitys;
+﻿namespace Domain.Request;
 
-public class Tarefa
+public class RequisicaoTarefa
 {
-    public int? Id { get; set; }
     public int IdUsuario { get; set; }
     public string? Descricao { get; set; }
 }
