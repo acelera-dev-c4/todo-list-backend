@@ -12,9 +12,9 @@ public class MyDBContext : DbContext
         _configuration = configuration;
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Quest> Quests { get; set; }
-    public DbSet<SubQuest> SubQuests { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Tarefas> Tarefas { get; set; }
+    public DbSet<SubTarefas> SubTarefas { get; set; }
 
 
 

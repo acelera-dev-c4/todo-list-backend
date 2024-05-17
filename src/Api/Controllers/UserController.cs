@@ -18,15 +18,15 @@ public class UserController : ControllerBase
     [HttpGet("Lista")]
     public IActionResult List()
     {
-        return Ok(_context.Users.ToList());
+        return Ok(_context.Usuarios.ToList());
     }
 
     [HttpPost("Cadastro")]
-    public IActionResult Post([FromBody]User user)
+    public IActionResult Post([FromBody]Usuario user)
     {
         try
         {
-            var newUser = _context.Users.Add(user);
+            var newUser = _context.Usuarios.Add(user);
             _context.SaveChanges();
             return Ok(newUser);
         }

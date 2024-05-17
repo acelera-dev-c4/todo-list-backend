@@ -7,11 +7,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class QuestController : ControllerBase
+public class TaskController : ControllerBase
 {
     private readonly MyDBContext _context;
 
-    public QuestController(MyDBContext context)
+    public TaskController(MyDBContext context)
     {
         _context = context;
     }
@@ -21,7 +21,7 @@ public class QuestController : ControllerBase
     {
         try
         {
-            return Ok(_context.Quests);
+            return Ok(_context.Tarefas);
         }
         catch (Exception ex)
         {
@@ -34,7 +34,7 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var quest = _context.Quests.Where(x => x.UserId == userId).FirstOrDefault();
+            var quest = _context.Tarefas.Where(x => x.IdUsuario == userId).FirstOrDefault();
             return quest is null ? NotFound() : Ok(quest);
         }
         catch (Exception ex)
@@ -45,12 +45,12 @@ public class QuestController : ControllerBase
     }
 
     [HttpPost("Criacao")]
-    public IActionResult Post(QuestRequest taskRequest)
+    public IActionResult Post(TaskRequest taskRequest)
     {
         try
         {
-            var newTask = QuestMapper.ToClass(taskRequest);
-            _context.Quests.Add(newTask);
+            var newTask = TaskMapper.ToClass(taskRequest);
+            _context.Tarefas.Add(newTask);
             _context.SaveChanges();
             return Ok(newTask);
         }
@@ -65,11 +65,11 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Quests.Find(Id);
+            var tarefa = _context.Tarefas.Find(Id);
             if (tarefa is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            tarefa.Description = updateDescription;
+            tarefa.Descricao = updateDescription;
 
             _context.Update(tarefa);
             _context.SaveChanges();
@@ -87,7 +87,7 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Quests.Find(Id);
+            var tarefa = _context.Tarefas.Find(Id);
             if (tarefa is null)
                 return NotFound($"Tarefa não encontrada.");
 
