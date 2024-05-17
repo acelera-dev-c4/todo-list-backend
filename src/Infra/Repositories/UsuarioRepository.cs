@@ -6,10 +6,10 @@ namespace AceleraDevTodoListApi.Infra.Repositories;
 
 public interface IUsuarioRepository{
     Usuario Create(Usuario Usuario);
-    Usuario? Get(int id);
+    Usuario? Get(int idUsuario);
     List<Usuario> GetAll();
     Usuario Update(Usuario Usuario, int id);
-    void Delete(int id);
+    void Delete(int idUsuario);
 }
 
 public class UsuarioRepository : IUsuarioRepository{
@@ -28,14 +28,18 @@ public class UsuarioRepository : IUsuarioRepository{
     public Usuario? Get(int idUsuario)
     {
         return _myDBContext.Usuarios.Find(idUsuario);
-
     }
     public List<Usuario> GetAll()
     {
         return _myDBContext.Usuarios.ToList();
     }
-    public Usuario Update(Usuario UsuarioUpdate, int id)
+    public Usuario Update(Usuario UsuarioUpdate, int idUsuario)
     {
+        if(_myDBContext.Usuarios.Find(idUsuario) is null)
+        {
+            throw new Exception("Usuário não encontrado para atualização.");
+        }
+
         _myDBContext.Usuarios.Update(UsuarioUpdate);
         _myDBContext.SaveChanges();
         return UsuarioUpdate;

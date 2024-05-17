@@ -7,10 +7,9 @@ namespace AceleraDevTodoListApi.Infra.Repositories;
 
 public interface ISubTarefaRepository{
     SubTarefa Create(SubTarefa subTarefa);
-    SubTarefa? Get(int id);
-    List<SubTarefa> GetAll();
-    SubTarefa Update(SubTarefa subTarefa, int id);
-    void Delete(int id);
+    List<SubTarefa> Get(int idTarefa);
+    SubTarefa Update(SubTarefa subTarefa, int idSubTarefa);
+    void Delete(int idSubTarefa);
     }
 
 
@@ -28,23 +27,21 @@ public class SubTarefaRepository : ISubTarefaRepository{
         _myDBContext.SaveChanges();
         return NovaSubTarefa;
     }
-    public SubTarefa? Get(int idSubtarefa){
-        
-        return _myDBContext.SubTarefas.FirstOrDefault();
+
+    public List<SubTarefa> Get(int idTarefa){
+        return _myDBContext.SubTarefas.Where(x => x.IdTarefa == idTarefa).ToList();
     }
 
-    public List<SubTarefa> GetAll(){
-        return _myDBContext.SubTarefas.ToList();
-    }
-
-    public SubTarefa Update(SubTarefa SubTarefaUpdate, int id){
+    public SubTarefa Update(SubTarefa SubTarefaUpdate, int idSubTarefa)
+    {
 
         _myDBContext.SubTarefas.Update(SubTarefaUpdate);
         _myDBContext.SaveChanges();
         return SubTarefaUpdate;
     }
 
-    public void Delete(int id){
-        _myDBContext.SubTarefas.Where(x => x.Id == id).ExecuteDelete();
+    public void Delete(int idSubTarefa)
+    {
+        _myDBContext.SubTarefas.Where(x => x.Id == idSubTarefa).ExecuteDelete();
     }
 }

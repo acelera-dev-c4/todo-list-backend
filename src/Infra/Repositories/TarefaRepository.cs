@@ -6,10 +6,9 @@ namespace AceleraDevTodoListApi.Infra.Repositories;
 
 public interface ITarefaRepository{
     Tarefa Create(Tarefa Tarefa);
-    Tarefa? Get(int id);
-    List<Tarefa> GetAll();
-    Tarefa Update(Tarefa Tarefa, int id);
-    void Delete(int id);
+    List<Tarefa> Get(int idUsuario);
+    Tarefa Update(Tarefa Tarefa, int idTarefa);
+    void Delete(int idTarefa);
 }
 
 public class TarefaRepository : ITarefaRepository{
@@ -25,20 +24,24 @@ public class TarefaRepository : ITarefaRepository{
         _myDBContext.SaveChanges();
         return NovaTarefa;
     }
-    public Tarefa? Get(int idTarefa) {
-        return _myDBContext.Tarefas.Find(idTarefa);
-    }
-    public List<Tarefa> GetAll()
+    public List<Tarefa> Get(int idUsuario)
     {
-        return _myDBContext.Tarefas.ToList();
+        return _myDBContext.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
     }
-    public Tarefa Update(Tarefa TarefaUpdate, int id) {
+    public Tarefa Update(Tarefa TarefaUpdate, int idTarefa) {
+
+        if(_myDBContext.Tarefas.Find(idTarefa) is null)
+        {
+            throw new Exception("Tarefa não encontrada para atualização");
+        }
+
+
         _myDBContext.Tarefas.Update(TarefaUpdate);
         _myDBContext.SaveChanges();
         return TarefaUpdate;
     }
-    public void Delete(int id) {
-        _myDBContext.Tarefas.Where(x => x.Id == id).ExecuteDelete();
+    public void Delete(int idTarefa) {
+        _myDBContext.Tarefas.Where(x => x.Id == idTarefa).ExecuteDelete();
     }
 
 }
