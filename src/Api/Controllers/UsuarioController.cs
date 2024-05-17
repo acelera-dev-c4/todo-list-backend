@@ -18,7 +18,10 @@ public class UsuarioController : ControllerBase
     [HttpGet("Lista")]
     public IActionResult List()
     {
-        return Ok(_context.Usuarios.ToList());
+        var users = _context.Usuarios
+            .Select(u => new { u.Id, u.Nome, u.Email })
+            .ToList();
+        return Ok(users);
     }
 
     [HttpPost("Cadastro")]
@@ -26,9 +29,15 @@ public class UsuarioController : ControllerBase
     {
         try
         {
-            var newUser = _context.Usuarios.Add(usuario);
+            _context.Usuarios.Add(usuario);
             _context.SaveChanges();
-            return Ok(newUser);
+            var userResponse = new
+            {
+                Id = usuario.Id,
+                Name = usuario.Nome,
+                Email = usuario.Email,
+            };
+            return Ok(userResponse);
         }
         catch (Exception ex)
         {
