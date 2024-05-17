@@ -1,5 +1,7 @@
 ﻿using AceleraDevTodoListApi.DB;
 using Domain.Entitys;
+using Domain.Mappers;
+using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
