@@ -48,7 +48,8 @@ namespace Api.Middlewares
             }
 
             var result = JsonConvert.SerializeObject(new { error = ex.Message });
-
+            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.StatusCode = (int) code;
             return httpContext.Response.WriteAsync(result);
         }
 
