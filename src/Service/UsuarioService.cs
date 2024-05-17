@@ -24,7 +24,7 @@ public class UsuarioService
 
     public Usuario? GetById(int id)
     {
-        return _usuarioRepository.GetById(id);
+        return _usuarioRepository.Get(id);
     }
     public List<Usuario> List()
     {

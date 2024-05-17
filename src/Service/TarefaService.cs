@@ -24,7 +24,7 @@ public class TarefaService
 
     public Tarefa? GetById(int id)
     {
-        return _tarefaRepository.GetById(id);
+        return _tarefaRepository.Get(id);
     }
 
     public List<Tarefa> List()

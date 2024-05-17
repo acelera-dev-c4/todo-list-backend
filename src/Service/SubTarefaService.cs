@@ -22,7 +22,7 @@ public class SubTarefaService
 
     public SubTarefa? GetById(int id)
     {
-        return _subTarefaRepository.GetById(id);
+        return _subTarefaRepository.Get(id);
     }
 
     public List<SubTarefa> List()
