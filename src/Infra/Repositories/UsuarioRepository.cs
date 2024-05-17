@@ -1,6 +1,9 @@
-namespace AceleraDevTodoListApi.DB;
+using AceleraDevTodoListApi.DB;
+using Domain.Entitys;
 
-public interface IUsuarioRepository(){
+namespace AceleraDevTodoListApi.Infra.Repositories;
+
+public interface IUsuarioRepository{
     Usuario Create(Usuario Usuario);
     Usuario Get(int id);
     List<Usuario> GetAll();
@@ -8,7 +11,7 @@ public interface IUsuarioRepository(){
     void Delete(int id);
 }
 
-public class UsuarioRepository : IUsuarioRepositoryRepository{
+public class UsuarioRepository : IUsuarioRepository{
 
     private readonly MyDBContext _myDBContext;
 

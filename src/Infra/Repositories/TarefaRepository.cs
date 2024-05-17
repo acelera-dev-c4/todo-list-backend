@@ -1,6 +1,9 @@
-namespace AceleraDevTodoListApi.DB;
+using AceleraDevTodoListApi.DB;
+using Domain.Entitys;
 
-public interface ITarefaRepository(){
+namespace AceleraDevTodoListApi.Infra.Repositories;
+
+public interface ITarefaRepository{
     Tarefa Create(Tarefa Tarefa);
     Tarefa Get(int id);
     List<Tarefa> GetAll();
