@@ -22,17 +22,10 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost("Cadastro")]
-    public IActionResult Post([FromBody]Usuario usuario)
+    public IActionResult Post([FromBody] Usuario usuario)
     {
-        try
-        {
-            var newUser = _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-            return Ok(newUser);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha no cadastro. {ex.Message}");
-        }
+        var newUser = _context.Usuarios.Add(usuario);
+        _context.SaveChanges();
+        return Ok(newUser);
     }
 }
