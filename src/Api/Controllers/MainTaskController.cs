@@ -16,7 +16,7 @@ public class MainTaskController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("Lista")]
+    [HttpGet("List")]
     public IActionResult Get()
     {
         try
@@ -29,7 +29,7 @@ public class MainTaskController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{Id}")]
     public IActionResult Get(int userId)
     {
         try
@@ -44,7 +44,7 @@ public class MainTaskController : ControllerBase
 
     }
 
-    [HttpPost("Criacao")]
+    [HttpPost("Register")]
     public IActionResult Post(MainTaskRequest questRequest)
     {
         try

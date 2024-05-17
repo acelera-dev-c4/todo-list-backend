@@ -15,13 +15,13 @@ public class UserController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("Lista")]
+    [HttpGet("List")]
     public IActionResult List()
     {
         return Ok(_context.Users.ToList());
     }
 
-    [HttpPost("Cadastro")]
+    [HttpPost("Register")]
     public IActionResult Post([FromBody]User user)
     {
         try
