@@ -1,5 +1,5 @@
 ﻿namespace Domain.Models;
-public class SubTarefas
+public class SubTarefa
 {
     public int Id { get; set; }
     public int IdTarefa { get; set; }

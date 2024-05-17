@@ -5,7 +5,7 @@ namespace Domain.Mappers;
 
 public class TaskMapper
 {
-    public static Tarefas ToClass(TaskRequest task) => new Tarefas
+    public static Tarefa ToClass(TaskRequest task) => new Tarefa
     {
         Id = null,
         IdUsuario = task.UserId,

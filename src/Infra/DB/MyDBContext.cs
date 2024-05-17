@@ -13,8 +13,8 @@ public class MyDBContext : DbContext
     }
 
     public DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<Tarefas> Tarefas { get; set; }
-    public DbSet<SubTarefas> SubTarefas { get; set; }
+    public DbSet<Tarefa> Tarefas { get; set; }
+    public DbSet<SubTarefa> SubTarefas { get; set; }
 
 
 

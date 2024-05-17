@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models;
 
-public class Tarefas
+public class Tarefa
 {
     public int? Id { get; set; }
     public int IdUsuario { get; set; }
