@@ -23,7 +23,6 @@ public class TarefaRepository : ITarefaRepository
 
     public Tarefa Create(Tarefa NovaTarefa)
     {
-
         _myDBContext.Tarefas.Add(NovaTarefa);
         _myDBContext.SaveChanges();
         return NovaTarefa;
