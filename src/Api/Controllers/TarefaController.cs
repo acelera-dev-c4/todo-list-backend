@@ -61,7 +61,7 @@ public class TarefaController : ControllerBase
     }
 
     [HttpPut("Update/{Id}")]
-    public IActionResult Put(int Id, [FromBody]TarefaUpdateRequest updateDescription)
+    public IActionResult Put(int Id, [FromBody] TarefaUpdateRequest updateDescription)
     {
         try
         {
@@ -76,7 +76,7 @@ public class TarefaController : ControllerBase
 
             return Ok(tarefa);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
