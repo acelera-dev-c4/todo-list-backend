@@ -1,16 +1,3 @@
-## Controle de Modificações
-
--[15/05/24 - Incluida configuração do DB.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/5)
-
--[15/05/24 - Reorganização do Projeto.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/4)
-
--[14/05/24 - Criação da camada de infraestrutura.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/34)
-
--[14/05/24 - Criação das camadas Domain e Models.](https://github.com/raffacabofrio/acelera-dev-todo-list/pull/1)
-
--14/05/24 - Criação do projeto.
-
-
 # Acelera Dev - ToDo List
 
 Esse aplicação serve para gerenciar uma lista de tarefas, relacionando-as a seus respectivos usuários.
@@ -22,16 +9,16 @@ Esse projeto é um modelo de aprendizagem do Projeto Acelera Dev, do Grupo Carre
 ## Obter o appsettings com o time.
 appsettings.Development.json
 ## Modelo de Dados
-placeholder para imagem de modelo
+![alt_text](https://github.com/raffacabofrio/acelera-dev-todo-list/blob/main/docs/MODELO.drawio.png)
 ## Autores
 
-- [Rafael Cabo Frio](https://github.com/raffacabofrio)
+- [Raffaello Damgaard](https://github.com/raffacabofrio)
 - [Vinícius Silva](https://github.com/viniciusapsilva)
 - [Paulo Ewerson](https://github.com/PauloEwerson)
 - [Maurício Mafra](https://github.com/Mauricio-Mafra)
 - [Jesus Wildes](https://github.com/GhortheBrute)
 - [Weslley Batista](https://github.com/wesbats)
-- [Pedro](https://github.com/eusouumx1)
+- [Pedro Augusto](https://github.com/eusouumx1)
 
 
 ## Relacionados

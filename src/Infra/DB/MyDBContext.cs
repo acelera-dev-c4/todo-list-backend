@@ -1,18 +1,25 @@
 ﻿using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace AceleraDevTodoListApi.DB;
 
 public class MyDBContext : DbContext
 {
-    public MyDBContext(DbContextOptions<MyDBContext> options) : base(options) { }
+    private IConfiguration _configuration;
+    public MyDBContext(DbContextOptions<MyDBContext> options, IConfiguration configuration) : base(options) 
+    {
+        _configuration = configuration;
+    }
 
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Tarefa> Tarefas { get; set; }
     public DbSet<SubTarefa> SubTarefas { get; set; }
 
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(DatabaseHelper.ConnectionString);
+        optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:AceleraDev"]);
     }
 }
