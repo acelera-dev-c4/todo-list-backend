@@ -1,3 +1,4 @@
+using Api.Middlewares;
 using AceleraDevTodoListApi.DB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware(typeof(ExceptionHandler));
 
 app.UseAuthorization();
 
