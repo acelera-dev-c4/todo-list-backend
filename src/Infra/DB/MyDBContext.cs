@@ -7,12 +7,13 @@ namespace AceleraDevTodoListApi.DB;
 public class MyDBContext : DbContext
 {
     private IConfiguration _configuration;
+    public MyDBContext() { }
     public MyDBContext(DbContextOptions<MyDBContext> options, IConfiguration configuration) : base(options) 
     {
         _configuration = configuration;
     }
 
-    public DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Tarefa> Tarefas { get; set; }
     public DbSet<SubTarefa> SubTarefas { get; set; }
 
