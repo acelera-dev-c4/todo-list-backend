@@ -1,5 +1,4 @@
 ﻿using AceleraDevTodoListApi.DB;
-using Domain.Entitys;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -30,12 +29,12 @@ public class TarefaController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("Id")]
     public IActionResult Get(int idUsuario)
     {
         try
         {
-            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).FirstOrDefault();
+            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
             return tarefa is null ? NotFound() : Ok(tarefa);
         }
         catch (Exception ex)
@@ -62,7 +61,7 @@ public class TarefaController : ControllerBase
     }
 
     [HttpPut("Update/{Id}")]
-    public IActionResult Put(int Id, [FromBody]string updateDescription)
+    public IActionResult Put(int Id, [FromBody]TarefaUpdateRequest updateDescription)
     {
         try
         {
@@ -70,7 +69,7 @@ public class TarefaController : ControllerBase
             if (tarefa is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            tarefa.Descricao = updateDescription;
+            tarefa.Descricao = updateDescription.Description;
 
             _context.Update(tarefa);
             _context.SaveChanges();
