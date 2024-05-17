@@ -45,14 +45,14 @@ public class QuestController : ControllerBase
     }
 
     [HttpPost("Criacao")]
-    public IActionResult Post(QuestRequest taskRequest)
+    public IActionResult Post(QuestRequest questRequest)
     {
         try
         {
-            var newTask = QuestMapper.ToClass(taskRequest);
-            _context.Quests.Add(newTask);
+            var newQuest = QuestMapper.ToClass(questRequest);
+            _context.Quests.Add(newQuest);
             _context.SaveChanges();
-            return Ok(newTask);
+            return Ok(newQuest);
         }
         catch (Exception ex)
         {
@@ -65,16 +65,16 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Quests.Find(Id);
-            if (tarefa is null)
+            var quest = _context.Quests.Find(Id);
+            if (quest is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            tarefa.Description = updateDescription;
+            quest.Description = updateDescription;
 
-            _context.Update(tarefa);
+            _context.Update(quest);
             _context.SaveChanges();
 
-            return Ok(tarefa);
+            return Ok(quest);
         }
         catch(Exception ex)
         {
@@ -87,11 +87,11 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Quests.Find(Id);
-            if (tarefa is null)
+            var quest = _context.Quests.Find(Id);
+            if (quest is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            _context.Remove(tarefa);
+            _context.Remove(quest);
             _context.SaveChanges();
 
             return NoContent();
