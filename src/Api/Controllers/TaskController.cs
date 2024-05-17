@@ -34,8 +34,8 @@ public class TaskController : ControllerBase
     {
         try
         {
-            var quest = _context.Tarefas.Where(x => x.IdUsuario == userId).FirstOrDefault();
-            return quest is null ? NotFound() : Ok(quest);
+            var task = _context.Tarefas.Where(x => x.IdUsuario == userId).FirstOrDefault();
+            return task is null ? NotFound() : Ok(task);
         }
         catch (Exception ex)
         {
@@ -65,16 +65,16 @@ public class TaskController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Tarefas.Find(Id);
-            if (tarefa is null)
+            var task = _context.Tarefas.Find(Id);
+            if (task is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            tarefa.Descricao = updateDescription;
+            task.Descricao = updateDescription;
 
-            _context.Update(tarefa);
+            _context.Update(task);
             _context.SaveChanges();
 
-            return Ok(tarefa);
+            return Ok(task);
         }
         catch(Exception ex)
         {
@@ -87,11 +87,11 @@ public class TaskController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Tarefas.Find(Id);
-            if (tarefa is null)
+            var task = _context.Tarefas.Find(Id);
+            if (task is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            _context.Remove(tarefa);
+            _context.Remove(task);
             _context.SaveChanges();
 
             return NoContent();

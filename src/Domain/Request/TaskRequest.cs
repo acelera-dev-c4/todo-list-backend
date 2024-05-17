@@ -2,6 +2,6 @@
 
 public class TaskRequest
 {
-    public int IdUsuario { get; set; }
-    public string? Descricao { get; set; }
+    public int UserId { get; set; }
+    public string? Description { get; set; }
 }
