@@ -17,15 +17,16 @@ public class UsuarioService
         return _usuarioRepository.Create(usuario);
     }
 
-    public void Delete(int id)
+    public void Delete(int idUsuario)
     {
-        _usuarioRepository.Delete(id);
+        _usuarioRepository.Delete(idUsuario);
     }
 
-    public Usuario? GetById(int id)
+    public Usuario? GetById(int idUsuario)
     {
-        return _usuarioRepository.Get(id);
+        return _usuarioRepository.Get(idUsuario);
     }
+
     public List<Usuario> List()
     {
         return _usuarioRepository.GetAll();

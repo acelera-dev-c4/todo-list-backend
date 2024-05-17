@@ -6,7 +6,9 @@ namespace AceleraDevTodoListApi.Services;
 public class SubTarefaService
 {
     private readonly ISubTarefaRepository _subTarefaRepository;
-    public SubTarefaService(ISubTarefaRepository subTarefaRepository) {
+
+    public SubTarefaService(ISubTarefaRepository subTarefaRepository)
+    {
         _subTarefaRepository = subTarefaRepository;
     }
 
@@ -15,27 +17,19 @@ public class SubTarefaService
         return _subTarefaRepository.Create(subtarefa);
     }
 
-    public void Delete(int id)
+    public void Delete(int idSubTarefa)
     {
-        _subTarefaRepository.Delete(id);
+        _subTarefaRepository.Delete(idSubTarefa);
     }
 
-    public SubTarefa? GetById(int id)
+    public List<SubTarefa> List(int idTarefa)
     {
-        return _subTarefaRepository.Get(id);
-    }
-
-    public List<SubTarefa> List()
-    {
-        var subTarefas = _subTarefaRepository.GetAll();
+        var subTarefas = _subTarefaRepository.Get(idTarefa);
         return subTarefas;
-
     }
 
     public SubTarefa Update(SubTarefa subtarefaUpdate, int id)
     {
         return _subTarefaRepository.Update(subtarefaUpdate, id);
     }
-
-
 }

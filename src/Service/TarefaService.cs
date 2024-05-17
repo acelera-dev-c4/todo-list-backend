@@ -7,29 +7,24 @@ public class TarefaService
 {
     private readonly ITarefaRepository _tarefaRepository;
 
-    public TarefaService(ITarefaRepository tarefaRepository) {
+    public TarefaService(ITarefaRepository tarefaRepository)
+    {
         _tarefaRepository = tarefaRepository;
     }
-
 
     public Tarefa Create(Tarefa tarefa)
     {
         return _tarefaRepository.Create(tarefa);
     }
 
-    public void Delete(int id)
+    public void Delete(int idTarefa)
     {
-        _tarefaRepository.Delete(id);
+        _tarefaRepository.Delete(idTarefa);
     }
 
-    public Tarefa? GetById(int id)
+    public List<Tarefa>? Get(int idUsuario)
     {
-        return _tarefaRepository.Get(id);
-    }
-
-    public List<Tarefa> List()
-    {
-        return _tarefaRepository.GetAll();
+        return _tarefaRepository.Get(idUsuario);
     }
 
     public Tarefa Update(Tarefa tarefa, int id)
