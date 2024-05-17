@@ -1,9 +1,6 @@
 ﻿using AceleraDevTodoListApi.DB;
 using Domain.Entitys;
-using Domain.Mappers;
-using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -12,6 +9,11 @@ namespace Api.Controllers
     public class SubTarefaController : Controller
     {
         private readonly MyDBContext _myDBContext;
+
+        public SubTarefaController(MyDBContext myDBContext)
+        {
+            _myDBContext = myDBContext;
+        }
 
         [HttpGet]
         public IActionResult Get()
@@ -31,8 +33,8 @@ namespace Api.Controllers
         {
             try
             {
-                var tarefa = _myDBContext.SubTarefas.Where(x => x.Id == idSubtarefa).FirstOrDefault();
-                return tarefa is null ? NotFound() : Ok(tarefa);
+                var subTarefa = _myDBContext.SubTarefas.Find(idSubtarefa);
+                return subTarefa is null ? NotFound() : Ok(subTarefa);
             }
             catch (Exception ex)
             {
