@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.Json;
-using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Api.Middlewares
 {
@@ -47,7 +43,7 @@ namespace Api.Middlewares
                 code = HttpStatusCode.BadRequest;
             }
 
-            var result = JsonConvert.SerializeObject(new { error = ex.Message });
+            var result = JsonSerializer.Serialize(new { erro = ex.Message });
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int) code;
             return httpContext.Response.WriteAsync(result);
