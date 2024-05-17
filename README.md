@@ -19,7 +19,6 @@ Este projeto tem como objetivo fornecer uma API RESTful para gerenciamento de ta
 - **Visual Studio Code**: Recomendado para usuários de Linux, com extensões como C#,.NET Core Tools e Swagger.
   - [Download Visual Studio Code](https://code.visualstudio.com/)
 
-### Execução
 
 - **.NET SDK** (Versão 8.0.5 recomendada)
   - [Baixe o.NET SDK](https://dotnet.microsoft.com/download)
@@ -64,13 +63,14 @@ bash git clone https://github.com/raffacabofrio/acelera-dev-todo-list
 
 ## Autores
 
-- [Raffaello Cabo Frio](https://github.com/raffacabofrio)
+
+- [Raffaello Damgaard](https://github.com/raffacabofrio)
 - [Vinícius Silva](https://github.com/viniciusapsilva)
 - [Paulo Ewerson](https://github.com/PauloEwerson)
 - [Maurício Mafra](https://github.com/Mauricio-Mafra)
 - [Jesus Wildes](https://github.com/GhortheBrute)
 - [Weslley Batista](https://github.com/wesbats)
-- [Pedro](https://github.com/eusouumx1)
+- [Pedro Augusto](https://github.com/eusouumx1)
 
 ## Relacionados
 
