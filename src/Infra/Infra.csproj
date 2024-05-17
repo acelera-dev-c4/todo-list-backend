@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="DB\Database.cs" />
+    <Compile Remove="DB\DatabaseHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>

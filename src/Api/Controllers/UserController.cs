@@ -1,16 +1,16 @@
 ﻿using AceleraDevTodoListApi.DB;
-using Domain.Entitys;
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsuarioController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly MyDBContext _context;
 
-    public UsuarioController(MyDBContext context)
+    public UserController(MyDBContext context)
     {
         _context = context;
     }
@@ -18,15 +18,15 @@ public class UsuarioController : ControllerBase
     [HttpGet("Lista")]
     public IActionResult List()
     {
-        return Ok(_context.Usuarios.ToList());
+        return Ok(_context.Users.ToList());
     }
 
     [HttpPost("Cadastro")]
-    public IActionResult Post([FromBody]Usuario usuario)
+    public IActionResult Post([FromBody]User user)
     {
         try
         {
-            var newUser = _context.Usuarios.Add(usuario);
+            var newUser = _context.Users.Add(user);
             _context.SaveChanges();
             return Ok(newUser);
         }

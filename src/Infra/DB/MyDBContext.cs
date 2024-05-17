@@ -1,4 +1,4 @@
-﻿using Domain.Entitys;
+﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -12,9 +12,9 @@ public class MyDBContext : DbContext
         _configuration = configuration;
     }
 
-    public DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<Tarefa> Tarefas { get; set; }
-    public DbSet<SubTarefa> SubTarefas { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Quest> Quests { get; set; }
+    public DbSet<SubQuest> SubQuests { get; set; }
 
 
 

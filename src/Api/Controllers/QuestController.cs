@@ -1,5 +1,4 @@
 ﻿using AceleraDevTodoListApi.DB;
-using Domain.Entitys;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +7,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TarefaController : ControllerBase
+public class QuestController : ControllerBase
 {
     private readonly MyDBContext _context;
 
-    public TarefaController(MyDBContext context)
+    public QuestController(MyDBContext context)
     {
         _context = context;
     }
@@ -22,7 +21,7 @@ public class TarefaController : ControllerBase
     {
         try
         {
-            return Ok(_context.Tarefas);
+            return Ok(_context.Quests);
         }
         catch (Exception ex)
         {
@@ -31,12 +30,12 @@ public class TarefaController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(int idUsuario)
+    public IActionResult Get(int userId)
     {
         try
         {
-            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).FirstOrDefault();
-            return tarefa is null ? NotFound() : Ok(tarefa);
+            var quest = _context.Quests.Where(x => x.UserId == userId).FirstOrDefault();
+            return quest is null ? NotFound() : Ok(quest);
         }
         catch (Exception ex)
         {
@@ -46,14 +45,14 @@ public class TarefaController : ControllerBase
     }
 
     [HttpPost("Criacao")]
-    public IActionResult Post(RequisicaoTarefa requisicaoTarefa)
+    public IActionResult Post(QuestRequest taskRequest)
     {
         try
         {
-            var novaTarefa = MapeadorTarefa.ParaClasse(requisicaoTarefa);
-            _context.Tarefas.Add(novaTarefa);
+            var newTask = QuestMapper.ToClass(taskRequest);
+            _context.Quests.Add(newTask);
             _context.SaveChanges();
-            return Ok(novaTarefa);
+            return Ok(newTask);
         }
         catch (Exception ex)
         {
@@ -66,11 +65,11 @@ public class TarefaController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Tarefas.Find(Id);
+            var tarefa = _context.Quests.Find(Id);
             if (tarefa is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            tarefa.Descricao = updateDescription;
+            tarefa.Description = updateDescription;
 
             _context.Update(tarefa);
             _context.SaveChanges();
@@ -88,7 +87,7 @@ public class TarefaController : ControllerBase
     {
         try
         {
-            var tarefa = _context.Tarefas.Find(Id);
+            var tarefa = _context.Quests.Find(Id);
             if (tarefa is null)
                 return NotFound($"Tarefa não encontrada.");
 
