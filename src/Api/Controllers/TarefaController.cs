@@ -31,11 +31,11 @@ public class TarefaController : ControllerBase
     }
 
     [HttpGet("Id")]
-    public IActionResult Get(int IdUsuario)
+    public IActionResult Get(int idUsuario)
     {
         try
         {
-            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == IdUsuario).ToList();
+            var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
             return tarefa is null ? NotFound() : Ok(tarefa);
         }
         catch (Exception ex)
