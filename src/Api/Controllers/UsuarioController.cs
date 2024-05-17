@@ -26,16 +26,9 @@ public class UsuarioController : ControllerBase
     [HttpPost("Cadastro")]
     public IActionResult Post([FromBody]UserRequest usuario)
     {
-        try
-        {
             var newUser = UserMapper.ToClass(usuario);
             _context.Usuarios.Add(newUser);
             _context.SaveChanges();
             return Ok(newUser);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha no cadastro. {ex.Message}");
-        }
     }
 }
