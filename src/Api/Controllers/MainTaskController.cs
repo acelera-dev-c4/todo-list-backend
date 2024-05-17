@@ -7,11 +7,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class QuestController : ControllerBase
+public class MainTaskController : ControllerBase
 {
     private readonly MyDBContext _context;
 
-    public QuestController(MyDBContext context)
+    public MainTaskController(MyDBContext context)
     {
         _context = context;
     }
@@ -21,7 +21,7 @@ public class QuestController : ControllerBase
     {
         try
         {
-            return Ok(_context.Quests);
+            return Ok(_context.MainTasks);
         }
         catch (Exception ex)
         {
@@ -34,8 +34,8 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var quest = _context.Quests.Where(x => x.UserId == userId).FirstOrDefault();
-            return quest is null ? NotFound() : Ok(quest);
+            var task = _context.MainTasks.Where(x => x.UserId == userId).FirstOrDefault();
+            return task is null ? NotFound() : Ok(task);
         }
         catch (Exception ex)
         {
@@ -45,14 +45,14 @@ public class QuestController : ControllerBase
     }
 
     [HttpPost("Criacao")]
-    public IActionResult Post(QuestRequest questRequest)
+    public IActionResult Post(MainTaskRequest questRequest)
     {
         try
         {
-            var newQuest = QuestMapper.ToClass(questRequest);
-            _context.Quests.Add(newQuest);
+            var newTask = MainTaskMapper.ToClass(questRequest);
+            _context.MainTasks.Add(newTask);
             _context.SaveChanges();
-            return Ok(newQuest);
+            return Ok(newTask);
         }
         catch (Exception ex)
         {
@@ -65,16 +65,16 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var quest = _context.Quests.Find(Id);
-            if (quest is null)
+            var task = _context.MainTasks.Find(Id);
+            if (task is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            quest.Description = updateDescription;
+            task.Description = updateDescription;
 
-            _context.Update(quest);
+            _context.Update(task);
             _context.SaveChanges();
 
-            return Ok(quest);
+            return Ok(task);
         }
         catch(Exception ex)
         {
@@ -87,11 +87,11 @@ public class QuestController : ControllerBase
     {
         try
         {
-            var quest = _context.Quests.Find(Id);
-            if (quest is null)
+            var task = _context.MainTasks.Find(Id);
+            if (task is null)
                 return NotFound($"Tarefa não encontrada.");
 
-            _context.Remove(quest);
+            _context.Remove(task);
             _context.SaveChanges();
 
             return NoContent();

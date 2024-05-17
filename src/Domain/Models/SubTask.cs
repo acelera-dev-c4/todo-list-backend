@@ -1,5 +1,5 @@
 ﻿namespace Domain.Models;
-public class SubQuest
+public class SubTask
 {
     public int Id { get; set; }
     public int QuestId { get; set; }

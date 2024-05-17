@@ -1,6 +1,6 @@
 ﻿namespace Domain.Request;
 
-public class QuestRequest
+public class MainTaskRequest
 {
     public int UserId { get; set; }
     public string? Description { get; set; }
