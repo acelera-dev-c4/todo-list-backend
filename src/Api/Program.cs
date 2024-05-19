@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("WeslleyTests"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 var app = builder.Build();
