@@ -1,18 +1,26 @@
 using Api.Middlewares;
 using AceleraDevTodoListApi.DB;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<MyDBContext>();
+builder.Services.AddDbContext<MyDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WeslleyTests"),
+        sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
