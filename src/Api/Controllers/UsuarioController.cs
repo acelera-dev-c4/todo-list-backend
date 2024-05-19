@@ -24,11 +24,10 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost("Cadastro")]
-    public IActionResult Post([FromBody]UserRequest usuario)
+    public IActionResult Post([FromBody] Usuario usuario)
     {
-            var newUser = UserMapper.ToClass(usuario);
-            _context.Usuarios.Add(newUser);
-            _context.SaveChanges();
-            return Ok(newUser);
+        var newUser = _context.Usuarios.Add(usuario);
+        _context.SaveChanges();
+        return Ok(newUser);
     }
 }
