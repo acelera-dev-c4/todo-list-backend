@@ -7,5 +7,5 @@ public class UserRequest
 }
 public class UpdatedUserRequest : UserRequest
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 }

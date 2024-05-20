@@ -1,4 +1,4 @@
-﻿using AceleraDevTodoListApi.DB;
+﻿using Infra.DB;
 using Domain.Entitys;
 
 namespace Infra.DB;
@@ -33,7 +33,7 @@ public class DBSeed
             _context.SaveChanges();
         }
 
-        if (!(_context.Tarefas.Any() && _context.SubTarefas.Any()))
+        if (!(_context.Tarefas.Any() || _context.SubTarefas.Any()))
         {
             var tarefas = new Tarefa[]
             {

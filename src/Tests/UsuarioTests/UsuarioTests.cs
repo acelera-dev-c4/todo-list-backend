@@ -3,7 +3,7 @@ using Moq;
 using Microsoft.EntityFrameworkCore;
 using Api.Controllers;
 using Domain.Entitys;
-using AceleraDevTodoListApi.DB;
+using Infra.DB;
 using FluentAssertions;
 
 public class UsuarioTests

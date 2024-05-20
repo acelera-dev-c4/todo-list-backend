@@ -8,11 +8,11 @@ namespace Services;
 
 public interface IUsuarioService
 {
-    UserResponse Create(UserRequest usuario);
-    void Delete(int idUsuario);
-    Usuario? GetById(int idUsuario);
     List<UserResponse> List();
-    Usuario Update(Usuario usuarioUpdate, int id);
+    Usuario? GetById(int idUsuario);
+    UserResponse Create(UserRequest usuario);
+    UserResponse Update(UpdatedUserRequest usuarioUpdate);
+    void Delete(int idUsuario);
 }
 
 public class UsuarioService : IUsuarioService
@@ -24,23 +24,6 @@ public class UsuarioService : IUsuarioService
         _usuarioRepository = usuarioRepository;
     }
 
-    public UserResponse Create(UserRequest usuario)
-    {
-        var newUser = UserMapper.ToEntity(usuario);
-        var user = _usuarioRepository.Create(newUser);
-        return UserMapper.ToResponse(user);
-    }
-
-    public void Delete(int idUsuario)
-    {
-        _usuarioRepository.Delete(idUsuario);
-    }
-
-    public Usuario? GetById(int idUsuario)
-    {
-        return _usuarioRepository.Get(idUsuario);
-    }
-
     public List<UserResponse> List()
     {
         var users = _usuarioRepository.GetAll();
@@ -48,8 +31,32 @@ public class UsuarioService : IUsuarioService
         return userResponse;
     }
 
-    public Usuario Update(Usuario usuarioUpdate, int id)
+    public Usuario? GetById(int idUsuario)
     {
-        return _usuarioRepository.Update(usuarioUpdate, id);
+        return _usuarioRepository.Get(idUsuario);
+    }
+
+    public UserResponse Create(UserRequest usuario)
+    {
+        var newUser = UserMapper.ToEntity(usuario);
+        var user = _usuarioRepository.Create(newUser);
+        return UserMapper.ToResponse(user);
+    }
+
+    public UserResponse Update(UpdatedUserRequest usuarioUpdate)
+    {
+        var existingUser = _usuarioRepository.Get(usuarioUpdate.Id);
+
+        if (existingUser is null)
+            throw new Exception("Usuário não encontrado!");
+
+        var updatedUser = UserMapper.ToEntity(usuarioUpdate);
+        var user = _usuarioRepository.Update(updatedUser);
+        return UserMapper.ToResponse(user);
+    }
+
+    public void Delete(int idUsuario)
+    {
+        _usuarioRepository.Delete(idUsuario);
     }
 }

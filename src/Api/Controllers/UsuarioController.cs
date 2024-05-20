@@ -28,4 +28,12 @@ public class UsuarioController : ControllerBase
         var newUser = _usuarioService.Create(usuario);
         return Ok(newUser);
     }
+
+    [HttpPut("Atualizar/{Id}")]
+    public IActionResult Put(int id, [FromBody] UpdatedUserRequest usuario)
+    {
+        usuario.Id = id;
+        var updatedUser = _usuarioService.Update(usuario);
+        return Ok(updatedUser);
+    }
 }
