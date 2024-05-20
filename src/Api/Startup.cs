@@ -8,7 +8,7 @@ public class Startup
     {
         Configuration = new ConfigurationBuilder()
             .SetBasePath(environment.ContentRootPath)
-            .AddJsonFile("appsettings.Develipment.json")
+            .AddJsonFile("appsettings.Development.json")
             .Build();
     }
 
