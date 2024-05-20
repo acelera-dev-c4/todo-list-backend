@@ -8,24 +8,24 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class UsuarioController : ControllerBase
 {
-    private readonly IUsuarioService _context;
+    private readonly IUsuarioService _usuarioService;
 
-    public UsuarioController(IUsuarioService context)
+    public UsuarioController(IUsuarioService usuarioService)
     {
-        _context = context;
+        _usuarioService = usuarioService;
     }
 
     [HttpGet("Lista")]
     public IActionResult List()
     {
-        var users = _context.List();
+        var users = _usuarioService.List();
         return Ok(users);
     }
 
     [HttpPost("Cadastro")]
     public IActionResult Post([FromBody] UserRequest usuario)
     {
-        var newUser = _context.Create(usuario);
+        var newUser = _usuarioService.Create(usuario);
         return Ok(newUser);
     }
 }
