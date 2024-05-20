@@ -1,5 +1,4 @@
-﻿using AceleraDevTodoListApi.DB;
-using Domain.Entitys;
+﻿using Domain.Entitys;
 
 namespace Infra.DB;
 
