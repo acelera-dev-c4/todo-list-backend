@@ -1,6 +1,6 @@
 using Infra.DB;
-using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
+using Domain.Models;
 
 namespace Infra.Repositories;
 
