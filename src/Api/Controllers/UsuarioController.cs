@@ -1,4 +1,4 @@
-﻿using AceleraDevTodoListApi.Services;
+﻿using Services;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ public class UsuarioController : ControllerBase
     [HttpGet("Lista")]
     public IActionResult List()
     {
-        var users = _context.List;
+        var users = _context.List();
         return Ok(users);
     }
 
