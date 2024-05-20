@@ -6,9 +6,12 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Remove="DB\Database.cs" />
-	</ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DB\Database.cs" />
+    <Compile Remove="DB\DatabaseHelper.cs" />
+  </ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />

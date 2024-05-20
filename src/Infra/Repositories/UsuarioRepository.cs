@@ -1,8 +1,8 @@
-using AceleraDevTodoListApi.DB;
+using Infra.DB;
 using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
 
-namespace AceleraDevTodoListApi.Infra.Repositories;
+namespace Infra.Repositories;
 
 public interface IUsuarioRepository
 {

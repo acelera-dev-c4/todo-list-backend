@@ -1,7 +1,7 @@
 ﻿using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
 
-namespace AceleraDevTodoListApi.DB;
+namespace Infra.DB;
 
 public class MyDBContext : DbContext
 {

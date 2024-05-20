@@ -1,7 +1,9 @@
 using Api.Middlewares;
-using AceleraDevTodoListApi.DB;
-using Microsoft.EntityFrameworkCore;
+
 using Infra.DB;
+using Services;
+using Infra.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+
 builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
+
 
 var app = builder.Build();
 
