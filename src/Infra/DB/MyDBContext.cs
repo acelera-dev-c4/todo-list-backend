@@ -1,26 +1,28 @@
 ﻿using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Infra.DB;
 
 public class MyDBContext : DbContext
 {
-    private IConfiguration _configuration;
-    public MyDBContext() { }
-    public MyDBContext(DbContextOptions<MyDBContext> options, IConfiguration configuration) : base(options) 
-    {
-        _configuration = configuration;
-    }
-
     public virtual DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Tarefa> Tarefas { get; set; }
     public DbSet<SubTarefa> SubTarefas { get; set; }
 
+    public MyDBContext(DbContextOptions<MyDBContext> options) : base(options) { }
 
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:AceleraDev"]);
+        modelBuilder.Entity<Tarefa>()
+            .HasOne<Usuario>()
+            .WithMany()
+            .HasForeignKey(t => t.IdUsuario)
+            .IsRequired();
+
+        modelBuilder.Entity<SubTarefa>()
+            .HasOne<Tarefa>()
+            .WithMany()
+            .HasForeignKey(st => st.IdTarefa)
+            .IsRequired();
     }
 }
