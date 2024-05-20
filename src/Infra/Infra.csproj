@@ -6,6 +6,12 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Data\**" />
+	  <EmbeddedResource Remove="Data\**" />
+	  <None Remove="Data\**" />
+	</ItemGroup>
+
 
   <ItemGroup>
     <Compile Remove="DB\Database.cs" />

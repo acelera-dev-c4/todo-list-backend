@@ -1,5 +1,4 @@
 using Api.Middlewares;
-
 using Infra.DB;
 using Services;
 using Infra.Repositories;
