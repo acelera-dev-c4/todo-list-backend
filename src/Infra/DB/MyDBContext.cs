@@ -15,7 +15,7 @@ public class MyDBContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Tarefa> Tarefas { get; set; }
-    public DbSet<SubTarefa> SubTarefas { get; set; }
+    public virtual DbSet<SubTarefa> SubTarefas { get; set; }
 
 
 

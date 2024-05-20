@@ -13,15 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra", "Infra\Infra.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{985B6B82-7158-441C-ABBB-749FE3432FCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{A4211D44-07E9-4FCB-A00C-68AC8660198A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5FAEB72F-744D-4A5C-AD9B-F67115E83D96} = {5FAEB72F-744D-4A5C-AD9B-F67115E83D96}
-		{985B6B82-7158-441C-ABBB-749FE3432FCE} = {985B6B82-7158-441C-ABBB-749FE3432FCE}
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{A4211D44-07E9-4FCB-A00C-68AC8660198A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9C7C9113-0400-47B0-AF7F-00576DC7A35A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsuarioTests", "Tests\UsuarioTests\UsuarioTests.csproj", "{16F2B849-A945-435D-9DAF-073E7F6506C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\UsuarioTests\Tests.csproj", "{16F2B849-A945-435D-9DAF-073E7F6506C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +49,10 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {33667F64-0FF5-400A-9E8B-C65F9941FDA3}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{16F2B849-A945-435D-9DAF-073E7F6506C0} = {9C7C9113-0400-47B0-AF7F-00576DC7A35A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33667F64-0FF5-400A-9E8B-C65F9941FDA3}
 	EndGlobalSection
 EndGlobal

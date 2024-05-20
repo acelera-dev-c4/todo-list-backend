@@ -18,7 +18,7 @@ public class SubTarefaController : Controller
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(_myDBContext.SubTarefas);
+        return Ok(_myDBContext.SubTarefas.ToList());
     }
 
     [HttpGet("{idSubtarefa}")]
@@ -39,7 +39,7 @@ public class SubTarefaController : Controller
     [HttpPut("{idSubTarefa}")]
     public IActionResult Put(int idSubTarefa, [FromBody] string updateDescription)
     {
-        var subTarefa = _myDBContext.Tarefas.Find(idSubTarefa);
+        var subTarefa = _myDBContext.SubTarefas.Find(idSubTarefa);
         if (subTarefa is null)
         {
             return NotFound($"Subtarefa não encontrada.");
@@ -56,7 +56,7 @@ public class SubTarefaController : Controller
     [HttpDelete("{idSubTarefa}")]
     public IActionResult Delete([FromRoute] int idSubTarefa)
     {
-        var subTarefa = _myDBContext.Tarefas.Find(idSubTarefa);
+        var subTarefa = _myDBContext.SubTarefas.Find(idSubTarefa);
 
         if (subTarefa is null)
         {
