@@ -1,5 +1,5 @@
 using Api.Middlewares;
-using AceleraDevTodoListApi.DB;
+using AceleraDevTodoListApi.Infra.DB;
 
 var builder = WebApplication.CreateBuilder(args);
 

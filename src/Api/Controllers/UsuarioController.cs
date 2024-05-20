@@ -1,6 +1,4 @@
-﻿using AceleraDevTodoListApi.DB;
-using Domain.Entitys;
-using Domain.Mappers;
+﻿using AceleraDevTodoListApi.Services;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +8,9 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class UsuarioController : ControllerBase
 {
-    private readonly MyDBContext _context;
+    private readonly IUsuarioService _context;
 
-    public UsuarioController(MyDBContext context)
+    public UsuarioController(IUsuarioService context)
     {
         _context = context;
     }
@@ -20,14 +18,14 @@ public class UsuarioController : ControllerBase
     [HttpGet("Lista")]
     public IActionResult List()
     {
-        return Ok(_context.Usuarios.ToList());
+        var users = _context.List;
+        return Ok(users);
     }
 
     [HttpPost("Cadastro")]
-    public IActionResult Post([FromBody] Usuario usuario)
+    public IActionResult Post([FromBody] UserRequest usuario)
     {
-        var newUser = _context.Usuarios.Add(usuario);
-        _context.SaveChanges();
+        var newUser = _context.Create(usuario);
         return Ok(newUser);
     }
 }

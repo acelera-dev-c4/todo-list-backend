@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace AceleraDevTodoListApi.DB;
+namespace AceleraDevTodoListApi.Infra.DB;
 
 public class MyDBContext : DbContext
 {

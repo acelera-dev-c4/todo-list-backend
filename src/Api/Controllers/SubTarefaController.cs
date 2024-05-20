@@ -1,4 +1,4 @@
-﻿using AceleraDevTodoListApi.DB;
+﻿using AceleraDevTodoListApi.Infra.DB;
 using Domain.Entitys;
 using Microsoft.AspNetCore.Mvc;
 

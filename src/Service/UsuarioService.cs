@@ -1,9 +1,21 @@
 ﻿using AceleraDevTodoListApi.Infra.Repositories;
 using Domain.Entitys;
+using Domain.Mappers;
+using Domain.Request;
+using Domain.Responses;
 
 namespace AceleraDevTodoListApi.Services;
 
-public class UsuarioService
+public interface IUsuarioService
+{
+    Usuario Create(UserRequest usuario);
+    void Delete(int idUsuario);
+    Usuario? GetById(int idUsuario);
+    List<UserResponse> List();
+    Usuario Update(Usuario usuarioUpdate, int id);
+}
+
+public class UsuarioService : IUsuarioService
 {
     private readonly IUsuarioRepository _usuarioRepository;
 
@@ -12,9 +24,11 @@ public class UsuarioService
         _usuarioRepository = usuarioRepository;
     }
 
-    public Usuario Create(Usuario usuario)
+    public Usuario Create(UserRequest usuario)
     {
-        return _usuarioRepository.Create(usuario);
+        var newUser = UserMapper.ToEntity(usuario);
+        var user = _usuarioRepository.Create(newUser);
+        return user;
     }
 
     public void Delete(int idUsuario)
@@ -27,9 +41,11 @@ public class UsuarioService
         return _usuarioRepository.Get(idUsuario);
     }
 
-    public List<Usuario> List()
+    public List<UserResponse> List()
     {
-        return _usuarioRepository.GetAll();
+        var users = _usuarioRepository.GetAll();
+        var userResponse = users.Select(UserMapper.ToResponse).ToList();
+        return userResponse;
     }
 
     public Usuario Update(Usuario usuarioUpdate, int id)

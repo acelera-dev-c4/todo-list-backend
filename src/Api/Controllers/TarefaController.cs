@@ -1,4 +1,4 @@
-﻿using AceleraDevTodoListApi.DB;
+﻿using AceleraDevTodoListApi.Infra.DB;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
