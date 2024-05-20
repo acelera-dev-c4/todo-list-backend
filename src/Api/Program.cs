@@ -1,8 +1,8 @@
 using Api.Middlewares;
-
 using Infra.DB;
 using Services;
 using Infra.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
