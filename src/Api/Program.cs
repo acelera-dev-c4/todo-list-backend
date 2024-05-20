@@ -1,6 +1,7 @@
 using Api.Middlewares;
 using AceleraDevTodoListApi.DB;
 using Microsoft.EntityFrameworkCore;
+using Infra.DB;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
@@ -20,6 +20,12 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
     dbContext.Database.Migrate();
+
+    if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+    {
+        var seeder = new DBSeed(dbContext);
+        seeder.Seed();
+    }
 }
 
 // Configure the HTTP request pipeline.
