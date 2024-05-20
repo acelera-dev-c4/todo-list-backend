@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infra.Data.Migrations
+namespace Infra.Migrations
 {
     [DbContext(typeof(MyDBContext))]
     partial class MyDBContextModelSnapshot : ModelSnapshot
@@ -24,11 +24,11 @@ namespace Infra.Data.Migrations
 
             modelBuilder.Entity("Domain.Entitys.SubTarefa", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<bool>("Concluida")
                         .HasColumnType("bit");
@@ -40,6 +40,8 @@ namespace Infra.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdTarefa");
 
                     b.ToTable("SubTarefas");
                 });
@@ -59,6 +61,8 @@ namespace Infra.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdUsuario");
 
                     b.ToTable("Tarefas");
                 });
@@ -83,6 +87,24 @@ namespace Infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Domain.Entitys.SubTarefa", b =>
+                {
+                    b.HasOne("Domain.Entitys.Tarefa", null)
+                        .WithMany()
+                        .HasForeignKey("IdTarefa")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entitys.Tarefa", b =>
+                {
+                    b.HasOne("Domain.Entitys.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
