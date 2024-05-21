@@ -2,6 +2,7 @@
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using AceleraDevTodoListApi.Services;
 
 namespace Api.Controllers;
 
@@ -9,46 +10,46 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class TarefaController : ControllerBase
 {
-    private readonly MyDBContext _context;
+    private readonly TarefaService _tarefaService;
 
-    public TarefaController(MyDBContext context)
+    public TarefaController(TarefaService tarefaService)
     {
-        _context = context;
-    }
+        _tarefaService = tarefaService;
+    }   
 
     [HttpGet("Lista")]
     public IActionResult Get()
     {
-        return Ok(_context.Tarefas);
+        return Ok(_tarefaService.);
     }
 
-    [HttpGet("Id")]
-    public IActionResult Get(int idUsuario)
+    [HttpGet("{idUsuario}")]
+    public IActionResult Get([FromRoute]int idUsuario)
     {
-        var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
-        return tarefa is null ? NotFound() : Ok(tarefa);
+        var tarefas = _tarefaService.Get(idUsuario);
+        return tarefas is null ? NotFound() : Ok(tarefas);
     }
 
-    [HttpPost("Criacao")]
-    public IActionResult Post(RequisicaoTarefa requisicaoTarefa)
+    [HttpPost()]
+    public IActionResult Post([FromBody] RequisicaoTarefa requisicaoTarefa)
     {
         var novaTarefa = MapeadorTarefa.ParaClasse(requisicaoTarefa);
-        _context.Tarefas.Add(novaTarefa);
-        _context.SaveChanges();
-        return Ok(novaTarefa);
+        _tarefaService.Create(novaTarefa);
+        return Created();
     }
 
-    [HttpPut("Update/{Id}")]
-    public IActionResult Put(int Id, [FromBody] TarefaUpdateRequest updateDescription)
+    [HttpPut("{idTarefa}")]
+    public IActionResult Put(int idTarefa, [FromBody] TarefaUpdateRequest updateDescription)
     {
-        var tarefa = _context.Tarefas.Find(Id);
+        var tarefa = _tarefaService.Find(idTarefa);
+
         if (tarefa is null)
             return NotFound($"Tarefa não encontrada.");
 
         tarefa.Descricao = updateDescription.Description;
 
-        _context.Update(tarefa);
-        _context.SaveChanges();
+
+        _tarefaService.Update(tarefa, (int)tarefa.Id);
 
         return Ok(tarefa);
     }
@@ -56,12 +57,11 @@ public class TarefaController : ControllerBase
     [HttpDelete("Delete")]
     public IActionResult Delete(int Id)
     {
-        var tarefa = _context.Tarefas.Find(Id);
+        var tarefa = _tarefaService.Find(Id);
         if (tarefa is null)
             return NotFound($"Tarefa não encontrada.");
 
-        _context.Remove(tarefa);
-        _context.SaveChanges();
+        _tarefaService.Delete(Id);
 
         return NoContent();
     }

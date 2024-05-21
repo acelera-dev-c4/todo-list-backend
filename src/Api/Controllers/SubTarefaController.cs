@@ -1,6 +1,7 @@
-﻿using Infra.DB;
-using Domain.Entitys;
+﻿using Domain.Entitys;
 using Microsoft.AspNetCore.Mvc;
+using AceleraDevTodoListApi.DB;
+using AceleraDevTodoListApi.Services;
 
 namespace Api.Controllers;
 
@@ -8,63 +9,39 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class SubTarefaController : Controller
 {
-    private readonly MyDBContext _myDBContext;
+    private readonly SubTarefaService _subTarefaService;
 
-    public SubTarefaController(MyDBContext myDBContext)
+    public SubTarefaController(SubTarefaService subTarefaService)
     {
-        _myDBContext = myDBContext;
+        _subTarefaService = subTarefaService;
     }
 
-    [HttpGet]
-    public IActionResult Get()
+    [HttpGet("{idTarefa}")]
+    public IActionResult Get([FromRoute] int idTarefa)
     {
-        return Ok(_myDBContext.SubTarefas);
-    }
-
-    [HttpGet("{idSubtarefa}")]
-    public IActionResult Get(int idSubtarefa)
-    {
-        var subTarefa = _myDBContext.SubTarefas.Find(idSubtarefa);
-        return subTarefa is null ? NotFound() : Ok(subTarefa);
+        var subTarefas = _subTarefaService.List(idTarefa);
+        return subTarefas is null ? NotFound() : Ok(subTarefas);
     }
 
     [HttpPost]
     public IActionResult Post([FromBody] SubTarefa novaSubTarefa)
     {
-        _myDBContext.SubTarefas.Add(novaSubTarefa);
-        _myDBContext.SaveChanges();
+        _subTarefaService.Create(novaSubTarefa);
         return Ok(novaSubTarefa);
     }
 
     [HttpPut("{idSubTarefa}")]
-    public IActionResult Put(int idSubTarefa, [FromBody] string updateDescription)
+    public IActionResult Put([FromRoute] int idSubTarefa, [FromBody] SubTarefa updateSubTarefa)
     {
-        var subTarefa = _myDBContext.Tarefas.Find(idSubTarefa);
-        if (subTarefa is null)
-        {
-            return NotFound($"Subtarefa não encontrada.");
-        }
+        _subTarefaService.Update(updateSubTarefa, idSubTarefa);
 
-        subTarefa.Descricao = updateDescription;
-
-        _myDBContext.Update(subTarefa);
-        _myDBContext.SaveChanges();
-
-        return Ok(subTarefa);
+        return Ok(updateSubTarefa);
     }
 
     [HttpDelete("{idSubTarefa}")]
     public IActionResult Delete([FromRoute] int idSubTarefa)
     {
-        var subTarefa = _myDBContext.Tarefas.Find(idSubTarefa);
-
-        if (subTarefa is null)
-        {
-            return NotFound($"SubTarefa não encontrada.");
-        }
-
-        _myDBContext.Remove(subTarefa);
-        _myDBContext.SaveChanges();
+        _subTarefaService.Delete(idSubTarefa);
 
         return NoContent();
     }
