@@ -5,24 +5,24 @@ namespace Infra.DB;
 
 public class MyDBContext : DbContext
 {
-    public virtual DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<Tarefa> Tarefas { get; set; }
-    public virtual DbSet<SubTarefa> SubTarefas { get; set; }
+    public virtual DbSet<User> Users { get; set; }
+    public DbSet<MainTask> MainTasks { get; set; }
+    public virtual DbSet<SubTask> SubTasks { get; set; }
 
     public MyDBContext(DbContextOptions<MyDBContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Tarefa>()
-            .HasOne<Usuario>()
+        modelBuilder.Entity<MainTask>()
+            .HasOne<User>()
             .WithMany()
-            .HasForeignKey(t => t.IdUsuario)
+            .HasForeignKey(t => t.UserId)
             .IsRequired();
 
-        modelBuilder.Entity<SubTarefa>()
-            .HasOne<Tarefa>()
+        modelBuilder.Entity<SubTask>()
+            .HasOne<MainTask>()
             .WithMany()
-            .HasForeignKey(st => st.IdTarefa)
+            .HasForeignKey(st => st.MainTaskId)
             .IsRequired();
     }
 }

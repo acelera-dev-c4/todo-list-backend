@@ -1,6 +1,6 @@
 ﻿namespace Domain.Request;
 
-public class TarefaUpdateRequest
+public class MainTaskRequest344
 {
     public string? Description { get; set; }
 }

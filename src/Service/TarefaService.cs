@@ -5,14 +5,14 @@ namespace Service;
 
 public class TarefaService
 {
-    private readonly ITarefaRepository _tarefaRepository;
+    private readonly IMainTaskRepository _tarefaRepository;
 
-    public TarefaService(ITarefaRepository tarefaRepository)
+    public TarefaService(IMainTaskRepository tarefaRepository)
     {
         _tarefaRepository = tarefaRepository;
     }
 
-    public Tarefa Create(Tarefa tarefa)
+    public MainTask Create(MainTask tarefa)
     {
         return _tarefaRepository.Create(tarefa);
     }
@@ -22,12 +22,12 @@ public class TarefaService
         _tarefaRepository.Delete(idTarefa);
     }
 
-    public List<Tarefa>? Get(int idUsuario)
+    public List<MainTask>? Get(int idUsuario)
     {
         return _tarefaRepository.Get(idUsuario);
     }
 
-    public Tarefa Update(Tarefa tarefa, int id)
+    public MainTask Update(MainTask tarefa, int id)
     {
         return _tarefaRepository.Update(tarefa, id);
     }

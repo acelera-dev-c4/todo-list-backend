@@ -18,52 +18,52 @@ public class SubTarefaController : Controller
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(_myDBContext.SubTarefas.ToList());
+        return Ok(_myDBContext.SubTasks.ToList());
     }
 
     [HttpGet("{idSubtarefa}")]
-    public IActionResult Get(int idSubtarefa)
+    public IActionResult Get(int subTaskId)
     {
-        var subTarefa = _myDBContext.SubTarefas.Find(idSubtarefa);
-        return subTarefa is null ? NotFound() : Ok(subTarefa);
+        var subTask = _myDBContext.SubTasks.Find(subTaskId);
+        return subTask is null ? NotFound() : Ok(subTask);
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] SubTarefa novaSubTarefa)
+    public IActionResult Post([FromBody] SubTask newSubTask)
     {
-        _myDBContext.SubTarefas.Add(novaSubTarefa);
+        _myDBContext.SubTasks.Add(newSubTask);
         _myDBContext.SaveChanges();
-        return Ok(novaSubTarefa);
+        return Ok(newSubTask);
     }
 
     [HttpPut("{idSubTarefa}")]
-    public IActionResult Put(int idSubTarefa, [FromBody] string updateDescription)
+    public IActionResult Put(int subTaskId, [FromBody] string updateDescription)
     {
-        var subTarefa = _myDBContext.SubTarefas.Find(idSubTarefa);
-        if (subTarefa is null)
+        var subTask = _myDBContext.SubTasks.Find(subTaskId);
+        if (subTask is null)
         {
             return NotFound($"Subtarefa não encontrada.");
         }
 
-        subTarefa.Descricao = updateDescription;
+        subTask.Description = updateDescription;
 
-        _myDBContext.Update(subTarefa);
+        _myDBContext.Update(subTask);
         _myDBContext.SaveChanges();
 
-        return Ok(subTarefa);
+        return Ok(subTask);
     }
 
-    [HttpDelete("{idSubTarefa}")]
-    public IActionResult Delete([FromRoute] int idSubTarefa)
+    [HttpDelete("{subTaskId}")]
+    public IActionResult Delete([FromRoute] int subTaskId)
     {
-        var subTarefa = _myDBContext.SubTarefas.Find(idSubTarefa);
+        var subTask = _myDBContext.SubTasks.Find(subTaskId);
 
-        if (subTarefa is null)
+        if (subTask is null)
         {
             return NotFound($"SubTarefa não encontrada.");
         }
 
-        _myDBContext.Remove(subTarefa);
+        _myDBContext.Remove(subTask);
         _myDBContext.SaveChanges();
 
         return NoContent();

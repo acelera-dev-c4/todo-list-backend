@@ -10,16 +10,16 @@ public interface IUsuarioService
 {
     UserResponse Create(UserRequest usuario);
     void Delete(int idUsuario);
-    Usuario? GetById(int idUsuario);
+    User? GetById(int idUsuario);
     List<UserResponse> List();
-    Usuario Update(Usuario usuarioUpdate, int id);
+    User Update(User usuarioUpdate, int id);
 }
 
 public class UsuarioService : IUsuarioService
 {
-    private readonly IUsuarioRepository _usuarioRepository;
+    private readonly IUserRepository _usuarioRepository;
 
-    public UsuarioService(IUsuarioRepository usuarioRepository)
+    public UsuarioService(IUserRepository usuarioRepository)
     {
         _usuarioRepository = usuarioRepository;
     }
@@ -36,7 +36,7 @@ public class UsuarioService : IUsuarioService
         _usuarioRepository.Delete(idUsuario);
     }
 
-    public Usuario? GetById(int idUsuario)
+    public User? GetById(int idUsuario)
     {
         return _usuarioRepository.Get(idUsuario);
     }
@@ -48,7 +48,7 @@ public class UsuarioService : IUsuarioService
         return userResponse;
     }
 
-    public Usuario Update(Usuario usuarioUpdate, int id)
+    public User Update(User usuarioUpdate, int id)
     {
         return _usuarioRepository.Update(usuarioUpdate, id);
     }
