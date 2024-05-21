@@ -1,19 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Microsoft.EntityFrameworkCore;
 using Api.Controllers;
-using AceleraDevTodoListApi.DB;
 using FluentAssertions;
 using Domain.Models;
+using Service;
+using Domain.Responses;
+using Domain.Request;
 
 public class UsuarioTests
 {
     private readonly UsuarioController _controller;
-    private readonly Mock<MyDBContext> _mockContext;
+    private readonly Mock<IUsuarioService> _mockContext;
     
     public UsuarioTests()
     {
-        _mockContext = new Mock<MyDBContext>();
+        _mockContext = new Mock<IUsuarioService>();
 
         var usuarios = new List<Usuario>
         {
@@ -21,13 +22,13 @@ public class UsuarioTests
             new Usuario { Id = 2, Nome = "Maria", Email = "maria@aceleraDev.com", Senha = "senha321" }
         };
 
-        var mockSet = new Mock<DbSet<Usuario>>();
+        var mockSet = new Mock<List<UserResponse>>();
         mockSet.As<IQueryable<Usuario>>().Setup(m => m.Provider).Returns(usuarios.AsQueryable().Provider);
         mockSet.As<IQueryable<Usuario>>().Setup(m => m.Expression).Returns(usuarios.AsQueryable().Expression);
         mockSet.As<IQueryable<Usuario>>().Setup(m => m.ElementType).Returns(usuarios.AsQueryable().ElementType);
         mockSet.As<IQueryable<Usuario>>().Setup(m => m.GetEnumerator()).Returns(usuarios.GetEnumerator());
 
-        _mockContext.Setup(m => m.Usuarios).Returns(mockSet.Object);
+        _mockContext.Setup(m => m.List()).Returns(mockSet.Object);
 
         _controller = new UsuarioController(_mockContext.Object);
     }
@@ -49,7 +50,7 @@ public class UsuarioTests
     [Fact]
     public void Add_UsuarioValido_DeveRetornarUsuarioCriado()
     {
-        var usuario = new Usuario { Nome = "Teste 123", Email = "teste@aceleraDev.com", Senha = "senha123" };
+        var usuario = new UserRequest { Nome = "Teste 123", Email = "teste@aceleraDev.com", Senha = "senha123" };
         var resultado = _controller.Post(usuario);
 
         resultado.Should().BeOfType<OkObjectResult>();
