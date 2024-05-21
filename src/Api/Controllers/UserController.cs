@@ -1,38 +1,31 @@
-﻿using AceleraDevTodoListApi.DB;
-using Domain.Models;
+﻿using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UsuarioController : ControllerBase
 {
-    private readonly MyDBContext _context;
+    private readonly IUsuarioService _usuarioService;
 
-    public UserController(MyDBContext context)
+    public UsuarioController(IUsuarioService usuarioService)
     {
-        _context = context;
+        _usuarioService = usuarioService;
     }
 
-    [HttpGet("List")]
+    [HttpGet("Lista")]
     public IActionResult List()
     {
-        return Ok(_context.Users.ToList());
+        var users = _usuarioService.List();
+        return Ok(users);
     }
 
-    [HttpPost("Register")]
-    public IActionResult Post([FromBody]User user)
+    [HttpPost("Cadastro")]
+    public IActionResult Post([FromBody] UserRequest usuario)
     {
-        try
-        {
-            var newUser = _context.Users.Add(user);
-            _context.SaveChanges();
-            return Ok(newUser);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha no cadastro. {ex.Message}");
-        }
+        var newUser = _usuarioService.Create(usuario);
+        return Ok(newUser);
     }
 }

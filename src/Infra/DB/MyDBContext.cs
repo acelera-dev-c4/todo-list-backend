@@ -1,25 +1,28 @@
 ﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace AceleraDevTodoListApi.DB;
+namespace Infra.DB;
 
 public class MyDBContext : DbContext
 {
-    private IConfiguration _configuration;
-    public MyDBContext(DbContextOptions<MyDBContext> options, IConfiguration configuration) : base(options) 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Tarefa> Tarefas { get; set; }
+    public virtual DbSet<SubTarefa> SubTarefas { get; set; }
+
+    public MyDBContext(DbContextOptions<MyDBContext> options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        _configuration = configuration;
-    }
+        modelBuilder.Entity<Tarefa>()
+            .HasOne<Usuario>()
+            .WithMany()
+            .HasForeignKey(t => t.IdUsuario)
+            .IsRequired();
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<MainTask> MainTasks { get; set; }
-    public DbSet<SubTask> SubTasks { get; set; }
-
-
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:AceleraDev"]);
+        modelBuilder.Entity<SubTarefa>()
+            .HasOne<Tarefa>()
+            .WithMany()
+            .HasForeignKey(st => st.IdTarefa)
+            .IsRequired();
     }
 }

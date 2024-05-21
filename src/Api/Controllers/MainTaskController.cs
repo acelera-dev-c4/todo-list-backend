@@ -1,4 +1,4 @@
-﻿using AceleraDevTodoListApi.DB;
+﻿using Infra.DB;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -7,98 +7,62 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class MainTaskController : ControllerBase
+public class TarefaController : ControllerBase
 {
     private readonly MyDBContext _context;
 
-    public MainTaskController(MyDBContext context)
+    public TarefaController(MyDBContext context)
     {
         _context = context;
     }
 
-    [HttpGet("List")]
+    [HttpGet("Lista")]
     public IActionResult Get()
     {
-        try
-        {
-            return Ok(_context.MainTasks);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha ao mostrar as Tarefas. {ex.Message}");
-        }
+        return Ok(_context.Tarefas);
     }
 
-    [HttpGet("{Id}")]
-    public IActionResult Get(int userId)
+    [HttpGet("IdUsuario")]
+    public IActionResult Get(int idUsuario)
     {
-        try
-        {
-            var task = _context.MainTasks.Where(x => x.UserId == userId).FirstOrDefault();
-            return task is null ? NotFound() : Ok(task);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha ao mostrar a Tarefa. {ex.Message}");
-        }
-
+        var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
+        return tarefa is null ? NotFound() : Ok(tarefa);
     }
 
-    [HttpPost("Register")]
-    public IActionResult Post(MainTaskRequest questRequest)
+    [HttpPost("Criacao")]
+    public IActionResult Post(RequisicaoTarefa requisicaoTarefa)
     {
-        try
-        {
-            var newTask = MainTaskMapper.ToClass(questRequest);
-            _context.MainTasks.Add(newTask);
-            _context.SaveChanges();
-            return Ok(newTask);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha na criação da tarefa. {ex.Message}");
-        }
+        var novaTarefa = MapeadorTarefa.ParaClasse(requisicaoTarefa);
+        _context.Tarefas.Add(novaTarefa);
+        _context.SaveChanges();
+        return Ok(novaTarefa);
     }
 
     [HttpPut("Update/{Id}")]
-    public IActionResult Put(int Id, [FromBody]string updateDescription)
+    public IActionResult Put(int Id, [FromBody] TarefaUpdateRequest updateDescription)
     {
-        try
-        {
-            var task = _context.MainTasks.Find(Id);
-            if (task is null)
-                return NotFound($"Tarefa não encontrada.");
+        var tarefa = _context.Tarefas.Find(Id);
+        if (tarefa is null)
+            return NotFound($"Tarefa não encontrada.");
 
-            task.Description = updateDescription;
+        tarefa.Descricao = updateDescription.Description;
 
-            _context.Update(task);
-            _context.SaveChanges();
+        _context.Update(tarefa);
+        _context.SaveChanges();
 
-            return Ok(task);
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return Ok(tarefa);
     }
 
     [HttpDelete("Delete")]
     public IActionResult Delete(int Id)
     {
-        try
-        {
-            var task = _context.MainTasks.Find(Id);
-            if (task is null)
-                return NotFound($"Tarefa não encontrada.");
+        var tarefa = _context.Tarefas.Find(Id);
+        if (tarefa is null)
+            return NotFound($"Tarefa não encontrada.");
 
-            _context.Remove(task);
-            _context.SaveChanges();
+        _context.Remove(tarefa);
+        _context.SaveChanges();
 
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Falha ao deletar tarefa. {ex.Message}");
-        }
+        return NoContent();
     }
 }
