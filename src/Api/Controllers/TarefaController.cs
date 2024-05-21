@@ -22,7 +22,7 @@ public class TarefaController : ControllerBase
         return Ok(_context.Tarefas);
     }
 
-    [HttpGet("Id")]
+    [HttpGet("IdUsuario")]
     public IActionResult Get(int idUsuario)
     {
         var tarefa = _context.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
