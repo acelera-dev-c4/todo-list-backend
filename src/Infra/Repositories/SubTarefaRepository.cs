@@ -1,6 +1,6 @@
 using Domain.Entitys;
+using Infra.DB;
 using Microsoft.EntityFrameworkCore;
-using AceleraDevTodoListApi.DB;
 
 namespace AceleraDevTodoListApi.Infra.Repositories;
 

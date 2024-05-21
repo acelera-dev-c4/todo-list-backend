@@ -1,5 +1,4 @@
-﻿using Infra.DB;
-using Domain.Mappers;
+﻿using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 using AceleraDevTodoListApi.Services;
@@ -16,12 +15,6 @@ public class TarefaController : ControllerBase
     {
         _tarefaService = tarefaService;
     }   
-
-    [HttpGet("Lista")]
-    public IActionResult Get()
-    {
-        return Ok(_tarefaService.);
-    }
 
     [HttpGet("{idUsuario}")]
     public IActionResult Get([FromRoute]int idUsuario)
@@ -48,13 +41,13 @@ public class TarefaController : ControllerBase
 
         tarefa.Descricao = updateDescription.Description;
 
-
-        _tarefaService.Update(tarefa, (int)tarefa.Id);
+        if (tarefa.Id is not null)
+            _tarefaService.Update(tarefa, (int)tarefa.Id);
 
         return Ok(tarefa);
     }
 
-    [HttpDelete("Delete")]
+    [HttpDelete()]
     public IActionResult Delete(int Id)
     {
         var tarefa = _tarefaService.Find(Id);

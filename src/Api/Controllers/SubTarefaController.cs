@@ -1,6 +1,5 @@
 ﻿using Domain.Entitys;
 using Microsoft.AspNetCore.Mvc;
-using AceleraDevTodoListApi.DB;
 using AceleraDevTodoListApi.Services;
 
 namespace Api.Controllers;
