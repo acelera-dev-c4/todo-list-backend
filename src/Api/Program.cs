@@ -19,7 +19,7 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
+options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 
