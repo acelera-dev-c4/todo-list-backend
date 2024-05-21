@@ -1,7 +1,7 @@
 ﻿using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
-using AceleraDevTodoListApi.Services;
+using Service;
 
 namespace Api.Controllers;
 
@@ -23,7 +23,7 @@ public class TarefaController : ControllerBase
         return tarefas is null ? NotFound() : Ok(tarefas);
     }
 
-    [HttpPost()]
+    [HttpPost]
     public IActionResult Post([FromBody] RequisicaoTarefa requisicaoTarefa)
     {
         var novaTarefa = MapeadorTarefa.ParaClasse(requisicaoTarefa);
@@ -47,14 +47,14 @@ public class TarefaController : ControllerBase
         return Ok(tarefa);
     }
 
-    [HttpDelete()]
-    public IActionResult Delete(int Id)
+    [HttpDelete("{idTarefa}")]
+    public IActionResult Delete(int idTarefa)
     {
-        var tarefa = _tarefaService.Find(Id);
+        var tarefa = _tarefaService.Find(idTarefa);
         if (tarefa is null)
             return NotFound($"Tarefa não encontrada.");
 
-        _tarefaService.Delete(Id);
+        _tarefaService.Delete(idTarefa);
 
         return NoContent();
     }

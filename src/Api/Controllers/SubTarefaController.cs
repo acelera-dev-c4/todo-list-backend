@@ -1,8 +1,6 @@
-﻿using Infra.DB;
-using Domain.Entitys;
-using Domain.Models;
-using AceleraDevTodoListApi.Services;
-using Domain.Models;
+﻿using Domain.Models;
+using Service;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
@@ -19,9 +17,9 @@ public class SubTarefaController : Controller
 
     [HttpGet("{idTarefa}")]
     public IActionResult Get([FromRoute] int idTarefa)
+    {
         var subTarefas = _subTarefaService.List(idTarefa);
         return subTarefas is null ? NotFound() : Ok(subTarefas);
-        return Ok(_myDBContext.SubTarefas);
     }
 
     [HttpPost]
@@ -31,18 +29,18 @@ public class SubTarefaController : Controller
         return Ok(novaSubTarefa);
     }
 
+    [HttpPut("{idSubTarefa}")]
     public IActionResult Put([FromRoute] int idSubTarefa, [FromBody] SubTarefa updateSubTarefa)
     {
         _subTarefaService.Update(updateSubTarefa, idSubTarefa);
-        _myDBContext.SaveChanges();
 
         return Ok(updateSubTarefa);
     }
 
     [HttpDelete("{idSubTarefa}")]
     public IActionResult Delete([FromRoute] int idSubTarefa)
+    {
         _subTarefaService.Delete(idSubTarefa);
-        _myDBContext.SaveChanges();
 
         return NoContent();
     }
