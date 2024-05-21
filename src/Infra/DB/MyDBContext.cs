@@ -1,4 +1,4 @@
-﻿using Domain.Entitys;
+﻿using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.DB;

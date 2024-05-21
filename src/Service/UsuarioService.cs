@@ -1,10 +1,10 @@
 ﻿using Infra.Repositories;
-using Domain.Entitys;
 using Domain.Mappers;
 using Domain.Request;
 using Domain.Responses;
+using Domain.Models;
 
-namespace Services;
+namespace Service;
 
 public interface IUsuarioService
 {

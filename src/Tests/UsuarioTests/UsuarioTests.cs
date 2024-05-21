@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Microsoft.EntityFrameworkCore;
 using Api.Controllers;
-using Domain.Entitys;
-using Infra.DB;
+using AceleraDevTodoListApi.DB;
 using FluentAssertions;
+using Domain.Models;
 
 public class UsuarioTests
 {

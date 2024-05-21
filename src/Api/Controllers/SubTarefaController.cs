@@ -1,6 +1,6 @@
 ﻿using Infra.DB;
-using Domain.Entitys;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Models;
 
 namespace Api.Controllers;
 
