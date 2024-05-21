@@ -1,5 +1,6 @@
 ﻿using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Service;
 
 namespace Api.Controllers;
@@ -27,5 +28,13 @@ public class UsuarioController : ControllerBase
     {
         var newUser = _usuarioService.Create(usuario);
         return Ok(newUser);
+    }
+
+    [HttpPut("Atualizar/{idUsuario}")]
+    public IActionResult Put([FromBody] UpdatedUserRequest user, int idUsuario)
+    {
+        user.Id = idUsuario;
+        var updatedUser = _usuarioService.Update(user);
+        return Ok(updatedUser);
     }
 }
