@@ -57,6 +57,13 @@ public class UsuarioRepository : IUsuarioRepository
 
     public void Delete(int idUsuario)
     {
+        var user = Get(idUsuario);
+
+        if (user is null)
+            throw new Exception("Usuário não encontrado.");
+
         _myDBContext.Usuarios.Where(x => x.Id == idUsuario).ExecuteDelete();
+        _myDBContext.SaveChanges();
+
     }
 }

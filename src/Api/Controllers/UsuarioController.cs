@@ -37,4 +37,11 @@ public class UsuarioController : ControllerBase
         var updatedUser = _usuarioService.Update(user);
         return Ok(updatedUser);
     }
+
+    [HttpDelete("Deletar/{idUsuario}")]
+    public IActionResult Delete(int idUsuario)
+    {
+        _usuarioService.Delete(idUsuario);
+        return NoContent();
+    }
 }
