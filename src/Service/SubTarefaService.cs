@@ -12,9 +12,14 @@ public class SubTarefaService
         _subTarefaRepository = subTarefaRepository;
     }
 
-    public SubTarefa Create(SubTarefa subtarefa)
+    public SubTarefa Create(SubTarefa subTarefa)
     {
-        return _subTarefaRepository.Create(subtarefa);
+        return _subTarefaRepository.Create(subTarefa);
+    }
+
+    public SubTarefa? Find(int idSubTarefa)
+    {
+        return _subTarefaRepository.Find(idSubTarefa);
     }
 
     public void Delete(int idSubTarefa)

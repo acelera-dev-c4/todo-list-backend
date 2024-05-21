@@ -1,6 +1,7 @@
 using Infra.DB;
 using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
+using AceleraDevTodoListApi.DB;
 
 namespace AceleraDevTodoListApi.Infra.Repositories;
 
@@ -8,6 +9,7 @@ public interface ITarefaRepository
 {
     Tarefa Create(Tarefa Tarefa);
     List<Tarefa> Get(int idUsuario);
+    Tarefa? Find(int idUsuario);
     Tarefa Update(Tarefa Tarefa, int idTarefa);
     void Delete(int idTarefa);
 }
@@ -31,6 +33,11 @@ public class TarefaRepository : ITarefaRepository
     public List<Tarefa> Get(int idUsuario)
     {
         return _myDBContext.Tarefas.Where(x => x.IdUsuario == idUsuario).ToList();
+    }
+
+    public Tarefa? Find(int idTarefa)
+    {
+        return _myDBContext.Tarefas.Find(idTarefa);
     }
 
     public Tarefa Update(Tarefa TarefaUpdate, int idTarefa)

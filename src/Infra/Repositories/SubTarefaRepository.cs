@@ -1,6 +1,6 @@
-using Infra.DB;
 using Domain.Entitys;
 using Microsoft.EntityFrameworkCore;
+using AceleraDevTodoListApi.DB;
 
 namespace AceleraDevTodoListApi.Infra.Repositories;
 
@@ -8,6 +8,7 @@ public interface ISubTarefaRepository
 {
     SubTarefa Create(SubTarefa subTarefa);
     List<SubTarefa> Get(int idTarefa);
+    SubTarefa? Find(int idSubTarefa);
     SubTarefa Update(SubTarefa subTarefa, int idSubTarefa);
     void Delete(int idSubTarefa);
 }
@@ -32,6 +33,11 @@ public class SubTarefaRepository : ISubTarefaRepository
     public List<SubTarefa> Get(int idTarefa)
     {
         return _myDBContext.SubTarefas.Where(x => x.IdTarefa == idTarefa).ToList();
+    }
+
+    public SubTarefa? Find(int idSubTarefa)
+    {
+        return _myDBContext.SubTarefas.Find(idSubTarefa);
     }
 
     public SubTarefa Update(SubTarefa SubTarefaUpdate, int idSubTarefa)

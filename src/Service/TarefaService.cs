@@ -17,6 +17,11 @@ public class TarefaService
         return _tarefaRepository.Create(tarefa);
     }
 
+    public Tarefa? Find(int idTarefa)
+    {
+        return _tarefaRepository.Find(idTarefa);
+    }
+
     public void Delete(int idTarefa)
     {
         _tarefaRepository.Delete(idTarefa);
