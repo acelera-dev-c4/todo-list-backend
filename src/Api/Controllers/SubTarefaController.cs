@@ -1,6 +1,6 @@
-﻿using AceleraDevTodoListApi.DB;
-using Domain.Entitys;
+﻿using Infra.DB;
 using Microsoft.AspNetCore.Mvc;
+using Domain.Models;
 
 namespace Api.Controllers;
 
