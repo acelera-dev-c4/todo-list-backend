@@ -1,8 +1,8 @@
-using Domain.Entitys;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
+using Domain.Models;
 
-namespace AceleraDevTodoListApi.Infra.Repositories;
+namespace Infra.Repositories;
 
 public interface ISubTarefaRepository
 {

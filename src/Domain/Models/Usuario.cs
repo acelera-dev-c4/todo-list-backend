@@ -1,4 +1,4 @@
-﻿namespace Domain.Entitys;
+﻿namespace Domain.Models;
 public class Usuario
 {
     public int? Id { get; set; }

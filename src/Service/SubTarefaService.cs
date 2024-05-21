@@ -1,7 +1,7 @@
-﻿using AceleraDevTodoListApi.Infra.Repositories;
-using Domain.Entitys;
+﻿using Domain.Models;
+using Infra.Repositories;
 
-namespace AceleraDevTodoListApi.Services;
+namespace Service;
 
 public class SubTarefaService
 {
