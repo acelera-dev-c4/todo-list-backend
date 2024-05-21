@@ -1,6 +1,7 @@
 ﻿using Services;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers;
 
@@ -29,11 +30,11 @@ public class UsuarioController : ControllerBase
         return Ok(newUser);
     }
 
-    [HttpPut("Atualizar/{Id}")]
-    public IActionResult Put(int id, [FromBody] UpdatedUserRequest usuario)
+    [HttpPut("Atualizar/{id}")]
+    public IActionResult Put(int idUsuario, [FromBody] UpdatedUserRequest usuario)
     {
-        usuario.Id = id;
-        var updatedUser = _usuarioService.Update(usuario);
+        //usuario.Id = id;
+        var updatedUser = _usuarioService.Update(usuario, idUsuario);
         return Ok(updatedUser);
     }
 }

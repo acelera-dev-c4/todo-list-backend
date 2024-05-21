@@ -11,7 +11,7 @@ public interface IUsuarioService
     List<UserResponse> List();
     Usuario? GetById(int idUsuario);
     UserResponse Create(UserRequest usuario);
-    UserResponse Update(UpdatedUserRequest usuarioUpdate);
+    UserResponse Update(UpdatedUserRequest usuarioUpdate, int idUsuario);
     void Delete(int idUsuario);
 }
 
@@ -43,16 +43,16 @@ public class UsuarioService : IUsuarioService
         return UserMapper.ToResponse(user);
     }
 
-    public UserResponse Update(UpdatedUserRequest usuarioUpdate)
+    public UserResponse Update(UpdatedUserRequest usuarioUpdate, int idUsuario)
     {
-        var existingUser = _usuarioRepository.Get(usuarioUpdate.Id);
+        var existingUser = _usuarioRepository.Get(idUsuario);
 
         if (existingUser is null)
             throw new Exception("Usuário não encontrado!");
 
         var updatedUser = UserMapper.ToEntity(usuarioUpdate);
-        var user = _usuarioRepository.Update(updatedUser);
-        return UserMapper.ToResponse(user);
+        _usuarioRepository.Update(updatedUser, idUsuario);
+        return UserMapper.ToResponse(updatedUser);
     }
 
     public void Delete(int idUsuario)
