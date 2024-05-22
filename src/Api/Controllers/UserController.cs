@@ -30,18 +30,17 @@ public class UserController : ControllerBase
     }
 
 
-    [HttpPut("Update/{userId}")]
-    public IActionResult Put([FromBody] UpdatedUserRequest user, int userId)
+    [HttpPut("Update")]
+    public IActionResult Put([FromBody] UpdatedUserRequest user)
     {
-        user.Id = userId;
         var updatedUser = _userService.Update(user);
         return Ok(updatedUser);
     }
 
-    [HttpDelete("Deletar/{idUsuario}")]
-    public IActionResult Delete(int idUsuario)
+    [HttpDelete("{idUsuario}")]
+    public IActionResult Delete(int userId)
     {
-        _userService.Delete(idUsuario);
+        _userService.Delete(userId);
         return NoContent();
     }
 }
