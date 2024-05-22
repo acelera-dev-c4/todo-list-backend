@@ -8,6 +8,7 @@ public interface ISubTaskRepository
 {
     SubTask Create(SubTask subTask);
     List<SubTask> Get(int mainTaskId);
+    SubTask? Find(int subTaskId);
     SubTask Update(SubTask subTask, int subTaskId);
     void Delete(int subTaskId);
 }
@@ -32,6 +33,10 @@ public class SubTaskRepository : ISubTaskRepository
     public List<SubTask> Get(int mainTaskId)
     {
         return _myDBContext.SubTasks.Where(x => x.MainTaskId == mainTaskId).ToList();
+    }
+    public SubTask? Find(int subTaskId)
+    {
+        return _myDBContext.SubTasks.Find(subTaskId);
     }
 
     public SubTask Update(SubTask subTaskUpdate, int subTaskId)

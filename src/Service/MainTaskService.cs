@@ -3,7 +3,16 @@ using Infra.Repositories;
 
 namespace Service;
 
-public class MainTaskService
+
+public interface IMainTaskService
+{
+    MainTask Create(MainTask task);
+    void Delete(int taskId);
+    List<MainTask>? Get(int userId);
+    MainTask Update(MainTask task, int mainTaskId);
+}
+
+public class MainTaskService : IMainTaskService
 {
     private readonly IMainTaskRepository _mainTaskRepository;
 
@@ -21,6 +30,7 @@ public class MainTaskService
     {
         _mainTaskRepository.Delete(taskId);
     }
+
 
     public List<MainTask>? Get(int userId)
     {
