@@ -72,7 +72,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser().Build());
+        .RequireAuthenticatedUser()
+        .Build());
 });
 
 var app = builder.Build();
@@ -97,7 +98,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowOrigin");
 app.UseMiddleware(typeof(ExceptionHandler));
 
 app.UseAuthentication();
