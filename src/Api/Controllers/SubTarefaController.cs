@@ -8,9 +8,9 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class SubTarefaController : Controller
 {
-    private readonly SubTarefaService _subTarefaService;
+    private readonly ISubTarefaService _subTarefaService;
 
-    public SubTarefaController(SubTarefaService subTarefaService)
+    public SubTarefaController(ISubTarefaService subTarefaService)
     {
         _subTarefaService = subTarefaService;
     }

@@ -9,9 +9,9 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class TarefaController : ControllerBase
 {
-    private readonly TarefaService _tarefaService;
+    private readonly ITarefaService _tarefaService;
 
-    public TarefaController(TarefaService tarefaService)
+    public TarefaController(ITarefaService tarefaService)
     {
         _tarefaService = tarefaService;
     }   

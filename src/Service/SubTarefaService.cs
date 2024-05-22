@@ -3,7 +3,16 @@ using Infra.Repositories;
 
 namespace Service;
 
-public class SubTarefaService
+
+public interface ISubTarefaService
+{
+    SubTarefa Create(SubTarefa subTarefa);
+    SubTarefa? Find(int idSubTarefa);
+    List<SubTarefa> List(int idTarefa);
+    SubTarefa Update(SubTarefa subtarefaUpdate, int id);
+    void Delete(int idSubTarefa);
+}
+public class SubTarefaService : ISubTarefaService
 {
     private readonly ISubTarefaRepository _subTarefaRepository;
 

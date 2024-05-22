@@ -3,7 +3,16 @@ using Infra.Repositories;
 
 namespace Service;
 
-public class TarefaService
+public interface ITarefaService
+{
+    Tarefa Create(Tarefa tarefa);
+    Tarefa? Find(int idTarefa);
+    List<Tarefa>? Get(int idUsuario);
+    Tarefa Update(Tarefa tarefa, int id);
+    void Delete(int idTarefa);
+}
+
+public class TarefaService : ITarefaService
 {
     private readonly ITarefaRepository _tarefaRepository;
 
