@@ -6,22 +6,22 @@ namespace Domain.Mappers;
 
 public class UserMapper
 {
-    public static UserResponse ToResponse(Usuario user) => new()
+    public static UserResponse ToResponse(User user) => new()
     {
         Id = user.Id,
-        Name = user.Nome,
+        Name = user.Name,
         Email = user.Email,
     };
-    public static Usuario ToEntity(UserRequest user) => new()
+    public static User ToEntity(UserRequest user) => new()
     {
         Id = null,
-        Nome = user.Nome,
+        Name = user.Name,
         Email = user.Email
     };
-    public static Usuario ToEntity(UpdatedUserRequest user) => new()
+    public static User ToEntity(UpdatedUserRequest user) => new()
     {
         Id = user.Id,
-        Nome = user.Nome,
+        Name = user.Name,
         Email = user.Email
     };
 }
