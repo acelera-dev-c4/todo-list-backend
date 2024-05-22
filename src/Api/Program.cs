@@ -13,15 +13,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+builder.Services.AddScoped<ITarefaService, TarefaService>();
+builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+
+builder.Services.AddScoped<ISubTarefaService, SubTarefaService>();
+builder.Services.AddScoped<ISubTarefaRepository, SubTarefaRepository>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
-
 
 var app = builder.Build();
 
