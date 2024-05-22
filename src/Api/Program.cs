@@ -19,11 +19,11 @@ builder.Services.AddTransient<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<ITarefaService, TarefaService>();
-builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<IMainTaskService, MainTaskService>();
+builder.Services.AddScoped<IMainTaskRepository, MainTaskRepository>();
 
-builder.Services.AddScoped<ISubTarefaService, SubTarefaService>();
-builder.Services.AddScoped<ISubTarefaRepository, SubTarefaRepository>();
+builder.Services.AddScoped<ISubTaskService, SubTaskService>();
+builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
