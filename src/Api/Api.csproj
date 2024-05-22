@@ -4,8 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-	  <UserSecretsId>346dcd24-b948-4140-b032-217e14491f04</UserSecretsId>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Remove="Controllers\WeatherForecastController.cs" />
@@ -23,11 +22,11 @@
 	</ItemGroup>
 
 
-  <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Infra\Infra.csproj" />
-    <ProjectReference Include="..\Service\Service.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Domain\Domain.csproj" />
+		<ProjectReference Include="..\Infra\Infra.csproj" />
+		<ProjectReference Include="..\Service\Service.csproj" />
+	</ItemGroup>
 
 
 </Project>
