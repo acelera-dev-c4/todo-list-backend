@@ -1,4 +1,5 @@
 using Api.Middlewares;
+using Domain.Options;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Services.Configure<PasswordHashOptions>(builder.Configuration.GetSection("PasswordHashOptions"));
+builder.Services.AddTransient<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WeslleyTests"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 

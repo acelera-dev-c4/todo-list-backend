@@ -4,7 +4,8 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
+	  <UserSecretsId>346dcd24-b948-4140-b032-217e14491f04</UserSecretsId>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<Compile Remove="Controllers\WeatherForecastController.cs" />

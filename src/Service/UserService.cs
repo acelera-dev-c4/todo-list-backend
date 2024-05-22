@@ -18,15 +18,18 @@ public interface IUserService
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IHashingService _hashingService;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, IHashingService hashingService)
     {
         _userRepository = userRepository;
+        _hashingService = hashingService;
     }
 
     public UserResponse Create(UserRequest user)
     {
         var newUser = UserMapper.ToEntity(user);
+        newUser.Password = _hashingService.Hash(newUser.Password!);
         var createdUser = _userRepository.Create(newUser);
         return UserMapper.ToResponse(createdUser);
     }
