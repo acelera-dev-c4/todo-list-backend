@@ -36,9 +36,9 @@ public class SubTaskService : ISubTaskService
         _subTaskRepository.Delete(subTaskId);
     }
 
-    public List<SubTask> List(int taskId)
+    public List<SubTask> List(int mainTaskId)
     {
-        var subTasks = _subTaskRepository.Get(taskId);
+        var subTasks = _subTaskRepository.Get(mainTaskId);
         return subTasks;
     }
 

@@ -6,10 +6,10 @@ namespace Infra.Repositories;
 
 public interface IUserRepository
 {
-    User Create(User User);
+    User Create(User user);
     User? Get(int userId);
     List<User> GetAll();
-    User Update(User User, int userId);
+    User Update(User userUpdate);
     void Delete(int userId);
 }
 
@@ -39,20 +39,30 @@ public class UserRepository : IUserRepository
         return _myDBContext.Users.ToList();
     }
 
-    public User Update(User updatedUser, int userId)
+    public User Update(User userUpdate)
     {
-        if (_myDBContext.Users.Find(userId) is null)
-        {
-            throw new Exception("Usu�rio n�o encontrado para atualiza��o.");
-        }
+        var existingUser = Get(userUpdate.Id);
 
-        _myDBContext.Users.Update(updatedUser);
+        if (existingUser is null)
+            throw new Exception("User not found!");
+
+        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
+        updatedUser.Name = userUpdate.Name;
+        updatedUser.Password = userUpdate.Password;
+        updatedUser.Email = userUpdate.Email;
+
         _myDBContext.SaveChanges();
-        return updatedUser;
+        return userUpdate;
     }
 
     public void Delete(int userId)
     {
+        var user = Get(userId);
+
+        if (user is null)
+            throw new Exception("User not found!");
+
         _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
+        _myDBContext.SaveChanges();
     }
 }

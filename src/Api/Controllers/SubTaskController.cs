@@ -31,7 +31,7 @@ public class SubTaskController : Controller
 
     [HttpPut("{subTaskId}")]
     public IActionResult Put([FromRoute] int subTaskId, [FromBody] SubTask updatedSubTask)
-    {
+        {
         _mainTaskService.Update(updatedSubTask, subTaskId);
 
         return Ok(updatedSubTask);

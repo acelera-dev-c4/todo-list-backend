@@ -12,23 +12,26 @@ public interface IUserService
     void Delete(int userId);
     User? GetById(int userId);
     List<UserResponse> List();
-    User Update(User updatedUser, int userId);
+    UserResponse Update(UpdatedUserRequest userUpdate);
 }
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IHashingService _hashingService;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, IHashingService hashingService)
     {
         _userRepository = userRepository;
+        _hashingService = hashingService;
     }
 
     public UserResponse Create(UserRequest user)
     {
         var newUser = UserMapper.ToEntity(user);
-        var user = _userRepository.Create(newUser);
-        return UserMapper.ToResponse(user);
+        newUser.Password = _hashingService.Hash(newUser.Password!);
+        var createdUser = _userRepository.Create(newUser);
+        return UserMapper.ToResponse(createdUser);
     }
 
     public void Delete(int userId)
@@ -48,8 +51,15 @@ public class UserService : IUserService
         return userResponse;
     }
 
-    public User Update(User updatedUser, int userId)
+    public UserResponse Update(UpdatedUserRequest userUpdate)
     {
-        return _userRepository.Update(updatedUser, userId);
+        var existingUser = _userRepository.Get(userUpdate.Id);
+
+        if (existingUser is null)
+            throw new Exception("User not found!");
+
+        var updatedUser = UserMapper.ToEntity(userUpdate);
+        _userRepository.Update(updatedUser);
+        return UserMapper.ToResponse(updatedUser);
     }
 }

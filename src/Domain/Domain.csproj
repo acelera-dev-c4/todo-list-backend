@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Mappers\MainTaskMapper2.cs" />
+    <Compile Remove="Models\MainTask2.cs" />
+    <Compile Remove="Models\SubTask2.cs" />
+    <Compile Remove="Models\User2.cs" />
+    <Compile Remove="Request\MainTaskRequest344.cs" />
+  </ItemGroup>
+
 </Project>

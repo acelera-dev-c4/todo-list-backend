@@ -6,10 +6,9 @@ namespace Infra.Repositories;
 
 public interface IMainTaskRepository
 {
-    MainTask Create(MainTask newMainTask);
+    MainTask Create(MainTask mainTask);
     List<MainTask> Get(int userId);
-    MainTask? Find(int userId);
-    MainTask Update(MainTask updatedMainTask, int mainTaskId);
+    MainTask Update(MainTask mainTask, int mainTaskId);
     void Delete(int mainTaskId);
 }
 
@@ -22,11 +21,11 @@ public class MainTaskRepository : IMainTaskRepository
         _myDBContext = myDBContext;
     }
 
-    public MainTask Create(MainTask newMainTask)
+    public MainTask Create(MainTask mainTask)
     {
-        _myDBContext.MainTasks.Add(newMainTask);
+        _myDBContext.MainTasks.Add(mainTask);
         _myDBContext.SaveChanges();
-        return newMainTask;
+        return mainTask;
     }
 
     public List<MainTask> Get(int userId)
@@ -34,21 +33,16 @@ public class MainTaskRepository : IMainTaskRepository
         return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
     }
 
-    public MainTask? Find(int mainTaskId)
-    {
-        return _myDBContext.MainTasks.Find(mainTaskId);
-    }
-
-    public MainTask Update(MainTask updatedMainTask, int mainTaskId)
+    public MainTask Update(MainTask mainTaskUpdate, int mainTaskId)
     {
         if (_myDBContext.MainTasks.Find(mainTaskId) is null)
         {
-            throw new Exception("MainTask n�o encontrada para atualiza��o");
+            throw new Exception("SubTask not found!");
         }
 
-        _myDBContext.MainTasks.Update(updatedMainTask);
+        _myDBContext.MainTasks.Update(mainTaskUpdate);
         _myDBContext.SaveChanges();
-        return updatedMainTask;
+        return mainTaskUpdate;
     }
 
     public void Delete(int mainTaskId)

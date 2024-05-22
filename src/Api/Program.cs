@@ -1,4 +1,5 @@
 using Api.Middlewares;
+using Domain.Options;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.Configure<PasswordHashOptions>(builder.Configuration.GetSection("PasswordHashOptions"));
+builder.Services.AddTransient<IHashingService, HashingService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
@@ -23,7 +26,7 @@ builder.Services.AddScoped<ISubTarefaService, SubTarefaService>();
 builder.Services.AddScoped<ISubTarefaRepository, SubTarefaRepository>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 var app = builder.Build();

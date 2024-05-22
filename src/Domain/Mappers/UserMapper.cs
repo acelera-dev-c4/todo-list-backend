@@ -14,14 +14,14 @@ public class UserMapper
     };
     public static User ToEntity(UserRequest user) => new()
     {
-        Id = null,
-        Name = user.Nome,
-        Email = user.Email
+        Name = user.Name,
+        Email = user.Email,
+        Password = user.Password
     };
     public static User ToEntity(UpdatedUserRequest user) => new()
     {
         Id = user.Id,
-        Name = user.Nome,
+        Name = user.Name,
         Email = user.Email
     };
 }

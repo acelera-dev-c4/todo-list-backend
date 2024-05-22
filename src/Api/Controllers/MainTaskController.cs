@@ -14,7 +14,7 @@ public class MainTaskController : ControllerBase
     public MainTaskController(IMainTaskService mainTaskService)
     {
         _mainTaskService = mainTaskService;
-    }   
+    }
 
     [HttpGet("{userId}")]
     public IActionResult Get([FromRoute]int userId)

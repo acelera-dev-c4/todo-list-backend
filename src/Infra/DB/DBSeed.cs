@@ -5,7 +5,7 @@ namespace Infra.DB;
 public class DBSeed
 {
     private readonly MyDBContext _context;
-    private const string password = "senhasegura";
+    private const string password = "4674:a6AtKJMgypWPXSPp1qZlvDc4b0EMImgs:OerG6dNhcIuLslOFqE7uTlTKttE="; //SecurePassword123
     public DBSeed(MyDBContext context)
     {
         _context = context;
@@ -13,73 +13,68 @@ public class DBSeed
 
     public void Seed()
     {
-        _context.Database.EnsureCreated();
-
-        if (!_context.Usuarios.Any())
+        if (!(_context.MainTasks.Any() && _context.SubTasks.Any() && _context.Users.Any()))
         {
-            var users = new Usuario[]
+            var users = new User[]
             {
-                new Usuario { Nome = "Jesus Wildes", Email = "jesus@mail.com", Senha = password },
-                new Usuario { Nome = "Maurício Mafra", Email = "mauricio@mail.com", Senha = password },
-                new Usuario { Nome = "Paulo Ewerson", Email = "paulo@mail.com", Senha = password },
-                new Usuario { Nome = "Pedro Augusto", Email = "pedro@mail.com", Senha = password },
-                new Usuario { Nome = "Raffaello Damgaard", Email = "raffaello@mail.com", Senha = password },
-                new Usuario { Nome = "Vinícius Silva", Email = "vinicius@mail.com", Senha = password },
-                new Usuario { Nome = "Weslley Batista", Email = "weslley@mail.com", Senha = password }
+                new User { Name = "Jesus Wildes", Email = "jesus@mail.com", Password = password },
+                new User { Name = "Maurício Mafra", Email = "mauricio@mail.com", Password = password },
+                new User { Name = "Paulo Ewerson", Email = "paulo@mail.com", Password = password },
+                new User { Name = "Pedro Augusto", Email = "pedro@mail.com", Password = password },
+                new User { Name = "Raffaello Damgaard", Email = "raffaello@mail.com", Password = password },
+                new User { Name = "Vinícius Silva", Email = "vinicius@mail.com", Password = password },
+                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password }
             };
 
-            _context.Usuarios.AddRange(users);
-            _context.SaveChanges();
-        }
-
-        if (!(_context.Tarefas.Any() && _context.SubTarefas.Any()))
-        {
-            var tarefas = new MainTask[]
-            {
-                new MainTask { IdUsuario = 1, Descricao = "Compras no supermercado" },
-                new MainTask { IdUsuario = 2, Descricao = "Corrida matinal" },
-                new MainTask { IdUsuario = 3, Descricao = "Preparação para apresentação" },
-                new MainTask { IdUsuario = 4, Descricao = "Reunião de equipe" },
-                new MainTask { IdUsuario = 5, Descricao = "Atualização de relatórios" },
-                new MainTask { IdUsuario = 6, Descricao = "Desenvolvimento de novos recursos" },
-                new MainTask { IdUsuario = 7, Descricao = "Revisão de código" }
-            };
-
-            _context.Tarefas.AddRange(tarefas);
+            _context.Users.AddRange(users);
             _context.SaveChanges();
 
-            var subtarefas = new SubTarefa[]
+            var tasks = new MainTask[]
             {
-                new SubTarefa { IdTarefa = (int)tarefas[0].Id!, Descricao = "Comprar leite", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[0].Id!, Descricao = "Adquirir carne", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[0].Id!, Descricao = "Buscar pão", Concluida = false },
-
-                new SubTarefa { IdTarefa = (int)tarefas[1].Id!, Descricao = "Correr 5 km", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[1].Id!, Descricao = "Fazer alongamentos", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[1].Id!, Descricao = "Hidratar-se", Concluida = false },
-
-                new SubTarefa { IdTarefa = (int)tarefas[2].Id!, Descricao = "Preparar slides", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[2].Id!, Descricao = "Praticar apresentação", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[2].Id!, Descricao = "Revisar conteúdo", Concluida = false },
-
-                new SubTarefa { IdTarefa = (int)tarefas[3].Id!, Descricao = "Agendar horário", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[3].Id!, Descricao = "Preparar pauta", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[3].Id!, Descricao = "Enviar convites", Concluida = false },
-
-                new SubTarefa { IdTarefa = (int)tarefas[4].Id!, Descricao = "Coletar dados", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[4].Id!, Descricao = "Analisar resultados", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[4].Id!, Descricao = "Gerar relatório", Concluida = false },
-
-                new SubTarefa { IdTarefa = (int)tarefas[5].Id!, Descricao = "Codificar funcionalidade X", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[5].Id!, Descricao = "Testar integração", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[5].Id!, Descricao = "Documentar alterações", Concluida = false },
-
-                new SubTarefa { IdTarefa = (int)tarefas[6].Id!, Descricao = "Revisar pull request", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[6].Id!, Descricao = "Identificar bugs", Concluida = false },
-                new SubTarefa { IdTarefa = (int)tarefas[6].Id!, Descricao = "Sugerir melhorias", Concluida = false }
+                new MainTask { UserId = (int)users[0].Id!, Description = "Compras no supermercado" },
+                new MainTask { UserId = (int)users[1].Id!, Description = "Corrida matinal" },
+                new MainTask { UserId = (int)users[2].Id!, Description = "Preparação para apresentação" },
+                new MainTask { UserId = (int)users[3].Id!, Description = "Reunião de equipe" },
+                new MainTask { UserId = (int)users[4].Id!, Description = "Atualização de relatórios" },
+                new MainTask { UserId = (int)users[5].Id!, Description = "Desenvolvimento de novos recursos" },
+                new MainTask { UserId = (int)users[6].Id!, Description = "Revisão de código" }
             };
 
-            _context.SubTarefas.AddRange(subtarefas);
+            _context.MainTasks.AddRange(tasks);
+            _context.SaveChanges();
+
+            var subtasks = new SubTask[]
+            {
+                new SubTask { MainTaskId = (int)tasks[0].Id!, Description = "Comprar leite", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[0].Id!, Description = "Adquirir carne", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[0].Id!, Description = "Buscar pão", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[1].Id!, Description = "Correr 5 km", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[1].Id!, Description = "Fazer alongamentos", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[1].Id!, Description = "Hidratar-se", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[2].Id!, Description = "Preparar slides", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[2].Id!, Description = "Praticar apresentação", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[2].Id!, Description = "Revisar conteúdo", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[3].Id!, Description = "Agendar horário", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[3].Id!, Description = "Preparar pauta", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[3].Id!, Description = "Enviar convites", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[4].Id!, Description = "Coletar dados", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[4].Id!, Description = "Analisar resultados", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[4].Id!, Description = "Gerar relatório", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[5].Id!, Description = "Codificar funcionalidade X", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[5].Id!, Description = "Testar integração", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[5].Id!, Description = "Documentar alterações", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Revisar pull request", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Identificar bugs", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Sugerir melhorias", Finished = false }
+            };
+
+            _context.SubTasks.AddRange(subtasks);
             _context.SaveChanges();
         }
 
