@@ -5,7 +5,7 @@ namespace Infra.DB;
 public class DBSeed
 {
     private readonly MyDBContext _context;
-    private const string password = "senhasegura";
+    private const string password = "4674:a6AtKJMgypWPXSPp1qZlvDc4b0EMImgs:OerG6dNhcIuLslOFqE7uTlTKttE="; //SecurePassword123
     public DBSeed(MyDBContext context)
     {
         _context = context;
@@ -13,9 +13,7 @@ public class DBSeed
 
     public void Seed()
     {
-        _context.Database.EnsureCreated();
-
-        if (!_context.Users.Any())
+        if (!(_context.MainTasks.Any() && _context.SubTasks.Any() && _context.Users.Any()))
         {
             var users = new User[]
             {
@@ -30,19 +28,16 @@ public class DBSeed
 
             _context.Users.AddRange(users);
             _context.SaveChanges();
-        }
 
-        if (!(_context.MainTasks.Any() && _context.SubTasks.Any()))
-        {
             var tasks = new MainTask[]
             {
-                new MainTask { UserId = 1, Description = "Compras no supermercado" },
-                new MainTask { UserId = 2, Description = "Corrida matinal" },
-                new MainTask { UserId = 3, Description = "Preparação para apresentação" },
-                new MainTask { UserId = 4, Description = "Reunião de equipe" },
-                new MainTask { UserId = 5, Description = "Atualização de relatórios" },
-                new MainTask { UserId = 6, Description = "Desenvolvimento de novos recursos" },
-                new MainTask { UserId = 7, Description = "Revisão de código" }
+                new MainTask { UserId = (int)users[0].Id!, Description = "Compras no supermercado" },
+                new MainTask { UserId = (int)users[1].Id!, Description = "Corrida matinal" },
+                new MainTask { UserId = (int)users[2].Id!, Description = "Preparação para apresentação" },
+                new MainTask { UserId = (int)users[3].Id!, Description = "Reunião de equipe" },
+                new MainTask { UserId = (int)users[4].Id!, Description = "Atualização de relatórios" },
+                new MainTask { UserId = (int)users[5].Id!, Description = "Desenvolvimento de novos recursos" },
+                new MainTask { UserId = (int)users[6].Id!, Description = "Revisão de código" }
             };
 
             _context.MainTasks.AddRange(tasks);

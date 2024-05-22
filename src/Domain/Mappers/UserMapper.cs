@@ -15,7 +15,8 @@ public class UserMapper
     public static User ToEntity(UserRequest user) => new()
     {
         Name = user.Name,
-        Email = user.Email
+        Email = user.Email,
+        Password = user.Password
     };
     public static User ToEntity(UpdatedUserRequest user) => new()
     {
