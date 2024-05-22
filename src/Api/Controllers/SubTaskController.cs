@@ -42,7 +42,7 @@ public class SubTaskController : ControllerBase
         var subTask = _myDBContext.SubTasks.Find(subTaskId);
         if (subTask is null)
         {
-            return NotFound($"Subtarefa não encontrada.");
+            return NotFound($"SubTask not found!");
         }
 
         subTask.Description = updateDescription;
@@ -60,7 +60,7 @@ public class SubTaskController : ControllerBase
 
         if (subTask is null)
         {
-            return NotFound($"SubTarefa não encontrada.");
+            return NotFound($"SubTask not found!");
         }
 
         _myDBContext.Remove(subTask);
