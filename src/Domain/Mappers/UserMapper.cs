@@ -14,7 +14,6 @@ public class UserMapper
     };
     public static User ToEntity(UserRequest user) => new()
     {
-        Id = null,
         Name = user.Name,
         Email = user.Email
     };

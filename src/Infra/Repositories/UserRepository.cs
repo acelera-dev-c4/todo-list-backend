@@ -9,7 +9,7 @@ public interface IUserRepository
     User Create(User user);
     User? Get(int userId);
     List<User> GetAll();
-    User Update(User userUpdate, int userId);
+    User Update(User userUpdate);
     void Delete(int userId);
 }
 
@@ -39,20 +39,30 @@ public class UserRepository : IUserRepository
         return _myDBContext.Users.ToList();
     }
 
-    public User Update(User userUpdate, int userId)
+    public User Update(User userUpdate)
     {
-        if (_myDBContext.Users.Find(userId) is null)
-        {
-            throw new Exception("Usuário não encontrado para atualização.");
-        }
+        var existingUser = Get(userUpdate.Id);
 
-        _myDBContext.Users.Update(userUpdate);
+        if (existingUser is null)
+            throw new Exception("User not found!");
+
+        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
+        updatedUser.Name = userUpdate.Name;
+        updatedUser.Password = userUpdate.Password;
+        updatedUser.Email = userUpdate.Email;
+
         _myDBContext.SaveChanges();
         return userUpdate;
     }
 
     public void Delete(int userId)
     {
+        var user = Get(userId);
+
+        if (user is null)
+            throw new Exception("User not found!");
+
         _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
+        _myDBContext.SaveChanges();
     }
 }
