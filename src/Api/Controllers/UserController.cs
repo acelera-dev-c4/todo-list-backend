@@ -1,47 +1,50 @@
 ﻿using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Api.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class UserController : ControllerBase
+namespace Api.Controllers
 {
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService)
+    [ApiController]
+    [Route("[controller]")]
+    [Authorize]
+    public class UserController : ControllerBase
     {
-        _userService = userService;
-    }
+        private readonly IUserService _userService;
 
-    [HttpGet("List")]
-    public IActionResult List()
-    {
-        var users = _userService.List();
-        return Ok(users);
-    }
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
-    [HttpPost("Register")]
-    public IActionResult Post([FromBody] UserRequest user)
-    {
-        var newUser = _userService.Create(user);
-        return Ok(newUser);
-    }
+        [HttpGet("List")]
+        public IActionResult List()
+        {
+            var users = _userService.List();
+            return Ok(users);
+        }
 
+        [HttpPost("Register")]
+        [AllowAnonymous] //Acesso anônimo
+        public IActionResult Post([FromBody] UserRequest user)
+        {
+            var newUser = _userService.Create(user);
+            return Ok(newUser);
+        }
 
-    [HttpPut("Update/{userId}")]
-    public IActionResult Put([FromBody] UpdatedUserRequest user, int userId)
-    {
-        user.Id = userId;
-        var updatedUser = _userService.Update(user);
-        return Ok(updatedUser);
-    }
+        [HttpPut("Update/{userId}")]
+        public IActionResult Put([FromBody] UpdatedUserRequest user, int userId)
+        {
+            user.Id = userId;
+            var updatedUser = _userService.Update(user);
+            return Ok(updatedUser);
+        }
 
-    [HttpDelete("Deletar/{idUsuario}")]
-    public IActionResult Delete(int idUsuario)
-    {
-        _userService.Delete(idUsuario);
-        return NoContent();
+        [HttpDelete("Deletar/{idUsuario}")]
+        public IActionResult Delete(int idUsuario)
+        {
+            _userService.Delete(idUsuario);
+            return NoContent();
+        }
     }
 }
