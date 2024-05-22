@@ -15,17 +15,33 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("Lista")]
+    [HttpGet("List")]
     public IActionResult List()
     {
         var users = _userService.List();
         return Ok(users);
     }
 
-    [HttpPost("Cadastro")]
+    [HttpPost("Register")]
     public IActionResult Post([FromBody] UserRequest user)
     {
         var newUser = _userService.Create(user);
         return Ok(newUser);
+    }
+
+
+    [HttpPut("Update/{userId}")]
+    public IActionResult Put([FromBody] UpdatedUserRequest user, int userId)
+    {
+        user.Id = userId;
+        var updatedUser = _userService.Update(user);
+        return Ok(updatedUser);
+    }
+
+    [HttpDelete("Deletar/{idUsuario}")]
+    public IActionResult Delete(int idUsuario)
+    {
+        _userService.Delete(idUsuario);
+        return NoContent();
     }
 }
