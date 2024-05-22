@@ -10,6 +10,27 @@ Este projeto é um modelo de aprendizagem do Projeto Acelera Dev, do Grupo Carre
 
 Este projeto tem como objetivo fornecer uma API RESTful para gerenciamento de tarefas, permitindo aos usuários criar, listar, atualizar e deletar tarefas e suas sub-tarefas. É uma aplicação desenvolvida com.NET Core, utilizando o Entity Framework Core para persistência de dados.
 
+## Pontos fortes
+
+| Descrição                                            | Responsável |
+|------------------------------------------------------|-------------|
+| Testes unitários                                     | Pedro       |
+| Automação na esteira. build + testes                 | Pedro       |
+| Senha está criptografada no banco                    | Weslley     |
+| Seed de banco de dados                               | Weslley     |
+| Code first                                           | Weslley     |
+| Não temos dados sensíveis no repo                    | Ewerson     |
+| Autenticação JWT                                     | Ewerson     |
+| Autorização. Usuário só vê e edita as coisas dele    | Ewerson     |
+| Code review forte                                    | Mauricio    |
+| Api rest seguindo os verbos e status corretamente    | Mauricio    |
+| CORS. Facilitando a vida dos devs de front           | Mauricio    |
+| Bom design, com separação de camadas                 | Jesus       |
+| Code style consistente. ( inglês )                   | Jesus       |
+
+
+
+
 ## Ferramentas Recomendadas
 
 ### Desenvolvimento
@@ -76,8 +97,7 @@ bash git clone https://github.com/raffacabofrio/acelera-dev-todo-list
 
 ## Obter o appsettings com o time.
 appsettings.Development.json
-## Modelo de Dados
-![alt_text](https://github.com/raffacabofrio/acelera-dev-todo-list/blob/main/docs/MODELO.drawio.png)
+
 
 Segue o link do Trello relacionado
 
