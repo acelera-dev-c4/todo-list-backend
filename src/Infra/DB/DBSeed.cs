@@ -34,15 +34,15 @@ public class DBSeed
 
         if (!(_context.Tarefas.Any() && _context.SubTarefas.Any()))
         {
-            var tarefas = new Tarefa[]
+            var tarefas = new MainTask[]
             {
-                new Tarefa { IdUsuario = 1, Descricao = "Compras no supermercado" },
-                new Tarefa { IdUsuario = 2, Descricao = "Corrida matinal" },
-                new Tarefa { IdUsuario = 3, Descricao = "Preparação para apresentação" },
-                new Tarefa { IdUsuario = 4, Descricao = "Reunião de equipe" },
-                new Tarefa { IdUsuario = 5, Descricao = "Atualização de relatórios" },
-                new Tarefa { IdUsuario = 6, Descricao = "Desenvolvimento de novos recursos" },
-                new Tarefa { IdUsuario = 7, Descricao = "Revisão de código" }
+                new MainTask { IdUsuario = 1, Descricao = "Compras no supermercado" },
+                new MainTask { IdUsuario = 2, Descricao = "Corrida matinal" },
+                new MainTask { IdUsuario = 3, Descricao = "Preparação para apresentação" },
+                new MainTask { IdUsuario = 4, Descricao = "Reunião de equipe" },
+                new MainTask { IdUsuario = 5, Descricao = "Atualização de relatórios" },
+                new MainTask { IdUsuario = 6, Descricao = "Desenvolvimento de novos recursos" },
+                new MainTask { IdUsuario = 7, Descricao = "Revisão de código" }
             };
 
             _context.Tarefas.AddRange(tarefas);

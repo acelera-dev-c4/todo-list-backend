@@ -5,7 +5,7 @@ namespace Domain.Mappers;
 
 public class MapeadorTarefa
 {
-    public static Tarefa ParaClasse(RequisicaoTarefa tarefa) => new Tarefa
+    public static MainTask ParaClasse(RequisicaoTarefa tarefa) => new MainTask
     {
         Id = null,
         IdUsuario = tarefa.IdUsuario,

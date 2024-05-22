@@ -24,9 +24,9 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] RequisicaoMainTask requisicaoMainTask)
+    public IActionResult Post([FromBody] MainTaskRequest requisicaoMainTask)
     {
-        var novaMainTask = MapeadorMainTask.ParaClasse(requisicaoMainTask);
+        var novaMainTask = MainTaskMapper.ToClass(requisicaoMainTask);
         _mainTaskService.Create(novaMainTask);
         return Created();
     }
