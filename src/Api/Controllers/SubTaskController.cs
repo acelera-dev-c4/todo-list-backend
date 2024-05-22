@@ -6,11 +6,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SubTarefaController : Controller
+public class SubTaskController : ControllerBase
 {
     private readonly MyDBContext _myDBContext;
 
-    public SubTarefaController(MyDBContext myDBContext)
+    public SubTaskController(MyDBContext myDBContext)
     {
         _myDBContext = myDBContext;
     }
@@ -21,7 +21,7 @@ public class SubTarefaController : Controller
         return Ok(_myDBContext.SubTasks.ToList());
     }
 
-    [HttpGet("{idSubtarefa}")]
+    [HttpGet("{subTaskId}")]
     public IActionResult Get(int subTaskId)
     {
         var subTask = _myDBContext.SubTasks.Find(subTaskId);
@@ -36,7 +36,7 @@ public class SubTarefaController : Controller
         return Ok(newSubTask);
     }
 
-    [HttpPut("{idSubTarefa}")]
+    [HttpPut("{subTaskId}")]
     public IActionResult Put(int subTaskId, [FromBody] string updateDescription)
     {
         var subTask = _myDBContext.SubTasks.Find(subTaskId);

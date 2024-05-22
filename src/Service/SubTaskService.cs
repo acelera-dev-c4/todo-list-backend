@@ -24,8 +24,8 @@ public class SubTaskService
 
     public List<SubTask> List(int mainTaskId)
     {
-        var subTarefas = _subTaskRepository.Get(mainTaskId);
-        return subTarefas;
+        var subTasks = _subTaskRepository.Get(mainTaskId);
+        return subTasks;
     }
 
     public SubTask Update(SubTask subTaskUpdate, int subTaskId)

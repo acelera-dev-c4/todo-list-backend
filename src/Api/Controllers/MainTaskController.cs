@@ -7,11 +7,11 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TarefaController : ControllerBase
+public class MainTaskController : ControllerBase
 {
     private readonly MyDBContext _context;
 
-    public TarefaController(MyDBContext context)
+    public MainTaskController(MyDBContext context)
     {
         _context = context;
     }
@@ -22,7 +22,7 @@ public class TarefaController : ControllerBase
         return Ok(_context.MainTasks);
     }
 
-    [HttpGet("IdUsuario")]
+    [HttpGet("{userId}")]
     public IActionResult Get(int userId)
     {
         var task = _context.MainTasks.Where(x => x.UserId == userId).ToList();
@@ -38,10 +38,10 @@ public class TarefaController : ControllerBase
         return Ok(newTask);
     }
 
-    [HttpPut("Update/{Id}")]
-    public IActionResult Put(int Id, [FromBody] MainTaskRequest updateDescription)
+    [HttpPut("Update/{mainTaskId}")]
+    public IActionResult Put(int mainTaskId, [FromBody] MainTaskRequest updateDescription)
     {
-        var task = _context.MainTasks.Find(Id);
+        var task = _context.MainTasks.Find(mainTaskId);
         if (task is null)
             return NotFound($"Tarefa não encontrada.");
 
@@ -54,9 +54,9 @@ public class TarefaController : ControllerBase
     }
 
     [HttpDelete("Delete")]
-    public IActionResult Delete(int Id)
+    public IActionResult Delete(int mainTaskId)
     {
-        var task = _context.MainTasks.Find(Id);
+        var task = _context.MainTasks.Find(mainTaskId);
         if (task is null)
             return NotFound($"Tarefa não encontrada.");
 
