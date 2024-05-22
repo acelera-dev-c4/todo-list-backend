@@ -16,7 +16,7 @@ public class MainTaskController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("Lista")]
+    [HttpGet("List")]
     public IActionResult Get()
     {
         return Ok(_context.MainTasks);
@@ -29,7 +29,7 @@ public class MainTaskController : ControllerBase
         return task is null ? NotFound() : Ok(task);
     }
 
-    [HttpPost("Criacao")]
+    [HttpPost("Register")]
     public IActionResult Post(MainTaskRequest taskRequest)
     {
         var newTask = MainTaskMapper.ToClass(taskRequest);
@@ -43,7 +43,7 @@ public class MainTaskController : ControllerBase
     {
         var task = _context.MainTasks.Find(mainTaskId);
         if (task is null)
-            return NotFound($"Tarefa não encontrada.");
+            return NotFound($"MainTask not found!");
 
         task.Description = updateDescription.Description;
 
@@ -58,7 +58,7 @@ public class MainTaskController : ControllerBase
     {
         var task = _context.MainTasks.Find(mainTaskId);
         if (task is null)
-            return NotFound($"Tarefa não encontrada.");
+            return NotFound($"MainTask not found!");
 
         _context.Remove(task);
         _context.SaveChanges();
