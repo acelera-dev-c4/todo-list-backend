@@ -1,4 +1,4 @@
-﻿using Infra.DB;
+using Infra.DB;
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace Api.Controllers
             _context = context;
         }
 
-        [HttpGet("Lista")]
+        [HttpGet("List")]
         public IActionResult Get()
         {
             return Ok(_context.MainTasks);
@@ -31,7 +31,7 @@ namespace Api.Controllers
             return task is null ? NotFound() : Ok(task);
         }
 
-        [HttpPost("Criacao")]
+        [HttpPost("Register")]
         public IActionResult Post(MainTaskRequest taskRequest)
         {
             var newTask = MainTaskMapper.ToClass(taskRequest);
@@ -45,7 +45,7 @@ namespace Api.Controllers
         {
             var task = _context.MainTasks.Find(mainTaskId);
             if (task is null)
-                return NotFound("Tarefa não encontrada.");
+                return NotFound("MainTask not found!");
 
             task.Description = updateDescription.Description;
 
@@ -60,7 +60,7 @@ namespace Api.Controllers
         {
             var task = _context.MainTasks.Find(mainTaskId);
             if (task is null)
-                return NotFound("Tarefa não encontrada.");
+                return NotFound("MainTask not found!");
 
             _context.Remove(task);
             _context.SaveChanges();

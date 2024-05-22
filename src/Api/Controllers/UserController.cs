@@ -1,4 +1,4 @@
-﻿using Domain.Request;
+using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +25,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("Register")]
-        [AllowAnonymous] //Acesso anônimo
+        [AllowAnonymous] // Acesso anônimo
         public IActionResult Post([FromBody] UserRequest user)
         {
             var newUser = _userService.Create(user);
@@ -40,7 +40,7 @@ namespace Api.Controllers
             return Ok(updatedUser);
         }
 
-        [HttpDelete("Deletar/{idUsuario}")]
+        [HttpDelete("{idUsuario}")]
         public IActionResult Delete(int idUsuario)
         {
             _userService.Delete(idUsuario);

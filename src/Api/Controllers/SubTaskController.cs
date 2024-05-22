@@ -1,4 +1,4 @@
-﻿using Infra.DB;
+using Infra.DB;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +44,7 @@ namespace Api.Controllers
             var subTask = _myDBContext.SubTasks.Find(subTaskId);
             if (subTask is null)
             {
-                return NotFound("Subtarefa não encontrada.");
+                return NotFound("Subtask not found.");
             }
 
             subTask.Description = updateDescription;
@@ -62,7 +62,7 @@ namespace Api.Controllers
 
             if (subTask is null)
             {
-                return NotFound("SubTarefa não encontrada.");
+                return NotFound("Subtask not found.");
             }
 
             _myDBContext.Remove(subTask);
