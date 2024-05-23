@@ -1,5 +1,6 @@
 using Domain.Models;
 using Infra.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repositories;
 
@@ -9,7 +10,7 @@ public interface IMainTaskRepository
     List<MainTask> Get(int userId);
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTask mainTask);
-    void Delete(MainTask mainTask);
+    void Delete(int mainTaskId);
 }
 
 public class MainTaskRepository : IMainTaskRepository
@@ -45,10 +46,9 @@ public class MainTaskRepository : IMainTaskRepository
         return mainTaskUpdate;
     }
 
-    public void Delete(MainTask mainTask)
+    public void Delete(int mainTaskId)
     {
-        //_myDBContext.SubTasks.Where(x => x.MainTaskId == mainTaskId).ExecuteDelete();
-        //_myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
-        _myDBContext.MainTasks.Remove(mainTask);
+        _myDBContext.SubTasks.Where(x => x.MainTaskId == mainTaskId).ExecuteDelete();
+        _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
     }
 }

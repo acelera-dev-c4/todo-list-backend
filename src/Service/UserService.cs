@@ -12,7 +12,7 @@ public interface IUserService
     void Delete(int userId);
     User? GetById(int userId);
     List<UserResponse> List();
-    UserResponse Update(UpdateUserRequest userUpdate);
+    UserResponse Update(UserUpdate userUpdate, int userId);
 }
 
 public class UserService : IUserService
@@ -56,15 +56,16 @@ public class UserService : IUserService
         return userResponse;
     }
 
-    public UserResponse Update(UpdateUserRequest userUpdate)
+    public UserResponse Update(UserUpdate userUpdate, int userId)
     {
-        var existingUser = _userRepository.Get(userUpdate.Id);
+        var user = _userRepository.Get(userId);
 
-        if (existingUser is null)
+        if (user is null)
             throw new Exception("User not found!");
 
-        var updatedUser = UserMapper.ToEntity(userUpdate);
-        _userRepository.Update(updatedUser);
-        return UserMapper.ToResponse(updatedUser);
+        user.Name = userUpdate.Name;
+        user.Email = userUpdate.Email;
+        _userRepository.Update(user);
+        return UserMapper.ToResponse(user);
     }
 }

@@ -9,7 +9,7 @@ public class SubTaskMapper
         Id = null,
         MainTaskId = subTaskRequest.MainTaskId,
         Description = subTaskRequest.Description,
-        Finished = subTaskRequest.Finished
+        Finished = false
     };
 
     public static SubTask ToUpdate(SubTaskUpdate subTaskUpdate, int mainTaskId) => new SubTask

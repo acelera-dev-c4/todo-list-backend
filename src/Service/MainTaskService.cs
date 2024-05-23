@@ -65,6 +65,4 @@ public class MainTaskService : IMainTaskService
 
         _mainTaskRepository.Delete(mainTaskId);
     }
-
 }
-
