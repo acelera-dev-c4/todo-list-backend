@@ -60,7 +60,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new Exception("User not found!");
 
-        _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
+        _myDBContext.Users.Remove(user);
         _myDBContext.SaveChanges();
     }
 }
