@@ -12,7 +12,7 @@ public interface IUserService
     void Delete(int userId);
     User? GetById(int userId);
     List<UserResponse> List();
-    UserResponse Update(UserUpdate userUpdate, int userId);
+    UserResponse Update(UserUpdate userUpdate);
 }
 
 public class UserService : IUserService
