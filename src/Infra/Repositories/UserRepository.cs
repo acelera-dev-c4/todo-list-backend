@@ -8,7 +8,7 @@ public interface IUserRepository
     User Create(User user);
     User? Get(int userId);
     List<User> GetAll();
-    User Update(User userUpdate);
+    User Update(User updatedUser);
     void Delete(int userId);
 }
 
