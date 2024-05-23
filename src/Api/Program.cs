@@ -5,7 +5,6 @@ using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Service;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
