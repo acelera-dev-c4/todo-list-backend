@@ -1,7 +1,6 @@
-﻿using Infra.DB;
-using Domain.Mappers;
-using Domain.Request;
+﻿using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace Api.Controllers;
 
@@ -9,60 +8,38 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class MainTaskController : ControllerBase
 {
-    private readonly MyDBContext _context;
+    private readonly IMainTaskService _mainTaskService;
 
-    public MainTaskController(MyDBContext context)
+    public MainTaskController(IMainTaskService mainTaskService)
     {
-        _context = context;
-    }
-
-    [HttpGet("List")]
-    public IActionResult Get()
-    {
-        return Ok(_context.MainTasks);
+        _mainTaskService = mainTaskService;
     }
 
     [HttpGet("{userId}")]
-    public IActionResult Get(int userId)
+    public IActionResult Get([FromRoute] int userId)
     {
-        var task = _context.MainTasks.Where(x => x.UserId == userId).ToList();
-        return task is null ? NotFound() : Ok(task);
+        var mainTasks = _mainTaskService.Get(userId);
+        return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
-    [HttpPost("Register")]
-    public IActionResult Post(MainTaskRequest taskRequest)
+    [HttpPost]
+    public IActionResult Post([FromBody] MainTaskRequest mainTaskRequest)
     {
-        var newTask = MainTaskMapper.ToClass(taskRequest);
-        _context.MainTasks.Add(newTask);
-        _context.SaveChanges();
-        return Ok(newTask);
+        var newMainTask = _mainTaskService.Create(mainTaskRequest);
+        return Ok(newMainTask);
     }
 
-    [HttpPut("Update/{mainTaskId}")]
-    public IActionResult Put(int mainTaskId, [FromBody] MainTaskRequest updateDescription)
+    [HttpPut("{mainTaskId}")]
+    public IActionResult Put(int mainTaskId, [FromBody] MainTaskUpdate updateMainTask)
     {
-        var task = _context.MainTasks.Find(mainTaskId);
-        if (task is null)
-            return NotFound($"MainTask not found!");
-
-        task.Description = updateDescription.Description;
-
-        _context.Update(task);
-        _context.SaveChanges();
-
-        return Ok(task);
+        var mainTask = _mainTaskService.Update(updateMainTask, mainTaskId);
+        return Ok(mainTask);
     }
 
-    [HttpDelete("Delete")]
+    [HttpDelete("{mainTaskId}")]
     public IActionResult Delete(int mainTaskId)
     {
-        var task = _context.MainTasks.Find(mainTaskId);
-        if (task is null)
-            return NotFound($"MainTask not found!");
-
-        _context.Remove(task);
-        _context.SaveChanges();
-
+        _mainTaskService.Delete(mainTaskId);
         return NoContent();
     }
 }

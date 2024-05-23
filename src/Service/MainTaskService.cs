@@ -1,9 +1,20 @@
-﻿using Domain.Models;
+﻿using Domain.Mappers;
+using Domain.Models;
+using Domain.Request;
 using Infra.Repositories;
 
 namespace Service;
 
-public class MainTaskService
+public interface IMainTaskService
+{
+    MainTask Create(MainTaskRequest mainTask);
+    void Delete(int mainTaskId);
+    List<MainTask>? Get(int userId);
+    MainTask? Find(int mainTaskId);
+    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
+}
+
+public class MainTaskService : IMainTaskService
 {
     private readonly IMainTaskRepository _mainTaskRepository;
 
@@ -12,14 +23,10 @@ public class MainTaskService
         _mainTaskRepository = mainTaskRepository;
     }
 
-    public MainTask Create(MainTask task)
+    public MainTask Create(MainTaskRequest mainTaskRequest)
     {
-        return _mainTaskRepository.Create(task);
-    }
-
-    public void Delete(int taskId)
-    {
-        _mainTaskRepository.Delete(taskId);
+        var newMainTask = MainTaskMapper.ToClass(mainTaskRequest);
+        return _mainTaskRepository.Create(newMainTask);
     }
 
     public List<MainTask>? Get(int userId)
@@ -27,8 +34,35 @@ public class MainTaskService
         return _mainTaskRepository.Get(userId);
     }
 
-    public MainTask Update(MainTask task, int mainTaskId)
+    public MainTask? Find(int mainTaskId)
     {
-        return _mainTaskRepository.Update(task, mainTaskId);
+        var mainTask = _mainTaskRepository.Find(mainTaskId);
+
+        if (mainTask is null)
+            throw new Exception("mainTask not found!");
+
+        return mainTask;
+    }
+
+    public MainTask Update(MainTaskUpdate mainTaskUpdate, int mainTaskId)
+    {
+        var mainTask = _mainTaskRepository.Find(mainTaskId);
+
+        if (mainTask is null)
+            throw new Exception("mainTask not found!");
+
+        mainTask.Description = mainTaskUpdate.Description;
+
+        return _mainTaskRepository.Update(mainTask);
+    }
+
+    public void Delete(int mainTaskId)
+    {
+        var mainTask = _mainTaskRepository.Find(mainTaskId);
+
+        if (mainTask is null)
+            throw new Exception("mainTask not found!");
+
+        _mainTaskRepository.Delete(mainTaskId);
     }
 }

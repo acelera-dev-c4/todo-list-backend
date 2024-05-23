@@ -5,7 +5,6 @@ using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Service;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,12 +17,14 @@ builder.Services.Configure<PasswordHashOptions>(builder.Configuration.GetSection
 builder.Services.AddTransient<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IMainTaskService, MainTaskService>();
+builder.Services.AddScoped<IMainTaskRepository, MainTaskRepository>();
+builder.Services.AddScoped<ISubTaskService, SubTaskService>();
+builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
-
 
 var app = builder.Build();
 

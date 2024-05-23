@@ -1,6 +1,6 @@
+using Domain.Models;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
-using Domain.Models;
 
 namespace Infra.Repositories;
 
@@ -8,7 +8,8 @@ public interface IMainTaskRepository
 {
     MainTask Create(MainTask mainTask);
     List<MainTask> Get(int userId);
-    MainTask Update(MainTask mainTask, int mainTaskId);
+    MainTask? Find(int mainTaskId);
+    MainTask Update(MainTask mainTask);
     void Delete(int mainTaskId);
 }
 
@@ -33,13 +34,13 @@ public class MainTaskRepository : IMainTaskRepository
         return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
     }
 
-    public MainTask Update(MainTask mainTaskUpdate, int mainTaskId)
+    public MainTask? Find(int mainTaskId)
     {
-        if (_myDBContext.MainTasks.Find(mainTaskId) is null)
-        {
-            throw new Exception("SubTask not found!");
-        }
+        return _myDBContext.MainTasks.Find(mainTaskId);
+    }
 
+    public MainTask Update(MainTask mainTaskUpdate)
+    {
         _myDBContext.MainTasks.Update(mainTaskUpdate);
         _myDBContext.SaveChanges();
         return mainTaskUpdate;

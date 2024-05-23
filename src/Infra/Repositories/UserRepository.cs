@@ -1,6 +1,5 @@
-using Infra.DB;
-using Microsoft.EntityFrameworkCore;
 using Domain.Models;
+using Infra.DB;
 
 namespace Infra.Repositories;
 
@@ -46,13 +45,12 @@ public class UserRepository : IUserRepository
         if (existingUser is null)
             throw new Exception("User not found!");
 
-        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
-        updatedUser.Name = userUpdate.Name;
-        updatedUser.Password = userUpdate.Password;
-        updatedUser.Email = userUpdate.Email;
-
+        existingUser.Name = userUpdate.Name;
+        existingUser.Password = userUpdate.Password;
+        existingUser.Email = userUpdate.Email;
+        _myDBContext.Users.Update(existingUser);
         _myDBContext.SaveChanges();
-        return userUpdate;
+        return existingUser;
     }
 
     public void Delete(int userId)
@@ -62,7 +60,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new Exception("User not found!");
 
-        _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
+        _myDBContext.Users.Remove(user);
         _myDBContext.SaveChanges();
     }
 }

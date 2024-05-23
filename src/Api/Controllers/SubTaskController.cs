@@ -1,71 +1,45 @@
-﻿using Infra.DB;
+﻿using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
+using Service;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SubTaskController : ControllerBase
+public class SubTaskController : Controller
 {
-    private readonly MyDBContext _myDBContext;
+    private readonly ISubTaskService _subTaskService;
 
-    public SubTaskController(MyDBContext myDBContext)
+    public SubTaskController(ISubTaskService subTaskService)
     {
-        _myDBContext = myDBContext;
+        _subTaskService = subTaskService;
     }
 
-    [HttpGet]
-    public IActionResult Get()
+    [HttpGet("{mainTaskId}")]
+    public IActionResult Get([FromRoute] int mainTaskId)
     {
-        return Ok(_myDBContext.SubTasks.ToList());
-    }
-
-    [HttpGet("{subTaskId}")]
-    public IActionResult Get(int subTaskId)
-    {
-        var subTask = _myDBContext.SubTasks.Find(subTaskId);
-        return subTask is null ? NotFound() : Ok(subTask);
+        var mainTasks = _subTaskService.List(mainTaskId);
+        return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] SubTask newSubTask)
+    public IActionResult Post([FromBody] SubTaskRequest newSubTask)
     {
-        _myDBContext.SubTasks.Add(newSubTask);
-        _myDBContext.SaveChanges();
+        _subTaskService.Create(newSubTask);
         return Ok(newSubTask);
     }
 
     [HttpPut("{subTaskId}")]
-    public IActionResult Put(int subTaskId, [FromBody] string updateDescription)
+    public IActionResult Put([FromRoute] int subTaskId, [FromBody] SubTaskUpdate updateSubTask)
     {
-        var subTask = _myDBContext.SubTasks.Find(subTaskId);
-        if (subTask is null)
-        {
-            return NotFound($"SubTask not found!");
-        }
-
-        subTask.Description = updateDescription;
-
-        _myDBContext.Update(subTask);
-        _myDBContext.SaveChanges();
-
-        return Ok(subTask);
+        var updatedSubTask = _subTaskService.Update(updateSubTask, subTaskId);
+        return Ok(updatedSubTask);
     }
 
     [HttpDelete("{subTaskId}")]
     public IActionResult Delete([FromRoute] int subTaskId)
     {
-        var subTask = _myDBContext.SubTasks.Find(subTaskId);
-
-        if (subTask is null)
-        {
-            return NotFound($"SubTask not found!");
-        }
-
-        _myDBContext.Remove(subTask);
-        _myDBContext.SaveChanges();
-
+        _subTaskService.Delete(subTaskId);
         return NoContent();
     }
 }
