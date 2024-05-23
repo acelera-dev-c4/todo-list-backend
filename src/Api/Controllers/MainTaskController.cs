@@ -32,14 +32,14 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpPut("{mainTaskId}")]
-    public IActionResult Put(int mainTaskId, [FromBody] MainTaskUpdateRequest updatedDescription)
+    public IActionResult Put(int mainTaskId, [FromBody] MainTaskRequest updatedDescription)
     {
         var mainTask = _mainTaskService.Find(mainTaskId);
 
         if (mainTask is null)
-            return NotFound($"MainTask não encontrada.");
+            return NotFound($"MainTask not found.");
 
-        mainTask.Descricao = updatedDescription.Description;
+        mainTask.Description = updatedDescription.Description;
 
         if (mainTask.Id is not null)
             _mainTaskService.Update(mainTask, (int)mainTask.Id);
@@ -52,7 +52,7 @@ public class MainTaskController : ControllerBase
     {
         var mainTask = _mainTaskService.Find(mainTaskId);
         if (mainTask is null)
-            return NotFound($"MainTask não encontrada.");
+            return NotFound($"MainTask not found.");
 
         _mainTaskService.Delete(mainTaskId);
 

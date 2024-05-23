@@ -62,6 +62,17 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new Exception("User not found!");
 
+
+        var query = from subTask in _myDBContext.SubTasks
+                    join mainTask in _myDBContext.MainTasks on subTask.Id equals mainTask.Id
+                    select subTask.Id;
+
+        foreach (var taskId in query)
+        {
+            _myDBContext.SubTasks.Where(x => x.Id == taskId).ExecuteDelete();
+        }
+
+        _myDBContext.MainTasks.Where(x => x.UserId == userId).ExecuteDelete();
         _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
         _myDBContext.SaveChanges();
     }
