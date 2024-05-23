@@ -1,5 +1,4 @@
-﻿using Domain.Mappers;
-using Domain.Request;
+﻿using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -17,7 +16,7 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-    public IActionResult Get([FromRoute]int userId)
+    public IActionResult Get([FromRoute] int userId)
     {
         var mainTasks = _mainTaskService.Get(userId);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
@@ -26,36 +25,21 @@ public class MainTaskController : ControllerBase
     [HttpPost]
     public IActionResult Post([FromBody] MainTaskRequest mainTaskRequest)
     {
-        var newMainTask = MainTaskMapper.ToClass(mainTaskRequest);
-        _mainTaskService.Create(newMainTask);
-        return Created();
+        var newMainTask = _mainTaskService.Create(mainTaskRequest);
+        return Ok(newMainTask);
     }
 
     [HttpPut("{mainTaskId}")]
-    public IActionResult Put(int mainTaskId, [FromBody] MainTaskRequest updatedDescription)
+    public IActionResult Put(int mainTaskId, [FromBody] MainTaskUpdate updateMainTask)
     {
-        var mainTask = _mainTaskService.Find(mainTaskId);
-
-        if (mainTask is null)
-            return NotFound($"MainTask not found!");
-
-        mainTask.Description = updatedDescription.Description;
-
-        if (mainTask.Id is not null)
-            _mainTaskService.Update(mainTask, (int)mainTask.Id);
-
+        var mainTask = _mainTaskService.Update(updateMainTask, mainTaskId);
         return Ok(mainTask);
     }
 
     [HttpDelete("{mainTaskId}")]
     public IActionResult Delete(int mainTaskId)
     {
-        var mainTask = _mainTaskService.Find(mainTaskId);
-        if (mainTask is null)
-            return NotFound($"MainTask not found!");
-
         _mainTaskService.Delete(mainTaskId);
-
         return NoContent();
     }
 }

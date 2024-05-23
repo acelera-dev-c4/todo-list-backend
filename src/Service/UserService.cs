@@ -1,8 +1,8 @@
-﻿using Infra.Repositories;
-using Domain.Mappers;
+﻿using Domain.Mappers;
+using Domain.Models;
 using Domain.Request;
 using Domain.Responses;
-using Domain.Models;
+using Infra.Repositories;
 
 namespace Service;
 

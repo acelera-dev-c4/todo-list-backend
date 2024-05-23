@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
-using Service;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace Api.Controllers;
 

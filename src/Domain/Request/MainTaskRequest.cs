@@ -1,5 +1,4 @@
 ﻿namespace Domain.Request;
-
 public class MainTaskRequest
 {
     public int UserId { get; set; }

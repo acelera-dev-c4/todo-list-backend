@@ -5,7 +5,6 @@ using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Service;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,7 +25,7 @@ builder.Services.AddScoped<ISubTaskService, SubTaskService>();
 builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("WeslleyTests"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 var app = builder.Build();

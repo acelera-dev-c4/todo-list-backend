@@ -9,7 +9,7 @@ public interface IMainTaskRepository
     List<MainTask> Get(int userId);
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTask mainTask);
-    void Delete(int mainTaskId);
+    void Delete(MainTask mainTask);
 }
 
 public class MainTaskRepository : IMainTaskRepository
