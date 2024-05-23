@@ -12,7 +12,7 @@ public interface IUserService
     void Delete(int userId);
     User? GetById(int userId);
     List<UserResponse> List();
-    UserResponse Update(UpdatedUserRequest userUpdate);
+    UserResponse Update(UpdateUserRequest userUpdate);
 }
 
 public class UserService : IUserService
@@ -36,7 +36,12 @@ public class UserService : IUserService
 
     public void Delete(int userId)
     {
-        _userRepository.Delete(userId);
+        var user = _userRepository.Get(userId);
+
+        if (user is null)
+            throw new Exception("User not found!");
+
+        _userRepository.Delete(user);
     }
 
     public User? GetById(int userId)
@@ -51,7 +56,7 @@ public class UserService : IUserService
         return userResponse;
     }
 
-    public UserResponse Update(UpdatedUserRequest userUpdate)
+    public UserResponse Update(UpdateUserRequest userUpdate)
     {
         var existingUser = _userRepository.Get(userUpdate.Id);
 

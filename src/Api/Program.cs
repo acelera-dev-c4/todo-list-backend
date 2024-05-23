@@ -26,7 +26,7 @@ builder.Services.AddScoped<ISubTaskService, SubTaskService>();
 builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WeslleyTests"),
         sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
 
 var app = builder.Build();

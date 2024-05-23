@@ -10,7 +10,7 @@ public interface IUserRepository
     User? Get(int userId);
     List<User> GetAll();
     User Update(User userUpdate);
-    void Delete(int userId);
+    void Delete(User user);
 }
 
 public class UserRepository : IUserRepository
@@ -39,38 +39,16 @@ public class UserRepository : IUserRepository
         return _myDBContext.Users.ToList();
     }
 
-    public User Update(User userUpdate)
+    public User Update(User updateUser)
     {
-        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
-        if (updatedUser is null)
-            throw new Exception("User not found!");
-
-        updatedUser.Name = userUpdate.Name;
-        updatedUser.Password = userUpdate.Password;
-        updatedUser.Email = userUpdate.Email;
-
+        _myDBContext.Update(updateUser);
         _myDBContext.SaveChanges();
-        return userUpdate;
+        return updateUser;
     }
 
-    public void Delete(int userId)
+    public void Delete(User user)
     {
-        var user = Get(userId);
-
-        if (user is null)
-            throw new Exception("User not found!");
-
-        var query = from subTask in _myDBContext.SubTasks
-                    join mainTask in _myDBContext.MainTasks on subTask.Id equals mainTask.Id
-                    select subTask.Id;
-
-        foreach (var taskId in query)
-        {
-            _myDBContext.SubTasks.Where(x => x.Id == taskId).ExecuteDelete();
-        }
-
-        _myDBContext.MainTasks.Where(x => x.UserId == userId).ExecuteDelete();
-        _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
+        _myDBContext.Users.Remove(user);
         _myDBContext.SaveChanges();
     }
 }

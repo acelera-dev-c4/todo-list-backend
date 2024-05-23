@@ -1,15 +1,14 @@
-﻿using Domain.Models;
+﻿using Domain.Mappers;
+using Domain.Models;
 using Infra.Repositories;
 
 namespace Service;
 
-
 public interface ISubTaskService
 {
-    SubTask Create(SubTask newSubTask);
-    SubTask? Find(int subTaskId);
-    List<SubTask> List(int taskId);
-    SubTask Update(SubTask subtarefaUpdate, int id);
+    SubTask Create(SubTaskRequest subTaskRequest);
+    List<SubTask> List(int mainTaskId);
+    SubTask Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
 }
 public class SubTaskService : ISubTaskService
@@ -21,29 +20,36 @@ public class SubTaskService : ISubTaskService
         _subTaskRepository = subTaskRepository;
     }
 
-    public SubTask Create(SubTask newSubTask)
+    public SubTask Create(SubTaskRequest subTaskRequest)
     {
+        var newSubTask = SubTaskMapper.ToClass(subTaskRequest);
         return _subTaskRepository.Create(newSubTask);
-    }
-
-    public SubTask? Find(int subTaskId)
-    {
-        return _subTaskRepository.Find(subTaskId);
     }
 
     public void Delete(int subTaskId)
     {
-        _subTaskRepository.Delete(subTaskId);
+        var subTask = _subTaskRepository.Find(subTaskId);
+
+        if (subTask is null)
+            throw new Exception("subTask not found!");
+
+        _subTaskRepository.Delete(subTask);
     }
 
     public List<SubTask> List(int mainTaskId)
     {
-        var subTasks = _subTaskRepository.Get(mainTaskId);
-        return subTasks;
+        return _subTaskRepository.Get(mainTaskId);
     }
 
-    public SubTask Update(SubTask updatedSubTask, int subTaskId)
+    public SubTask Update(SubTaskUpdate updateSubTaskRequest, int subTaskId)
     {
-        return _subTaskRepository.Update(updatedSubTask, subTaskId);
+        var subTask = _subTaskRepository.Find(subTaskId);
+
+        if (subTask is null)
+            throw new Exception("SubTask not found!");
+
+        subTask.Description = updateSubTaskRequest.Description;
+        subTask.Finished = updateSubTaskRequest.Finished;
+        return _subTaskRepository.Update(subTask);
     }
 }

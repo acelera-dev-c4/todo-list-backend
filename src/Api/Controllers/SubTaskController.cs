@@ -8,40 +8,38 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class SubTaskController : Controller
 {
-    private readonly ISubTaskService _mainTaskService;
+    private readonly ISubTaskService _subTaskService;
 
-    public SubTaskController(ISubTaskService mainTaskService)
+    public SubTaskController(ISubTaskService subTaskService)
     {
-        _mainTaskService = mainTaskService;
+        _subTaskService = subTaskService;
     }
 
     [HttpGet("{mainTaskId}")]
     public IActionResult Get([FromRoute] int mainTaskId)
     {
-        var mainTasks = _mainTaskService.List(mainTaskId);
+        var mainTasks = _subTaskService.List(mainTaskId);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] SubTask newSubTask)
+    public IActionResult Post([FromBody] SubTaskRequest newSubTask)
     {
-        _mainTaskService.Create(newSubTask);
+        _subTaskService.Create(newSubTask);
         return Ok(newSubTask);
     }
 
     [HttpPut("{subTaskId}")]
-    public IActionResult Put([FromRoute] int subTaskId, [FromBody] SubTask updatedSubTask)
-        {
-        _mainTaskService.Update(updatedSubTask, subTaskId);
-
+    public IActionResult Put([FromRoute] int subTaskId, [FromBody] SubTaskUpdate updateSubTask)
+    {
+        var updatedSubTask = _subTaskService.Update(updateSubTask, subTaskId);
         return Ok(updatedSubTask);
     }
 
     [HttpDelete("{subTaskId}")]
     public IActionResult Delete([FromRoute] int subTaskId)
     {
-        _mainTaskService.Delete(subTaskId);
-
+        _subTaskService.Delete(subTaskId);
         return NoContent();
     }
 }
