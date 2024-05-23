@@ -48,7 +48,6 @@ public class MainTaskRepository : IMainTaskRepository
 
     public void Delete(int mainTaskId)
     {
-        _myDBContext.SubTasks.Where(x => x.MainTaskId == mainTaskId).ExecuteDelete();
         _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
     }
 }
