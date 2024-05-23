@@ -41,12 +41,10 @@ public class UserRepository : IUserRepository
 
     public User Update(User userUpdate)
     {
-        var existingUser = Get(userUpdate.Id);
-
-        if (existingUser is null)
+        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
+        if (updatedUser is null)
             throw new Exception("User not found!");
 
-        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
         updatedUser.Name = userUpdate.Name;
         updatedUser.Password = userUpdate.Password;
         updatedUser.Email = userUpdate.Email;
@@ -61,7 +59,6 @@ public class UserRepository : IUserRepository
 
         if (user is null)
             throw new Exception("User not found!");
-
 
         var query = from subTask in _myDBContext.SubTasks
                     join mainTask in _myDBContext.MainTasks on subTask.Id equals mainTask.Id
