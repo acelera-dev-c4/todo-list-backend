@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Application.Services;
+namespace Services;
 
 public interface IJwtService
 {
@@ -49,12 +49,12 @@ public class JwtService : IJwtService
 
         return new JwtResponse
         {
-            Jwt = tokenHandler.WriteToken(token),
+            Token = tokenHandler.WriteToken(token),
             Expiration = token.ValidTo
         };
     }
 
-    public JwtSecurityToken ValidateToken(string jwt)
+    public JwtSecurityToken ValidateToken(string token)
     {
         try
         {
@@ -72,7 +72,7 @@ public class JwtService : IJwtService
             };
 
             var handler = new JwtSecurityTokenHandler();
-            var claimsPrincipal = handler.ValidateToken(jwt, validationParameters, out var rawValidatedToken);
+            var claimsPrincipal = handler.ValidateToken(token, validationParameters, out var rawValidatedToken);
 
             return (JwtSecurityToken)rawValidatedToken;
         }

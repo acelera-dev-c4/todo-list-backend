@@ -3,7 +3,7 @@ using Domain.Responses;
 using Infra.Repositories;
 using Service;
 
-namespace Application.Services
+namespace Services
 {
     public interface IAuthService
     {
@@ -37,10 +37,10 @@ namespace Application.Services
             if (!isPasswordValid)
                 throw new UnauthorizedAccessException(InvalidLoginMessage);
 
-            var jwt = _jwtService.CreateToken(user);
+            var token = _jwtService.CreateToken(user);
             return new AuthResponse
             {
-                Token = jwt,
+                Jwt = token,
             };
         }
     }

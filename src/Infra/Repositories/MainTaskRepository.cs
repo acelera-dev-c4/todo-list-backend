@@ -37,7 +37,7 @@ public class MainTaskRepository : IMainTaskRepository
     {
         if (_myDBContext.MainTasks.Find(mainTaskId) is null)
         {
-            throw new Exception("Tarefa não encontrada para atualização");
+            throw new Exception("Tarefa nï¿½o encontrada para atualizaï¿½ï¿½o");
         }
 
         _myDBContext.MainTasks.Update(mainTaskUpdate);

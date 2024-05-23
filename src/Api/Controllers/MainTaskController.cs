@@ -2,67 +2,70 @@
 using Domain.Mappers;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Api.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class MainTaskController : ControllerBase
+namespace Api.Controllers
 {
-    private readonly MyDBContext _context;
-
-    public MainTaskController(MyDBContext context)
+    [ApiController]
+    [Route("[controller]")]
+    [Authorize]
+    public class MainTaskController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly MyDBContext _context;
 
-    [HttpGet("Lista")]
-    public IActionResult Get()
-    {
-        return Ok(_context.MainTasks);
-    }
+        public MainTaskController(MyDBContext context)
+        {
+            _context = context;
+        }
 
-    [HttpGet("{userId}")]
-    public IActionResult Get(int userId)
-    {
-        var task = _context.MainTasks.Where(x => x.UserId == userId).ToList();
-        return task is null ? NotFound() : Ok(task);
-    }
+        [HttpGet("Lista")]
+        public IActionResult Get()
+        {
+            return Ok(_context.MainTasks);
+        }
 
-    [HttpPost("Criacao")]
-    public IActionResult Post(MainTaskRequest taskRequest)
-    {
-        var newTask = MainTaskMapper.ToClass(taskRequest);
-        _context.MainTasks.Add(newTask);
-        _context.SaveChanges();
-        return Ok(newTask);
-    }
+        [HttpGet("{userId}")]
+        public IActionResult Get(int userId)
+        {
+            var task = _context.MainTasks.Where(x => x.UserId == userId).ToList();
+            return task is null ? NotFound() : Ok(task);
+        }
 
-    [HttpPut("Update/{mainTaskId}")]
-    public IActionResult Put(int mainTaskId, [FromBody] MainTaskRequest updateDescription)
-    {
-        var task = _context.MainTasks.Find(mainTaskId);
-        if (task is null)
-            return NotFound($"Tarefa não encontrada.");
+        [HttpPost("Criacao")]
+        public IActionResult Post(MainTaskRequest taskRequest)
+        {
+            var newTask = MainTaskMapper.ToClass(taskRequest);
+            _context.MainTasks.Add(newTask);
+            _context.SaveChanges();
+            return Ok(newTask);
+        }
 
-        task.Description = updateDescription.Description;
+        [HttpPut("Update/{mainTaskId}")]
+        public IActionResult Put(int mainTaskId, [FromBody] MainTaskRequest updateDescription)
+        {
+            var task = _context.MainTasks.Find(mainTaskId);
+            if (task is null)
+                return NotFound("Tarefa não encontrada.");
 
-        _context.Update(task);
-        _context.SaveChanges();
+            task.Description = updateDescription.Description;
 
-        return Ok(task);
-    }
+            _context.Update(task);
+            _context.SaveChanges();
 
-    [HttpDelete("Delete")]
-    public IActionResult Delete(int mainTaskId)
-    {
-        var task = _context.MainTasks.Find(mainTaskId);
-        if (task is null)
-            return NotFound($"Tarefa não encontrada.");
+            return Ok(task);
+        }
 
-        _context.Remove(task);
-        _context.SaveChanges();
+        [HttpDelete("Delete")]
+        public IActionResult Delete(int mainTaskId)
+        {
+            var task = _context.MainTasks.Find(mainTaskId);
+            if (task is null)
+                return NotFound("Tarefa não encontrada.");
 
-        return NoContent();
+            _context.Remove(task);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }

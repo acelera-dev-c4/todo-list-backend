@@ -1,4 +1,4 @@
-﻿using Application.Services;
+﻿using Services;
 using Domain.Requests;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +19,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> SignIn([FromBody] AuthRequest request)
     {
         var response = await _authService.SignIn(request);
-        if (response != null && response.Token != null)
+        if (response != null && response.Jwt != null)
         {
-            return Ok(new { token = response.Token });
+            return Ok(new { token = response.Jwt });
         }
         else
         {
