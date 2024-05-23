@@ -50,7 +50,7 @@ public class UserRepository : IUserRepository
         existingUser.Email = userUpdate.Email;
         _myDBContext.Users.Update(existingUser);
         _myDBContext.SaveChanges();
-        return updatedUser;
+        return existingUser;
     }
 
     public void Delete(int userId)
