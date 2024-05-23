@@ -29,7 +29,7 @@ public class UserController : ControllerBase
         return Ok(newUser);
     }
 
-    [HttpPut("Update/{userId}")]
+    [HttpPut("{userId}")]
     public IActionResult Put([FromRoute]int userId, [FromBody] UserUpdate userUpdate)
     {
         var updatedUser = _userService.Update(userUpdate, userId);
