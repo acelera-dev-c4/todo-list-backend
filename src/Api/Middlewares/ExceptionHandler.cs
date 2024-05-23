@@ -44,7 +44,7 @@ public class ExceptionHandler
             code = HttpStatusCode.BadRequest;
         }
 
-        var result = JsonSerializer.Serialize(new { erro = ex.Message });
+        var result = JsonSerializer.Serialize(new { error = ex.Message });
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = (int)code;
         return httpContext.Response.WriteAsync(result);
