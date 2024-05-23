@@ -49,6 +49,7 @@ public class UserRepository : IUserRepository
         updatedUser.Name = userUpdate.Name;
         updatedUser.Password = userUpdate.Password;
         updatedUser.Email = userUpdate.Email;
+        _myDBContext.Users.Update(updatedUser);
         _myDBContext.SaveChanges();
         return updatedUser;
     }
