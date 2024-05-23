@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
     {
         return _myDBContext.Users.ToList();
     }
-
+/*
     public User Update(User userUpdate)
     {
         var existingUser = Get(userUpdate.Id);
@@ -45,15 +45,14 @@ public class UserRepository : IUserRepository
         if (existingUser is null)
             throw new Exception("User not found!");
 
-        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
-        updatedUser.Name = userUpdate.Name;
-        updatedUser.Password = userUpdate.Password;
-        updatedUser.Email = userUpdate.Email;
-        _myDBContext.Users.Update(updatedUser);
+        existingUser.Name = userUpdate.Name;
+        existingUser.Password = userUpdate.Password;
+        existingUser.Email = userUpdate.Email;
+        _myDBContext.Users.Update(existingUser);
         _myDBContext.SaveChanges();
         return updatedUser;
     }
-
+*/
     public void Delete(int userId)
     {
         var user = Get(userId);

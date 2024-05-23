@@ -55,7 +55,7 @@ public class UserService : IUserService
         var userResponse = users.Select(user => UserMapper.ToResponse(user)).ToList();
         return userResponse;
     }
-
+/*
     public UserResponse Update(UserUpdate userUpdate)
     {
         var user = _userRepository.Get(userUpdate.Id);
@@ -68,4 +68,5 @@ public class UserService : IUserService
         _userRepository.Update(user);
         return UserMapper.ToResponse(user);
     }
+    */
 }
