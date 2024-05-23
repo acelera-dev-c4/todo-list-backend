@@ -5,135 +5,102 @@ using Api.Controllers;
 using FluentAssertions;
 using Infra.DB;
 using Domain.Models;
+using Service;
 
 namespace Tests
 {
-    public class SubTasksTests
+    public class SubTarefaTests
     {
-        //private readonly SubTaskController _controller;
-        //private readonly Mock<MyDBContext> _mockContext;
+        private readonly SubTaskController _controller;
+        private readonly Mock<ISubTaskService> _mockContext;
 
-        //public SubTasksTests()
-        //{
-        //    _mockContext = new Mock<MyDBContext>();
+        public SubTarefaTests()
+        {
+            _mockContext = new Mock<ISubTaskService>();
 
-        //    var subTasks = new List<SubTask>
-        //{
-        //    new SubTask { Id = 1, MainTaskId = 10, Description = "SubTarefa1", Finished = false },
-        //    new SubTask { Id = 5, MainTaskId = 1, Description = "SubTarefa2", Finished = true },
-        //    new SubTask { Id = 61, MainTaskId = 87, Description = "SubTarefa3", Finished = false },
-        //    new SubTask { Id = 6, MainTaskId = 500, Description = "SubTarefa4", Finished = true }
+            var subtask = new List<SubTask>
+        {
+            new SubTask { Id = 1, MainTaskId = 1, Description = "Subtask1", Finished = false },
+            new SubTask { Id = 1, MainTaskId = 2, Description = "Subtask2", Finished = true },
+            new SubTask { Id = 1, MainTaskId = 3, Description = "Subtask3", Finished = false },
+            new SubTask { Id = 1, MainTaskId = 4, Description = "Subtask4", Finished = true }
 
-        //};
-
-        //    var mockSet = new Mock<DbSet<SubTask>>();
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.Provider).Returns(subTasks.AsQueryable().Provider);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.Expression).Returns(subTasks.AsQueryable().Expression);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.ElementType).Returns(subTasks.AsQueryable().ElementType);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.GetEnumerator()).Returns(subTasks.GetEnumerator());
-
-        //    _mockContext.Setup(m => m.SubTasks).Returns(mockSet.Object);
-
-        //    _controller = new SubTaskController(_mockContext.Object);
-        //}
-
-        //[Fact]
-        //public void Get_RetornaTodaLista_Sucesso()
-        //{
-        //    var result = _controller.Get();
-
-        //    var list = (result as OkObjectResult)?.Value as List<SubTask>;
+        };
 
 
-        //    list.Should().NotBeNull();
-        //    list.Should().HaveCount(4);
-
-        //}
-        //[Fact]
-        //public void Get_RetornaUmaSubTarefa_Sucesso()
-        //{
-
-        //    var subTasks = new List<SubTask>
-        //{
-        //    new SubTask { Id = 1, MainTaskId = 10, Description = "SubTarefa1", Finished = false },
-        //    new SubTask { Id = 5, MainTaskId = 1, Description = "SubTarefa2", Finished = true },
-        //    new SubTask { Id = 61, MainTaskId = 87, Description = "SubTarefa3", Finished = false },
-        //    new SubTask { Id = 6, MainTaskId = 500, Description = "SubTarefa4", Finished = true }
-
-        //};
-        //    _mockContext.Setup(m => m.SubTasks.Find(61)).Returns(subTasks[2]);
 
 
-        //    var result = _controller.Get(61);
-        //    var item = (result as OkObjectResult)?.Value as SubTask;
+            _mockContext.Setup(m => m.List(1)).Returns(subtask);
+
+            _controller = new SubTaskController(_mockContext.Object);
+        }
+
+        [Fact]
+        public void Get_ReturnsAll_Success()
+        {
+            var result = _controller.Get(1);
+
+            var list = (result as OkObjectResult)?.Value as List<SubTask>;
 
 
-        //    item.Should().BeEquivalentTo(new SubTask { Id = 61, MainTaskId = 87, Description = "SubTarefa3", Finished = false });
-        //}
+            list.Should().NotBeNull();
+            list.Should().HaveCount(4);
 
-        //[Fact]
-        //public void Post_CriaNovaSubTarefa_Sucesso()
-        //{
-        //    var subTaskTest = new SubTask { Id = 9, MainTaskId = 2, Description = "subtarefa teste", Finished = true };
+        }
+
+        [Fact]
+        public void Post_CreatesNewSubTask_Success()
+        {
+            var subTaskTest = new SubTaskRequest { MainTaskId = 1, Description = "Very Cool Subtask" };
+            var subTasktest2 = new SubTask { Id = 1, MainTaskId = 1, Description = "Very Cool Subtask", Finished = false };
+            _mockContext.Setup(x => x.Create(subTaskTest)).Returns(subTasktest2);
 
 
-        //    var result = _controller.Post(subTaskTest);
-        //    var item = (result as OkObjectResult)?.Value as SubTask;
+            var result = _controller.Post(subTaskTest);
+            var item = (result as OkObjectResult)?.Value as SubTaskRequest;
 
-        //    item.Should().Be(subTaskTest);
-        //}
-        //[Fact]
-        //public void Put_TarefaAtualiza_Sucesso()
-        //{
-        //    //arrange
-        //    var subTasks = new List<SubTask>
-        //{
-        //    new SubTask { Id = 1, MainTaskId = 10, Description = "SubTarefa1", Finished = false }
-        //};
+            item.Should().BeEquivalentTo(new SubTaskRequest { MainTaskId = 1, Description = "Very Cool Subtask" });
+        }
+        [Fact]
+        public void Put_UpdatesSubtask_Success()
+        {
+            //arrange
+            var newSubTask = new SubTask() { MainTaskId = 1, Id = 1, Description = "New subtask", Finished = true };
+            var newSubTaskUpdate = new SubTaskUpdate() { Description = "New subtask", Finished = true };
 
-        //    var mockSet = new Mock<DbSet<SubTask>>();
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.Provider).Returns(subTasks.AsQueryable().Provider);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.Expression).Returns(subTasks.AsQueryable().Expression);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.ElementType).Returns(subTasks.AsQueryable().ElementType);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.GetEnumerator()).Returns(subTasks.GetEnumerator());
+            _mockContext.Setup(m => m.Update(newSubTaskUpdate, 1)).Returns(newSubTask);
+            
 
-        //    _mockContext.Setup(m => m.SubTasks.Find(1)).Returns(subTasks[0]);
+            //act
+            var result = _controller.Put(1, newSubTaskUpdate);
+            var item = (result as OkObjectResult)?.Value as SubTask;
 
-        //    //act
-        //    var resultado = _controller.Put(1, "Nova Subtarefa");
-        //    var item = (resultado as OkObjectResult)?.Value as SubTask;
+            //assert
+            item.Should().BeEquivalentTo(new SubTask { MainTaskId = 1, Id = 1, Description = "New subtask", Finished = true});
 
-        //    //assert
-        //    item.Description.Should().Be("Nova Subtarefa");
+        }
 
-        //}
-        //[Fact]
-        //public void Delete_TarefaDeletada_Sucesso()
-        //{
-        //    //arrange
-        //    var subTasks = new List<SubTask>
-        //{
-        //    new SubTask { Id = 1, MainTaskId = 10, Description = "SubTarefa1", Finished = false },
-        //    new SubTask { Id = 5, MainTaskId = 1, Description = "SubTarefa2", Finished = true },
-        //    new SubTask { Id = 61, MainTaskId = 87, Description = "SubTarefa3", Finished = false },
-        //    new SubTask { Id = 6, MainTaskId = 500, Description = "SubTarefa4", Finished = true }
-        //};
+        [Fact]
+        public void Delete_DeletesSubtask_Success()
+        {
+            //arrange
+            var subTasks = new List<SubTask>
+            {
+                 new SubTask { Id = 1, MainTaskId = 1, Description = "SubTarefa1", Finished = false },
+                new SubTask { Id = 1, MainTaskId = 2, Description = "SubTarefa2", Finished = true },
+                new SubTask { Id = 1, MainTaskId = 3, Description = "SubTarefa3", Finished = false },
+                new SubTask { Id = 1, MainTaskId = 4, Description = "SubTarefa4", Finished = true }
+            };
 
-        //    var mockSet = new Mock<DbSet<SubTask>>();
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.Provider).Returns(subTasks.AsQueryable().Provider);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.Expression).Returns(subTasks.AsQueryable().Expression);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.ElementType).Returns(subTasks.AsQueryable().ElementType);
-        //    mockSet.As<IQueryable<SubTask>>().Setup(m => m.GetEnumerator()).Returns(subTasks.GetEnumerator());
 
-        //    _mockContext.Setup(m => m.SubTasks.Find(1)).Returns(subTasks[0]);
 
-        //    //act
-        //    var result = _controller.Delete(1);
-        //    var item = (result as OkObjectResult)?.Value as SubTask;
+            
+            //act
+            var result = _controller.Delete(1);
 
-        //    //assert
-        //    item.Should().BeNull();
+            //assert
+            result.Should().BeEquivalentTo(new NoContentResult());
 
-        //}
+        }
     }
 }
