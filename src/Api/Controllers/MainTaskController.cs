@@ -24,10 +24,10 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] MainTaskRequest requisicaoMainTask)
+    public IActionResult Post([FromBody] MainTaskRequest mainTaskRequest)
     {
-        var novaMainTask = MainTaskMapper.ToClass(requisicaoMainTask);
-        _mainTaskService.Create(novaMainTask);
+        var newMainTask = MainTaskMapper.ToClass(mainTaskRequest);
+        _mainTaskService.Create(newMainTask);
         return Created();
     }
 
@@ -37,7 +37,7 @@ public class MainTaskController : ControllerBase
         var mainTask = _mainTaskService.Find(mainTaskId);
 
         if (mainTask is null)
-            return NotFound($"MainTask not found.");
+            return NotFound($"MainTask not found!");
 
         mainTask.Description = updatedDescription.Description;
 
@@ -52,7 +52,7 @@ public class MainTaskController : ControllerBase
     {
         var mainTask = _mainTaskService.Find(mainTaskId);
         if (mainTask is null)
-            return NotFound($"MainTask not found.");
+            return NotFound($"MainTask not found!");
 
         _mainTaskService.Delete(mainTaskId);
 

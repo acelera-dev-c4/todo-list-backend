@@ -23,10 +23,10 @@ public class SubTaskController : Controller
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] SubTask novaSubTask)
+    public IActionResult Post([FromBody] SubTask newSubTask)
     {
-        _mainTaskService.Create(novaSubTask);
-        return Ok(novaSubTask);
+        _mainTaskService.Create(newSubTask);
+        return Ok(newSubTask);
     }
 
     [HttpPut("{subTaskId}")]
