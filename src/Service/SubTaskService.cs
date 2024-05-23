@@ -33,7 +33,7 @@ public class SubTaskService : ISubTaskService
         if (subTask is null)
             throw new Exception("subTask not found!");
 
-        _subTaskRepository.Delete(subTask);
+        _subTaskRepository.Delete(subTaskId);
     }
 
     public List<SubTask> List(int mainTaskId)
