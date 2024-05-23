@@ -8,7 +8,7 @@ public interface IUserRepository
     User Create(User user);
     User? Get(int userId);
     List<User> GetAll();
-    User Update(User updatedUser);
+    User Update(User userUpdate);
     void Delete(int userId);
 }
 
@@ -38,9 +38,9 @@ public class UserRepository : IUserRepository
         return _myDBContext.Users.ToList();
     }
 
-    public User Update(User updatedUser)
+    public User Update(User userUpdate)
     {
-        var existingUser = Get(updatedUser.Id);
+        var existingUser = Get(userUpdate.Id);
 
         if (existingUser is null)
             throw new Exception("User not found!");
