@@ -18,4 +18,11 @@ public class UserMapper
         Email = user.Email,
         Password = user.Password
     };
+    public static User ToEntity(UserUpdate user) => new()
+    {
+        Id = user.Id,
+        Name = user.Name,
+        Email = user.Email,
+        Password = user.Password
+    };
 }

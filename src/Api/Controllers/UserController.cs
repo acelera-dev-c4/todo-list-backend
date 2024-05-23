@@ -29,14 +29,15 @@ public class UserController : ControllerBase
         return Ok(newUser);
     }
 
-    [HttpPut("{userId}")]
-    public IActionResult Put([FromBody] UserUpdate userUpdate)
+
+    [HttpPut]
+    public IActionResult Put([FromBody] UserUpdate user)
     {
-        var updatedUser = _userService.Update(userUpdate);
+        var updatedUser = _userService.Update(user);
         return Ok(updatedUser);
     }
 
-    [HttpDelete("{userId}")]
+    [HttpDelete]
     public IActionResult Delete(int userId)
     {
         _userService.Delete(userId);

@@ -6,9 +6,7 @@ public class UserRequest
     public string Password { get; set; }
 }
 
-public class UserUpdate
+public class UserUpdate : UserRequest
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
 }

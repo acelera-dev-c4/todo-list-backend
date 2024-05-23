@@ -1,8 +1,8 @@
-﻿using Domain.Mappers;
-using Domain.Models;
+﻿using Infra.Repositories;
+using Domain.Mappers;
 using Domain.Request;
 using Domain.Responses;
-using Infra.Repositories;
+using Domain.Models;
 
 namespace Service;
 
@@ -36,11 +36,6 @@ public class UserService : IUserService
 
     public void Delete(int userId)
     {
-        var user = _userRepository.Get(userId);
-
-        if (user is null)
-            throw new Exception("User not found!");
-
         _userRepository.Delete(userId);
     }
 
@@ -58,15 +53,13 @@ public class UserService : IUserService
 
     public UserResponse Update(UserUpdate userUpdate)
     {
-        var user = _userRepository.Get(userUpdate.Id);
+        var existingUser = _userRepository.Get(userUpdate.Id);
 
-        if (user is null)
+        if (existingUser is null)
             throw new Exception("User not found!");
 
-        user.Name = userUpdate.Name;
-        user.Email = userUpdate.Email;
-        _userRepository.Update(user);
-        return UserMapper.ToResponse(user);
+        var updatedUser = UserMapper.ToEntity(userUpdate);
+        _userRepository.Update(updatedUser);
+        return UserMapper.ToResponse(updatedUser);
     }
-    
 }

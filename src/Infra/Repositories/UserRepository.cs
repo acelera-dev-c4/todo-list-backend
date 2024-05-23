@@ -1,5 +1,6 @@
-using Domain.Models;
 using Infra.DB;
+using Microsoft.EntityFrameworkCore;
+using Domain.Models;
 
 namespace Infra.Repositories;
 
@@ -10,6 +11,7 @@ public interface IUserRepository
     List<User> GetAll();
     User Update(User userUpdate);
     void Delete(int userId);
+    Task<User?> FindByUsernameAsync(string username);
 }
 
 public class UserRepository : IUserRepository
@@ -19,6 +21,11 @@ public class UserRepository : IUserRepository
     public UserRepository(MyDBContext myDBContext)
     {
         _myDBContext = myDBContext;
+    }
+
+    public async Task<User?> FindByUsernameAsync(string email)
+    {
+        return await _myDBContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public User Create(User newUser)
@@ -40,17 +47,20 @@ public class UserRepository : IUserRepository
 
     public User Update(User userUpdate)
     {
-        var existingUser = Get(userUpdate.Id);
-
-        if (existingUser is null)
+        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
+        if (updatedUser is null)
+        {
             throw new Exception("User not found!");
+        }
+        else
+        {
+            updatedUser.Name = userUpdate.Name;
+            updatedUser.Password = userUpdate.Password;
+            updatedUser.Email = userUpdate.Email;
 
-        existingUser.Name = userUpdate.Name;
-        existingUser.Password = userUpdate.Password;
-        existingUser.Email = userUpdate.Email;
-        _myDBContext.Users.Update(existingUser);
-        _myDBContext.SaveChanges();
-        return existingUser;
+            _myDBContext.SaveChanges();
+            return userUpdate;
+        }
     }
 
     public void Delete(int userId)
@@ -60,7 +70,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             throw new Exception("User not found!");
 
-        _myDBContext.Users.Remove(user);
+        _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
         _myDBContext.SaveChanges();
     }
 }
