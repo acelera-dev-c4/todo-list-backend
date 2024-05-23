@@ -43,7 +43,7 @@ public class MainTaskRepository : IMainTaskRepository
     {
         if (_myDBContext.MainTasks.Find(mainTaskId) is null)
         {
-            throw new Exception("SubTask not found!");
+            throw new Exception("MainTask not found!");
         }
 
         _myDBContext.MainTasks.Update(mainTaskUpdate);

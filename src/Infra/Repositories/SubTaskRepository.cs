@@ -13,7 +13,6 @@ public interface ISubTaskRepository
     void Delete(int subTaskId);
 }
 
-
 public class SubTaskRepository : ISubTaskRepository
 {
     private readonly MyDBContext _myDBContext;
@@ -50,5 +49,4 @@ public class SubTaskRepository : ISubTaskRepository
     {
         _myDBContext.SubTasks.Where(x => x.Id == subTaskId).ExecuteDelete();
     }
-
 }
