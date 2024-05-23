@@ -87,7 +87,7 @@ public class JwtService : IJwtService
         var userDataClaims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Name ?? string.Empty),
+            new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
         };
         return new ClaimsIdentity(userDataClaims, "Custom");
     }
