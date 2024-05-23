@@ -9,12 +9,12 @@ using Service;
 
 namespace Tests
 {
-    public class SubTarefaTests
+    public class SubTaskTest
     {
         private readonly SubTaskController _controller;
         private readonly Mock<ISubTaskService> _mockContext;
 
-        public SubTarefaTests()
+        public SubTaskTest()
         {
             _mockContext = new Mock<ISubTaskService>();
 
@@ -83,18 +83,6 @@ namespace Tests
         [Fact]
         public void Delete_DeletesSubtask_Success()
         {
-            //arrange
-            var subTasks = new List<SubTask>
-            {
-                 new SubTask { Id = 1, MainTaskId = 1, Description = "SubTarefa1", Finished = false },
-                new SubTask { Id = 1, MainTaskId = 2, Description = "SubTarefa2", Finished = true },
-                new SubTask { Id = 1, MainTaskId = 3, Description = "SubTarefa3", Finished = false },
-                new SubTask { Id = 1, MainTaskId = 4, Description = "SubTarefa4", Finished = true }
-            };
-
-
-
-            
             //act
             var result = _controller.Delete(1);
 
