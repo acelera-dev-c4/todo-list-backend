@@ -15,14 +15,14 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("List")]
+    [HttpGet]
     public IActionResult List()
     {
         var users = _userService.List();
         return Ok(users);
     }
 
-    [HttpPost("Register")]
+    [HttpPost]
     public IActionResult Post([FromBody] UserRequest user)
     {
         var newUser = _userService.Create(user);
@@ -30,17 +30,17 @@ public class UserController : ControllerBase
     }
 
 
-    [HttpPut("Update")]
+    [HttpPut]
     public IActionResult Put([FromBody] UserUpdate user)
     {
         var updatedUser = _userService.Update(user);
         return Ok(updatedUser);
     }
 
-    [HttpDelete("Delete")]
-    public IActionResult Delete(int idUsuario)
+    [HttpDelete]
+    public IActionResult Delete(int userId)
     {
-        _userService.Delete(idUsuario);
+        _userService.Delete(userId);
         return NoContent();
     }
 }
