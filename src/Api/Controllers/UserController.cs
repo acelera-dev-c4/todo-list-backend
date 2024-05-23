@@ -1,4 +1,5 @@
 ﻿using Domain.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -6,6 +7,8 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
+
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -23,6 +26,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous] //Acesso anônimo
     public IActionResult Post([FromBody] UserRequest user)
     {
         var newUser = _userService.Create(user);

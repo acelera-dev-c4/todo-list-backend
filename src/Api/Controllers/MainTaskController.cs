@@ -1,4 +1,5 @@
 ﻿using Domain.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -6,6 +7,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class MainTaskController : ControllerBase
 {
     private readonly IMainTaskService _mainTaskService;
