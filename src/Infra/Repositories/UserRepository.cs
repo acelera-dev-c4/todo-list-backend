@@ -8,7 +8,7 @@ public interface IUserRepository
     User Create(User user);
     User? Get(int userId);
     List<User> GetAll();
-    //User Update(User userUpdate);
+    User Update(User userUpdate);
     void Delete(int userId);
 }
 
@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
     {
         return _myDBContext.Users.ToList();
     }
-/*
+
     public User Update(User userUpdate)
     {
         var existingUser = Get(userUpdate.Id);
@@ -52,7 +52,7 @@ public class UserRepository : IUserRepository
         _myDBContext.SaveChanges();
         return updatedUser;
     }
-*/
+
     public void Delete(int userId)
     {
         var user = Get(userId);
