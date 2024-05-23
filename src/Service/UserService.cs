@@ -56,9 +56,9 @@ public class UserService : IUserService
         return userResponse;
     }
 
-    public UserResponse Update(UserUpdate userUpdate, int userId)
+    public UserResponse Update(UserUpdate userUpdate)
     {
-        var user = _userRepository.Get(userId);
+        var user = _userRepository.Get(userUpdate.Id);
 
         if (user is null)
             throw new Exception("User not found!");
