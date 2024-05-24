@@ -41,7 +41,7 @@ public class SubTaskService : ISubTaskService
 
         if (userId == null || subTask.Id.ToString() != userId)
         {
-            throw new UnauthorizedAccessException("Você não tem permissão para deletar esta subtarefa.");
+            throw new UnauthorizedAccessException("You don't have permission to delete this subtask.");
         }
 
         _subTaskRepository.Delete(subTaskId);
@@ -63,7 +63,7 @@ public class SubTaskService : ISubTaskService
 
         if (userId == null || subTask.Id.ToString() != userId)
         {
-            throw new UnauthorizedAccessException("Você não tem permissão para atualizar esta subtarefa.");
+            throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
         }
 
         subTask.Description = updateSubTaskRequest.Description;
