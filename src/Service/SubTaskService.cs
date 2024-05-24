@@ -16,11 +16,13 @@ public interface ISubTaskService
 public class SubTaskService : ISubTaskService
 {
     private readonly ISubTaskRepository _subTaskRepository;
+    private readonly IMainTaskRepository _mainTaskRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SubTaskService(ISubTaskRepository subTaskRepository, IHttpContextAccessor httpContextAccessor)
+    public SubTaskService(ISubTaskRepository subTaskRepository, IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor)
     {
         _subTaskRepository = subTaskRepository;
+        _mainTaskRepository = mainTaskRepository;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -37,9 +39,13 @@ public class SubTaskService : ISubTaskService
         if (subTask is null)
             throw new Exception("subTask not found!");
 
+        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId);
+        if (mainTask is null)
+            throw new Exception("mainTask not found!");
+
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (userId == null || subTask.Id.ToString() != userId)
+        if (userId == null || mainTask.UserId.ToString() != userId)
         {
             throw new UnauthorizedAccessException("You don't have permission to delete this subtask.");
         }
@@ -59,9 +65,14 @@ public class SubTaskService : ISubTaskService
         if (subTask is null)
             throw new Exception("SubTask not found!");
 
+        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId);
+
+        if (mainTask is null)
+            throw new Exception("mainTask not found!");
+
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (userId == null || subTask.Id.ToString() != userId)
+        if (userId == null || mainTask.UserId.ToString() != userId)
         {
             throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
         }
