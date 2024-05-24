@@ -34,14 +34,28 @@ public class SubTaskController : Controller
     [HttpPut("{subTaskId}")]
     public IActionResult Put([FromRoute] int subTaskId, [FromBody] SubTaskUpdate updateSubTask)
     {
-        var updatedSubTask = _subTaskService.Update(updateSubTask, subTaskId);
-        return Ok(updatedSubTask);
+        try
+        {
+            var updatedSubTask = _subTaskService.Update(updateSubTask, subTaskId);
+            return Ok(updatedSubTask);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
     }
 
     [HttpDelete("{subTaskId}")]
     public IActionResult Delete([FromRoute] int subTaskId)
     {
-        _subTaskService.Delete(subTaskId);
-        return NoContent();
+        try
+        {
+            _subTaskService.Delete(subTaskId);
+            return NoContent();
+        } 
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
     }
 }

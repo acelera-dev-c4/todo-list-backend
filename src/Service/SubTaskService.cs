@@ -1,6 +1,8 @@
 ﻿using Domain.Mappers;
 using Domain.Models;
 using Infra.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Service;
 
@@ -14,10 +16,12 @@ public interface ISubTaskService
 public class SubTaskService : ISubTaskService
 {
     private readonly ISubTaskRepository _subTaskRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SubTaskService(ISubTaskRepository subTaskRepository)
+    public SubTaskService(ISubTaskRepository subTaskRepository, IHttpContextAccessor httpContextAccessor)
     {
         _subTaskRepository = subTaskRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public SubTask Create(SubTaskRequest subTaskRequest)
@@ -33,6 +37,13 @@ public class SubTaskService : ISubTaskService
         if (subTask is null)
             throw new Exception("subTask not found!");
 
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null || subTask.Id.ToString() != userId)
+        {
+            throw new UnauthorizedAccessException("Você não tem permissão para deletar esta subtarefa.");
+        }
+
         _subTaskRepository.Delete(subTaskId);
     }
 
@@ -47,6 +58,13 @@ public class SubTaskService : ISubTaskService
 
         if (subTask is null)
             throw new Exception("SubTask not found!");
+
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null || subTask.Id.ToString() != userId)
+        {
+            throw new UnauthorizedAccessException("Você não tem permissão para atualizar esta subtarefa.");
+        }
 
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
