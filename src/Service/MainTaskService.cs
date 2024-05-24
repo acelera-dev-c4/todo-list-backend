@@ -2,6 +2,8 @@
 using Domain.Models;
 using Domain.Request;
 using Infra.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Service;
 
@@ -17,10 +19,12 @@ public interface IMainTaskService
 public class MainTaskService : IMainTaskService
 {
     private readonly IMainTaskRepository _mainTaskRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MainTaskService(IMainTaskRepository mainTaskRepository)
+    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor)
     {
         _mainTaskRepository = mainTaskRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public MainTask Create(MainTaskRequest mainTaskRequest)
@@ -51,6 +55,13 @@ public class MainTaskService : IMainTaskService
         if (mainTask is null)
             throw new Exception("mainTask not found!");
 
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (mainTask.UserId.ToString() != userId)
+        {
+            throw new UnauthorizedAccessException("You don't have permission to update this task.");
+        }
+
         mainTask.Description = mainTaskUpdate.Description;
 
         return _mainTaskRepository.Update(mainTask);
@@ -62,6 +73,13 @@ public class MainTaskService : IMainTaskService
 
         if (mainTask is null)
             throw new Exception("mainTask not found!");
+
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (mainTask.UserId.ToString() != userId)
+        {
+            throw new UnauthorizedAccessException("You don't have permission to delete this task.");
+        }
 
         _mainTaskRepository.Delete(mainTaskId);
     }
