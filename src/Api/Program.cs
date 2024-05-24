@@ -21,14 +21,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<TokenOptions>(builder.Configuration.GetSection("Token"));
 builder.Services.Configure<PasswordHashOptions>(builder.Configuration.GetSection("PasswordHashOptions"));
 
-// CORS
-builder.Services.AddCors(config =>
-{
-    config.AddPolicy("AllowOrigin", options => options
-                                                 .AllowAnyOrigin()
-                                                 .AllowAnyMethod());
-});
-
 builder.Services.AddTransient<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -102,7 +94,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowOrigin");
+app.UseCors(builder =>
+            builder
+                .AllowAnyOrigin() // Permite qualquer origem
+                .AllowAnyMethod() // Permite qualquer método HTTP
+                .AllowAnyHeader() // Permite qualquer cabeçalho HTTP
+        );
 
 app.UseMiddleware(typeof(ExceptionHandler));
 
