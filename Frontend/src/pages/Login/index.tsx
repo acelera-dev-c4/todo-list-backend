@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../../components/Button";
-import axios from "axios";
+import api from "../api";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -16,22 +16,13 @@ export default function Login() {
         password,
       };
 
-      const { data } = await axios.post(
-        "https://aceleradev.sharebook.com.br/Auth",
-        params,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      );
-
-      setLoading(false);
+      const { data } = await api("post", "/Auth", params);
 
       console.log("data", data);
     } catch (error) {
       console.log("error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
