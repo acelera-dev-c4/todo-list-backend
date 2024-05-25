@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../../components/Button";
-import api from "../api";
+import api from "../../api";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
