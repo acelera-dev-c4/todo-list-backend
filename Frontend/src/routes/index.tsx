@@ -3,8 +3,10 @@ import {
   Route,
   Routes as RoutesContainer,
 } from "react-router-dom";
-import Login from "../pages/Login";
-import Home from "../pages/Home";
+import {
+  Login,
+  Home
+} from '../pages';
 
 export default function Routes() {
   return (
