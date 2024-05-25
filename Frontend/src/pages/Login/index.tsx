@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "../../components/Button";
 import api from "../../api";
+import { saveTokenToLocalStorage } from "../../utils/localstorage";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,11 @@ export default function Login() {
 
       const { data } = await api("post", "/Auth", params);
 
-      console.log("data", data);
+      const { token } = data.token;
+      // const { expiration } = data.token;
+
+      saveTokenToLocalStorage(token);
+
     } catch (error) {
       console.log("error", error);
     } finally {
