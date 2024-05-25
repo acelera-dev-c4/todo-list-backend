@@ -44,6 +44,11 @@ public class ExceptionHandler
             code = HttpStatusCode.BadRequest;
         }
 
+        if (ex is UnauthorizedAccessException)
+        {
+            code = HttpStatusCode.Forbidden;
+        }
+
         var result = JsonSerializer.Serialize(new { error = ex.Message });
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = (int)code;

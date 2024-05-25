@@ -35,21 +35,13 @@ public class MainTaskController : ControllerBase
     public IActionResult Put(int mainTaskId, [FromBody] MainTaskUpdate updateMainTask)
     {
         var mainTask = _mainTaskService.Update(updateMainTask, mainTaskId);
-        
         return Ok(mainTask);
     }
 
     [HttpDelete("{mainTaskId}")]
     public IActionResult Delete(int mainTaskId)
     {
-        try
-        {
-            _mainTaskService.Delete(mainTaskId);
-            return NoContent();
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
+        _mainTaskService.Delete(mainTaskId);
+        return NoContent();
     }
 }
