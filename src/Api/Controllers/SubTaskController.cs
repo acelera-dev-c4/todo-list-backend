@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -8,6 +9,7 @@ namespace Api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Authorize]
+[EnableCors("AllowAllHeaders")]
 public class SubTaskController : Controller
 {
     private readonly ISubTaskService _subTaskService;

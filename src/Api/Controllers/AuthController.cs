@@ -1,11 +1,13 @@
 ﻿using Service;
 using Domain.Request;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace Web.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[EnableCors("AllowAllHeaders")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;

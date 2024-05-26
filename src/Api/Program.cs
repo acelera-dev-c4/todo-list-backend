@@ -8,6 +8,7 @@ using Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using System.Text;
+using FluentAssertions.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +25,15 @@ builder.Services.Configure<TokenOptions>(builder.Configuration.GetSection("Token
 builder.Services.Configure<PasswordHashOptions>(builder.Configuration.GetSection("PasswordHashOptions"));
 
 // CORS
-builder.Services.AddCors(config =>
+builder.Services.AddCors(options =>
 {
-    config.AddPolicy("AllowOrigin", options => options
-                                                 .AllowAnyOrigin()
-                                                 .AllowAnyMethod());
+    options.AddPolicy("AllowAllHeaders",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 });
 
 builder.Services.AddTransient<IHashingService, HashingService>();
