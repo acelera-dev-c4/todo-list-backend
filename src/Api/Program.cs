@@ -109,7 +109,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowOrigin");
+app.UseCors("AllowAllHeaders");
 
 app.UseMiddleware(typeof(ExceptionHandler));
 

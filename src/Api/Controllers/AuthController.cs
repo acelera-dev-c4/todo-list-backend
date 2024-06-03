@@ -23,7 +23,11 @@ public class AuthController : ControllerBase
         var response = await _authService.SignIn(request);
         if (response != null && response.Jwt != null)
         {
-            return Ok(new { token = response.Jwt });
+            return Ok(new
+            {
+                token = response.Jwt,
+                userData = response.User
+            });
         }
         else
         {

@@ -1,4 +1,6 @@
-﻿namespace Domain.Responses;
+﻿using Domain.Models;
+
+namespace Domain.Responses;
 
 public class JwtResponse
 {
@@ -9,4 +11,5 @@ public class JwtResponse
 public class AuthResponse
 {
     public JwtResponse? Jwt { get; set; }
+    public UserResponse? User { get; set; }
 }
