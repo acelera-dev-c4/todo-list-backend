@@ -9,6 +9,7 @@ public class MainTaskMapper
     {
         Id = null,
         UserId = task.UserId,
-        Description = task.Description
+        Description = task.Description,
+        Completed = false
     };
 }
