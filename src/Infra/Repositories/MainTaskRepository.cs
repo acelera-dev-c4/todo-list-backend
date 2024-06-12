@@ -10,7 +10,7 @@ public interface IMainTaskRepository
     List<MainTask> Get(int userId);
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTask mainTask);
-    void Delete(int mainTaskId);
+    void Delete(int mainTaskId);    
 }
 
 public class MainTaskRepository : IMainTaskRepository
@@ -30,7 +30,7 @@ public class MainTaskRepository : IMainTaskRepository
     }
 
     public List<MainTask> Get(int userId)
-    {
+    {        
         return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
     }
 
@@ -50,4 +50,5 @@ public class MainTaskRepository : IMainTaskRepository
     {
         _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
     }
+
 }
