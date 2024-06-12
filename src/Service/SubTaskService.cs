@@ -116,7 +116,7 @@ public class SubTaskService : ISubTaskService
     /// <param name="mainTaskId"></param>
     public void SetCompletedOrNot(int mainTaskId)
     {
-        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId) ?  true : false;
+        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId);
         _myDBContext.SaveChanges();
     }
 }
