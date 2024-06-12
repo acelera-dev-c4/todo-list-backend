@@ -1,5 +1,6 @@
 ﻿using Domain.Mappers;
 using Domain.Models;
+using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
@@ -12,18 +13,28 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     SubTask Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
+    void SetCompletedOrNot(int mainTaskId);
+    bool VerifyFinished(int mainTaskId);
 }
 public class SubTaskService : ISubTaskService
 {
     private readonly ISubTaskRepository _subTaskRepository;
     private readonly IMainTaskRepository _mainTaskRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly MyDBContext _myDBContext;
+    private readonly IMainTaskService _mainTaskService;
 
-    public SubTaskService(ISubTaskRepository subTaskRepository, IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor)
+    public SubTaskService(ISubTaskRepository subTaskRepository, 
+                          IMainTaskRepository mainTaskRepository, 
+                          IHttpContextAccessor httpContextAccessor, 
+                          MyDBContext myDbContext, 
+                          IMainTaskService mainTaskService)
     {
         _subTaskRepository = subTaskRepository;
         _mainTaskRepository = mainTaskRepository;
         _httpContextAccessor = httpContextAccessor;
+        _myDBContext = myDbContext;
+        _mainTaskService = mainTaskService;
     }
 
     public SubTask Create(SubTaskRequest subTaskRequest)
@@ -79,6 +90,33 @@ public class SubTaskService : ISubTaskService
 
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
+        SetCompletedOrNot(subTask.MainTaskId);
         return _subTaskRepository.Update(subTask);
+    }
+
+    /// <summary>
+    /// Verifies if all subTasks of a mainTask are completed
+    /// </summary>
+    /// <param name="mainTaskId"></param>
+    /// <returns></returns>
+    public bool VerifyFinished(int mainTaskId)
+    {
+        var list = List(mainTaskId);
+        foreach (var item in list)
+        {
+            if (!item.Finished)
+                return false;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Sets a mainTask as completed or not completed.
+    /// </summary>
+    /// <param name="mainTaskId"></param>
+    public void SetCompletedOrNot(int mainTaskId)
+    {
+        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId) ?  true : false;
+        _myDBContext.SaveChanges();
     }
 }

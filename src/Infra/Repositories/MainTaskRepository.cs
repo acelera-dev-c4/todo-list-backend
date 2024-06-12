@@ -10,8 +10,7 @@ public interface IMainTaskRepository
     List<MainTask> Get(int userId);
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTask mainTask);
-    void Delete(int mainTaskId);
-    void Complete(int mainTaskId);
+    void Delete(int mainTaskId);    
 }
 
 public class MainTaskRepository : IMainTaskRepository
@@ -52,13 +51,4 @@ public class MainTaskRepository : IMainTaskRepository
         _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
     }
 
-    /// <summary>
-    /// Sets a mainTask as completed.
-    /// </summary>
-    /// <param name="mainTaskId"></param>
-    public void Complete(int mainTaskId)
-    {
-        Find(mainTaskId)!.Completed = true;            
-        _myDBContext.SaveChanges(); 
-    }
 }
