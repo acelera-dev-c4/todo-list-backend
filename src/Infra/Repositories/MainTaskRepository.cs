@@ -11,6 +11,7 @@ public interface IMainTaskRepository
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTask mainTask);
     void Delete(int mainTaskId);
+    void Complete(int mainTaskId);
 }
 
 public class MainTaskRepository : IMainTaskRepository
@@ -30,7 +31,7 @@ public class MainTaskRepository : IMainTaskRepository
     }
 
     public List<MainTask> Get(int userId)
-    {
+    {        
         return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
     }
 
@@ -49,5 +50,15 @@ public class MainTaskRepository : IMainTaskRepository
     public void Delete(int mainTaskId)
     {
         _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
+    }
+
+    /// <summary>
+    /// Sets a mainTask as completed.
+    /// </summary>
+    /// <param name="mainTaskId"></param>
+    public void Complete(int mainTaskId)
+    {
+        Find(mainTaskId)!.Completed = true;            
+        _myDBContext.SaveChanges(); 
     }
 }

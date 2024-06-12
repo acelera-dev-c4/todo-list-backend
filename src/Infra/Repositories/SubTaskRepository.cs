@@ -1,6 +1,7 @@
 using Domain.Models;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Infra.Repositories;
 
@@ -11,15 +12,18 @@ public interface ISubTaskRepository
     SubTask? Find(int subTaskId);
     SubTask Update(SubTask subTask);
     void Delete(int subTaskId);
+    bool VerifyFinished(int mainTaskId);    
 }
 
 public class SubTaskRepository : ISubTaskRepository
 {
     private readonly MyDBContext _myDBContext;
+    private readonly IMainTaskRepository _mainTaskRepository;
 
-    public SubTaskRepository(MyDBContext myDbContext)
+    public SubTaskRepository(MyDBContext myDbContext, IMainTaskRepository mainTaskRepository)
     {
         _myDBContext = myDbContext;
+        _mainTaskRepository = mainTaskRepository;
     }
 
     public SubTask Create(SubTask newSubTask)
@@ -43,11 +47,32 @@ public class SubTaskRepository : ISubTaskRepository
     {
         _myDBContext.SubTasks.Update(subTaskUpdate);
         _myDBContext.SaveChanges();
+        
+        if (VerifyFinished(subTaskUpdate.MainTaskId))
+            _mainTaskRepository.Complete(subTaskUpdate.MainTaskId);
+
         return subTaskUpdate;
     }
 
     public void Delete(int subTaskId)
     {
         _myDBContext.SubTasks.Where(x => x.Id == subTaskId).ExecuteDelete();
+    }
+
+    /// <summary>
+    /// Verifies if all subTasks of a mainTask are completed
+    /// </summary>
+    /// <param name="mainTaskId"></param>
+    /// <returns></returns>
+    public bool VerifyFinished(int mainTaskId)
+    {
+        var list = Get(mainTaskId);
+        int verifier = 0;
+        foreach (var item in list)
+        {
+            if (!item.Finished)
+                verifier = 1;            
+        }
+        return verifier == 0  ? true : false;
     }
 }
