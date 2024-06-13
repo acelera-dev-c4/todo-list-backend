@@ -62,25 +62,57 @@ Este projeto tem como objetivo fornecer uma API RESTful para gerenciamento de ta
 
 1. Clone o repositório:
 bash git clone https://github.com/raffacabofrio/acelera-dev-todo-list
-- cd acelera-dev-todo-list
+- ```bash
+  cd cd acelera-dev-todo-list
 
+2. Restaure as dependências necessárias:
+- ```bash
+  bash dotnet restore
 
-3. Restaure as dependências necessárias:
-- bash dotnet restore
-
-4. Configure o banco de dados:
+3. Configure o banco de dados:
 
    Abra o Azure Data Studio.
    Conecte-se ao SQL Server.
    Execute os scripts SQL encontrados na pasta /src/Infra/ para configurar o banco de dados.
 
-5. Execute a aplicação:
-- dotnet run --project src/Api
+4. Execute a aplicação:
+- ```bash
+  dotnet run --project src/Api
 
 
-6. Este comando irá iniciar o servidor e a API estará acessível em http://localhost:5042.
+5. Este comando irá iniciar o servidor e a API estará acessível em http://localhost:5042.
 
    Navegue para http://localhost:5042/swagger para ver e interagir com a documentação da API e testar os endpoints.
+
+## Dicas de como fazer uma migration
+
+## Caso precise alterar ou adicionar um dado. Siga os passos abaixo:
+### 1 - Altere ou adicione o dado
+- 1.1 Na pasta src >> Domain >> Mappers, você tem os mapeamentos entre as entidades e as tabelas do banco.
+- 1.2 Na pasta src >> Domain >> Models, você tem as classes referentes as tabelas
+- 1.3 Execute as alterações conforme necessário
+
+### 2 - Execute os comandos de migration
+- 2.1 No Package Manager Console, selecione o projeto Infra como projeto padrão.
+- 2.2 No Package Manager Console, execute os comandos:
+- ```bash
+  Add-Migration NOME_SIGNIFICATIVO
+  Update-Database
+
+- OBS: O nome da migration deve ser facilmente entendido. Logo, faça pequenas alterações, mesmo que com isso você tenha diversas migrations.
+
+## Caso precise incluir uma nova tabela
+### 1 - Crie as classes necessárias
+- 1.1 Na pasta src >> Domain >> Models, crie a classe referente a tabela
+- 1.2 Na pasta src >> Domain >> Mappers, crie o mapeamento entre classe do passo anterior e a tabela do banco.
+
+## 2 - Execute os comandos de migration
+- 2.1 No Package Manager Console, selecione o projeto Infra como projeto padrão.
+- 2.2 No Package Manager Console, execute os comandos:
+- ```bash
+  Add-Migration NOME_SIGNIFICATIVO
+  Update-Database
+- OBS: O nome da migration deve ser facilmente entendido. Logo, faça pequenas alterações, mesmo que com isso você tenha diversas migrations.
 
 ## Autores
 
