@@ -1,9 +1,10 @@
-﻿using Domain.Mappers;
+using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace Service;
@@ -14,18 +15,21 @@ public interface IMainTaskService
     void Delete(int mainTaskId);
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
-    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);    
+    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
+    List<MainTask>? GetByUserNameOrTaskDescription(string search);
 }
 
 public class MainTaskService : IMainTaskService
 {
     private readonly IMainTaskRepository _mainTaskRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;    
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserService _userService;
 
-    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor)
+    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService)
     {
         _mainTaskRepository = mainTaskRepository;
-        _httpContextAccessor = httpContextAccessor;        
+        _httpContextAccessor = httpContextAccessor;
+        _userService = userService;
     }
 
     public MainTask Create(MainTaskRequest mainTaskRequest)
@@ -85,7 +89,31 @@ public class MainTaskService : IMainTaskService
         _mainTaskRepository.Delete(mainTaskId);
     }
 
+    public List<MainTask>? GetByUserNameOrTaskDescription(string search)
+    {
+        List<User>? foundUsers = _userService.GetByName(search);
+        List<MainTask>? tasksByDesc = _mainTaskRepository.FindByDescription(search);
 
+        List<MainTask>? result = new();
 
+        foreach (var task in tasksByDesc)
+        { result.Add(task); };
 
+        if (!foundUsers.IsNullOrEmpty())
+        {
+            foreach (var user in foundUsers!)
+            {
+                var listFromUser = Get(user.Id);
+                foreach (var task in listFromUser!)
+                {
+                    if (!result.Contains(task))
+                    {
+                        result.Add(task);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 }

@@ -26,6 +26,13 @@ public class MainTaskController : ControllerBase
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
+    [HttpGet()]
+    public IActionResult Get([FromForm] string search)
+    {
+        var mainTasks = _mainTaskService.GetByUserNameOrTaskDescription(search);
+        return mainTasks is null ? NotFound() : Ok(mainTasks);
+    }
+
     [HttpPost]
     public IActionResult Post([FromBody] MainTaskRequest mainTaskRequest)
     {
