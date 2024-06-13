@@ -1,6 +1,7 @@
-﻿using Domain.Mappers;
+using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
+using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
