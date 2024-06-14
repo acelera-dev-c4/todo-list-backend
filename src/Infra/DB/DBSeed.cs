@@ -23,8 +23,7 @@ public class DBSeed
                 new User { Name = "Pedro Augusto", Email = "pedro@mail.com", Password = password },
                 new User { Name = "Raffaello Damgaard", Email = "raffaello@mail.com", Password = password },
                 new User { Name = "Vinícius Silva", Email = "vinicius@mail.com", Password = password },
-                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password },
-                new User { Name = "Diogenes Lima", Email = "diogenes@mail.com", Password = password}
+                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password }
             };
 
             _context.Users.AddRange(users);
