@@ -23,7 +23,13 @@ public class DBSeed
                 new User { Name = "Pedro Augusto", Email = "pedro@mail.com", Password = password },
                 new User { Name = "Raffaello Damgaard", Email = "raffaello@mail.com", Password = password },
                 new User { Name = "Vinícius Silva", Email = "vinicius@mail.com", Password = password },
-                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password }
+                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password },
+                new User { Name = "Igor Cordeiro", Email = "igor@mail.com", Password= password},
+                new User { Name = "Anderson Gomes", Email = "anderson@mail.com", Password= password},
+                new User { Name = "Diogenes Lima", Email = "diogenes@mail.com", Password= password},
+                new User { Name = "Leandro Pio", Email = "leandro@mail.com", Password= password},
+                new User { Name = "Patric Costa", Email = "patric@mail.com", Password= password},
+                new User { Name = "Vagner Silva", Email = "vagner@mail.com", Password= password},
             };
 
             _context.Users.AddRange(users);
@@ -37,7 +43,14 @@ public class DBSeed
                 new MainTask { UserId = (int)users[3].Id!, Description = "Reunião de equipe" },
                 new MainTask { UserId = (int)users[4].Id!, Description = "Atualização de relatórios" },
                 new MainTask { UserId = (int)users[5].Id!, Description = "Desenvolvimento de novos recursos" },
-                new MainTask { UserId = (int)users[6].Id!, Description = "Revisão de código" }
+                new MainTask { UserId = (int)users[6].Id!, Description = "Revisão de código" },
+                new MainTask { UserId = (int)users[7].Id!, Description = "Leitura matinal" },
+                new MainTask { UserId = (int)users[8].Id!, Description = "Trabalhar" },
+                new MainTask { UserId = (int)users[9].Id!, Description = "Escrever código" },
+                new MainTask { UserId = (int)users[10].Id!, Description = "Malhar" },
+                new MainTask { UserId = (int)users[11].Id!, Description = "Capacitação" },
+                new MainTask { UserId = (int)users[12].Id!, Description = "Estudar" },
+
             };
 
             _context.MainTasks.AddRange(tasks);
@@ -71,7 +84,31 @@ public class DBSeed
 
                 new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Revisar pull request", Finished = false },
                 new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Identificar bugs", Finished = false },
-                new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Sugerir melhorias", Finished = false }
+                new SubTask { MainTaskId = (int)tasks[6].Id!, Description = "Sugerir melhorias", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[7].Id!, Description = "Preparar um cafe", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[7].Id!, Description = "Ler", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[7].Id!, Description = "Refletir sobre o que foi lido", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[8].Id!, Description = "Tomar banho", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[8].Id!, Description = "Se arrumar", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[8].Id!, Description = "Pegar condução", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[9].Id!, Description = "Revisar codigo", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[9].Id!, Description = "Codar", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[9].Id!, Description = "Testar o que foi feito", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[10].Id!, Description = "Malhar Peito", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[10].Id!, Description = "Malhar triceps", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[10].Id!, Description = "Fazer cardio", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[11].Id!, Description = "Ver video-aula", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[11].Id!, Description = "Fazer anotacoes", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[11].Id!, Description = "Fazer um resumo", Finished = false },
+
+                new SubTask { MainTaskId = (int)tasks[12].Id!, Description = "Chegar na faculdade", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[12].Id!, Description = "Assistir as aulas", Finished = false },
+                new SubTask { MainTaskId = (int)tasks[12].Id!, Description = "Fazer exercicios", Finished = false },
             };
 
             _context.SubTasks.AddRange(subtasks);
