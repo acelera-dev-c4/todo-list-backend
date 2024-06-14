@@ -28,16 +28,14 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpGet("search")]
-    public IActionResult Get([FromQuery] string? MainTaskId, 
+    public IActionResult Get([FromQuery] int? MainTaskId, 
                              [FromQuery] string? UserName, 
                              [FromQuery] string? MainTaskDescription)
     {
         if (MainTaskId == null && string.IsNullOrEmpty(UserName) && string.IsNullOrEmpty(MainTaskDescription))
-            return BadRequest("At least one parameter is required (MainTaskId, UserName, MainTaskDescription)");
-        
-        int? _MainTaskId = int.TryParse(MainTaskId, out int id) ? id : null;
+            return BadRequest("At least one parameter is required (MainTaskId, UserName, MainTaskDescription)");   
 
-        var mainTasks = _mainTaskService.SearchByParams(_MainTaskId, UserName, MainTaskDescription);
+        var mainTasks = _mainTaskService.SearchByParams(MainTaskId, UserName, MainTaskDescription);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
