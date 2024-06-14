@@ -113,6 +113,30 @@ public class DBSeed
 
             _context.SubTasks.AddRange(subtasks);
             _context.SaveChanges();
+
+            var subscriptions = new Subscription[]
+            {
+                new Subscription { MainTaskIdTopic = (int)tasks[0].Id!, SubTaskIdSubscriber = (int)subtasks[3].Id! },
+                new Subscription { MainTaskIdTopic = (int)tasks[2].Id!, SubTaskIdSubscriber = (int)subtasks[7].Id! },
+                new Subscription { MainTaskIdTopic = (int)tasks[4].Id!, SubTaskIdSubscriber = (int)subtasks[2].Id! },
+                new Subscription { MainTaskIdTopic = (int)tasks[6].Id!, SubTaskIdSubscriber = (int)subtasks[5].Id! },
+                new Subscription { MainTaskIdTopic = (int)tasks[5].Id!, SubTaskIdSubscriber = (int)subtasks[1].Id! },
+            };
+
+            _context.Subscriptions.AddRange(subscriptions);
+            _context.SaveChanges();
+
+            var notifications = new Notifications[]
+            {
+                new Notifications { SubscriptionId = (int)subscriptions[0].Id!, Message = $"Tarefa {tasks[0].Description!} Completa!", Readed = false },
+                new Notifications { SubscriptionId = (int)subscriptions[1].Id!, Message = $"Tarefa {tasks[2].Description!} Completa!", Readed = false },
+                new Notifications { SubscriptionId = (int)subscriptions[2].Id!, Message = $"Tarefa {tasks[4].Description!} Completa!", Readed = false },
+                new Notifications { SubscriptionId = (int)subscriptions[3].Id!, Message = $"Tarefa {tasks[6].Description!} Completa!", Readed = false },
+                new Notifications { SubscriptionId = (int)subscriptions[4].Id!, Message = $"Tarefa {tasks[5].Description!} Completa!", Readed = false }
+            };
+
+            _context.Notifications.AddRange(notifications);
+            _context.SaveChanges();
         }
 
     }
