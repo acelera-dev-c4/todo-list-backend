@@ -1,6 +1,7 @@
 using Domain.Models;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace Infra.Repositories;
 
@@ -41,7 +42,7 @@ public class MainTaskRepository : IMainTaskRepository
     }
 
     public List<MainTask> FindByDescription(string desc)
-    {
+    { 
         return _myDBContext.MainTasks.Where(x => x.Description!.Contains(desc)).ToList();
     }
 

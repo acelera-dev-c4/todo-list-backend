@@ -23,7 +23,8 @@ public class DBSeed
                 new User { Name = "Pedro Augusto", Email = "pedro@mail.com", Password = password },
                 new User { Name = "Raffaello Damgaard", Email = "raffaello@mail.com", Password = password },
                 new User { Name = "Vinícius Silva", Email = "vinicius@mail.com", Password = password },
-                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password }
+                new User { Name = "Weslley Batista", Email = "weslley@mail.com", Password = password },
+                new User { Name = "Diogenes Lima", Email = "diogenes@mail.com", Password = password}
             };
 
             _context.Users.AddRange(users);
@@ -37,7 +38,7 @@ public class DBSeed
                 new MainTask { UserId = (int)users[3].Id!, Description = "Reunião de equipe" },
                 new MainTask { UserId = (int)users[4].Id!, Description = "Atualização de relatórios" },
                 new MainTask { UserId = (int)users[5].Id!, Description = "Desenvolvimento de novos recursos" },
-                new MainTask { UserId = (int)users[6].Id!, Description = "Revisão de código" }
+                new MainTask { UserId = (int)users[7].Id!, Description = "Fazer café" }                 
             };
 
             _context.MainTasks.AddRange(tasks);

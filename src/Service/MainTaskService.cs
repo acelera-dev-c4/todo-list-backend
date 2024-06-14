@@ -5,7 +5,10 @@ using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Service;
 
@@ -16,7 +19,7 @@ public interface IMainTaskService
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
-    List<MainTask>? GetByUserNameOrTaskDescription(string search);
+    List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
 }
 
 public class MainTaskService : IMainTaskService
@@ -89,30 +92,55 @@ public class MainTaskService : IMainTaskService
         _mainTaskRepository.Delete(mainTaskId);
     }
 
-    public List<MainTask>? GetByUserNameOrTaskDescription(string search)
+    public List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription)
     {
-        List<User>? foundUsers = _userService.GetByName(search);
-        List<MainTask>? tasksByDesc = _mainTaskRepository.FindByDescription(search);
-
         List<MainTask>? result = new();
+        List<User>? foundUsers = new();
+        bool validMainTaskId = mainTaskId != null;
+        bool validUserName = !userName.IsNullOrEmpty();
+        bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();     
 
-        foreach (var task in tasksByDesc)
-        { result.Add(task); };
 
-        if (!foundUsers.IsNullOrEmpty())
+        if (validMainTaskId)
         {
-            foreach (var user in foundUsers!)
+            MainTask? foundById = _mainTaskRepository.Find((int)mainTaskId!);
+
+            if (foundById != null)
             {
-                var listFromUser = Get(user.Id);
-                foreach (var task in listFromUser!)
+                if (!result.Contains(foundById))
+                    result.Add(foundById);
+            }
+        }
+
+        if (validMainTaskDescription)
+        {
+            List<MainTask>? tasksByDesc = _mainTaskRepository.FindByDescription(mainTaskDescription!);
+            foreach (var task in tasksByDesc)
+            {
+                if (!result.Contains(task))
+                    result.Add(task); 
+            };
+        }
+
+        if (validUserName)
+        {
+            foundUsers = _userService.GetByName(userName!);
+
+            if (!foundUsers.IsNullOrEmpty())
+            {
+                foreach (var user in foundUsers!)
                 {
-                    if (!result.Contains(task))
+                    var listFromUser = Get(user.Id);
+                    foreach (var task in listFromUser!)
                     {
-                        result.Add(task);
+                        if (!result.Contains(task))
+                        {                            
+                            result.Add(task);
+                        }
                     }
                 }
             }
-        }
+        }     
 
         return result;
     }
