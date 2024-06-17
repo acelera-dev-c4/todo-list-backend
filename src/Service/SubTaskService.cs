@@ -24,7 +24,7 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
-    //private readonly ISubscriptionRepository _subscriptionRepository;
+    
 
     public SubTaskService(ISubTaskRepository subTaskRepository, 
                           IMainTaskRepository mainTaskRepository, 
@@ -102,10 +102,6 @@ public class SubTaskService : ISubTaskService
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        /*if (userId == null || mainTask.UserId.ToString() != userId)
-        {
-            throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
-        }*/
         //Se a subtarefa está presente na tabela subscriptions
         if (IsSubTaskInSubscriptions(subTaskId) == true)
         {
