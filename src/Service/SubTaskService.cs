@@ -23,6 +23,7 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
+    private readonly WebhooksService _webhooksService = new();
 
     public SubTaskService(ISubTaskRepository subTaskRepository, 
                           IMainTaskRepository mainTaskRepository, 
@@ -116,7 +117,11 @@ public class SubTaskService : ISubTaskService
     /// <param name="mainTaskId"></param>
     public void SetCompletedOrNot(int mainTaskId)
     {
-        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId);
+        bool originalStatus = _mainTaskService.Find(mainTaskId)!.Completed;
+        bool newStatus = VerifyFinished(mainTaskId);
+        _mainTaskService.Find(mainTaskId)!.Completed = newStatus;
+        //if (newStatus != originalStatus) 
+        //    _webhooksService.NotifyMainTaskIsFinished(mainTaskId);
         _myDBContext.SaveChanges();
     }
 }

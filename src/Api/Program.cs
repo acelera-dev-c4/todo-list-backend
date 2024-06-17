@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Service;
 using System.Text;
 using FluentAssertions.Common;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 

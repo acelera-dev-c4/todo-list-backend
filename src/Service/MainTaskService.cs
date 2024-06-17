@@ -17,6 +17,7 @@ public interface IMainTaskService
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
     List<MainTask>? GetByUserNameOrTaskDescription(string search);
+        
 }
 
 public class MainTaskService : IMainTaskService
@@ -24,6 +25,7 @@ public class MainTaskService : IMainTaskService
     private readonly IMainTaskRepository _mainTaskRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserService _userService;
+    WebhooksService notService = new WebhooksService();
 
     public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService)
     {
@@ -68,7 +70,7 @@ public class MainTaskService : IMainTaskService
         }
 
         mainTask.Description = mainTaskUpdate.Description;
-
+                
         return _mainTaskRepository.Update(mainTask);
     }
 
