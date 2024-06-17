@@ -1,6 +1,7 @@
 ﻿using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
+using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
@@ -13,18 +14,18 @@ public interface IMainTaskService
     void Delete(int mainTaskId);
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
-    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
+    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);    
 }
 
 public class MainTaskService : IMainTaskService
 {
     private readonly IMainTaskRepository _mainTaskRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;    
 
     public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor)
     {
         _mainTaskRepository = mainTaskRepository;
-        _httpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;        
     }
 
     public MainTask Create(MainTaskRequest mainTaskRequest)
@@ -83,4 +84,8 @@ public class MainTaskService : IMainTaskService
 
         _mainTaskRepository.Delete(mainTaskId);
     }
+
+
+
+
 }
