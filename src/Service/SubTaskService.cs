@@ -3,6 +3,7 @@ using Domain.Models;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Security.Claims;
 
 namespace Service;
@@ -23,18 +24,36 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
+    
 
     public SubTaskService(ISubTaskRepository subTaskRepository, 
                           IMainTaskRepository mainTaskRepository, 
                           IHttpContextAccessor httpContextAccessor, 
                           MyDBContext myDbContext, 
-                          IMainTaskService mainTaskService)
+                          IMainTaskService mainTaskService
+                          )
     {
         _subTaskRepository = subTaskRepository;
         _mainTaskRepository = mainTaskRepository;
         _httpContextAccessor = httpContextAccessor;
         _myDBContext = myDbContext;
         _mainTaskService = mainTaskService;
+        
+    }
+    private bool IsSubTaskInSubscriptions(int subTaskId)
+    {
+        if (_myDBContext.Subscriptions.Any(subscription => subscription.SubTaskIdSubscriber == subTaskId) == true)
+        {   
+            return true;
+        }
+        if (_myDBContext.Subscriptions.Any(subscription => subscription.SubTaskIdSubscriber == subTaskId) == false)
+        {
+            return false;
+        }
+        return true;
+
+
+
     }
 
     public SubTask Create(SubTaskRequest subTaskRequest)
@@ -83,11 +102,13 @@ public class SubTaskService : ISubTaskService
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (userId == null || mainTask.UserId.ToString() != userId)
+        //Se a subtarefa está presente na tabela subscriptions
+        if (IsSubTaskInSubscriptions(subTaskId) == true)
         {
-            throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
+            //se a pessoa que criou, é a mesma que esta tentando dar update.
+            if (userId == mainTask.UserId.ToString())
+            throw new UnauthorizedAccessException("This task cannot be finished by you");        
         }
-
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
         SetCompletedOrNot(subTask.MainTaskId);
