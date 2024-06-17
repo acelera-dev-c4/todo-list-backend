@@ -13,6 +13,8 @@ public interface IUserService
     User? GetById(int userId);
     List<UserResponse> List();
     UserResponse Update(UserUpdate userUpdate);
+    List<User>? GetByName(string name);
+
 }
 
 public class UserService : IUserService
@@ -42,6 +44,11 @@ public class UserService : IUserService
     public User? GetById(int userId)
     {
         return _userRepository.Get(userId);
+    }
+
+    public List<User>? GetByName(string name)
+    {
+        return _userRepository.GetByName(name);
     }
 
     public List<UserResponse> List()

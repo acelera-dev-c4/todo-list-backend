@@ -1,6 +1,7 @@
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models;
+using System.Text;
 
 namespace Infra.Repositories;
 
@@ -12,6 +13,7 @@ public interface IUserRepository
     User Update(User userUpdate);
     void Delete(int userId);
     Task<User?> FindByUsernameAsync(string username);
+    List<User> GetByName(string name);
 }
 
 public class UserRepository : IUserRepository
@@ -23,9 +25,9 @@ public class UserRepository : IUserRepository
         _myDBContext = myDBContext;
     }
 
-    public async Task<User?> FindByUsernameAsync(string email)
+    public async Task<User?> FindByUsernameAsync(string username)
     {
-        return await _myDBContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        return await _myDBContext.Users.FirstOrDefaultAsync(u => u.Email == username);
     }
 
     public User Create(User newUser)
@@ -72,5 +74,10 @@ public class UserRepository : IUserRepository
 
         _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
         _myDBContext.SaveChanges();
+    }
+
+    public List<User> GetByName(string name)
+    {
+        return _myDBContext.Users.Where(x => x.Name!.Contains(name)).ToList();
     }
 }

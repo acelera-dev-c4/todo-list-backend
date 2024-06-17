@@ -1,10 +1,14 @@
-﻿using Domain.Mappers;
+using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Service;
 
@@ -14,18 +18,21 @@ public interface IMainTaskService
     void Delete(int mainTaskId);
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
-    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);    
+    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
+    List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
 }
 
 public class MainTaskService : IMainTaskService
 {
     private readonly IMainTaskRepository _mainTaskRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;    
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserService _userService;
 
-    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor)
+    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService)
     {
         _mainTaskRepository = mainTaskRepository;
-        _httpContextAccessor = httpContextAccessor;        
+        _httpContextAccessor = httpContextAccessor;
+        _userService = userService;
     }
 
     public MainTask Create(MainTaskRequest mainTaskRequest)
@@ -85,7 +92,56 @@ public class MainTaskService : IMainTaskService
         _mainTaskRepository.Delete(mainTaskId);
     }
 
+    public List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription)
+    {
+        List<MainTask>? result = new();
+        List<User>? foundUsers = new();
+        bool validMainTaskId = mainTaskId != null;
+        bool validUserName = !userName.IsNullOrEmpty();
+        bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();     
 
 
+        if (validMainTaskId)
+        {
+            MainTask? foundById = _mainTaskRepository.Find((int)mainTaskId!);
 
+            if (foundById != null)
+            {
+                if (!result.Contains(foundById))
+                    result.Add(foundById);
+            }
+        }
+
+        if (validMainTaskDescription)
+        {
+            List<MainTask>? tasksByDesc = _mainTaskRepository.FindByDescription(mainTaskDescription!);
+            foreach (var task in tasksByDesc)
+            {
+                if (!result.Contains(task))
+                    result.Add(task); 
+            };
+        }
+
+        if (validUserName)
+        {
+            foundUsers = _userService.GetByName(userName!);
+
+            if (!foundUsers.IsNullOrEmpty())
+            {
+                foreach (var user in foundUsers!)
+                {
+                    var listFromUser = Get(user.Id);
+                    foreach (var task in listFromUser!)
+                    {
+                        if (!result.Contains(task))
+                        {                            
+                            result.Add(task);
+                        }
+                    }
+                }
+            }
+        }     
+
+        return result;
+    }
 }

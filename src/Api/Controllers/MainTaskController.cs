@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Service;
 
 namespace Api.Controllers;
@@ -23,6 +24,18 @@ public class MainTaskController : ControllerBase
     public IActionResult Get([FromRoute] int userId)
     {
         var mainTasks = _mainTaskService.Get(userId);
+        return mainTasks is null ? NotFound() : Ok(mainTasks);
+    }
+
+    [HttpGet("search")]
+    public IActionResult Get([FromQuery] int? MainTaskId, 
+                             [FromQuery] string? UserName, 
+                             [FromQuery] string? MainTaskDescription)
+    {
+        if (MainTaskId == null && string.IsNullOrEmpty(UserName) && string.IsNullOrEmpty(MainTaskDescription))
+            return BadRequest("At least one parameter is required (MainTaskId, UserName, MainTaskDescription)");   
+
+        var mainTasks = _mainTaskService.SearchByParams(MainTaskId, UserName, MainTaskDescription);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
