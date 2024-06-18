@@ -69,8 +69,17 @@ public class MainTaskService : IMainTaskService
             throw new UnauthorizedAccessException("You don't have permission to update this task.");
         }
 
-        mainTask.Description = mainTaskUpdate.Description;
+        mainTask.Description = mainTaskUpdate.Description;        
+        return _mainTaskRepository.Update(mainTask);
+    }
 
+    public MainTask UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId)
+    {
+        var mainTask = _mainTaskRepository.Find(mainTaskId);
+        if (mainTask is null)
+            throw new Exception("mainTask not found!");
+
+        mainTask.UrlNotificationWebhook = mainTaskUpdate.UrlNotificationWebhook!;
         return _mainTaskRepository.Update(mainTask);
     }
 
@@ -148,7 +157,12 @@ public class MainTaskService : IMainTaskService
     {
         var task = _mainTaskRepository.Find(mainTaskId);
         if (task != null)
-            task.UrlNotificationWebhook = url;
+        {            
+            MainTaskUpdate updated = new();
+            updated.Description = task.Description;
+            updated.UrlNotificationWebhook = url;
+            UpdateUrl(updated, mainTaskId);
+        }
         else
             throw new FileNotFoundException("MainTask Not Found, url to notify was not updated");
     }
