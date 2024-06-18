@@ -107,7 +107,10 @@ public class SubTaskService : ISubTaskService
         {
             //se a pessoa que criou, é a mesma que esta tentando dar update.
             if (userId == mainTask.UserId.ToString())
-                throw new UnauthorizedAccessException("This subtask cannot be finished by you");
+                throw new BadRequestException("This task cannot be completed beacuse it has an active sub");        
+
+                
+
         }
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
