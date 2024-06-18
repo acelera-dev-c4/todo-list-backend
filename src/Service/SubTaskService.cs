@@ -1,9 +1,9 @@
-﻿using Domain.Mappers;
+﻿using Domain.Exceptions;
+using Domain.Mappers;
 using Domain.Models;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Security.Claims;
 
 namespace Service;
@@ -24,12 +24,12 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
-    
 
-    public SubTaskService(ISubTaskRepository subTaskRepository, 
-                          IMainTaskRepository mainTaskRepository, 
-                          IHttpContextAccessor httpContextAccessor, 
-                          MyDBContext myDbContext, 
+
+    public SubTaskService(ISubTaskRepository subTaskRepository,
+                          IMainTaskRepository mainTaskRepository,
+                          IHttpContextAccessor httpContextAccessor,
+                          MyDBContext myDbContext,
                           IMainTaskService mainTaskService
                           )
     {
@@ -38,12 +38,12 @@ public class SubTaskService : ISubTaskService
         _httpContextAccessor = httpContextAccessor;
         _myDBContext = myDbContext;
         _mainTaskService = mainTaskService;
-        
+
     }
     private bool IsSubTaskInSubscriptions(int subTaskId)
     {
         if (_myDBContext.Subscriptions.Any(subscription => subscription.SubTaskIdSubscriber == subTaskId) == true)
-        {   
+        {
             return true;
         }
         if (_myDBContext.Subscriptions.Any(subscription => subscription.SubTaskIdSubscriber == subTaskId) == false)
@@ -90,24 +90,24 @@ public class SubTaskService : ISubTaskService
 
     public SubTask Update(SubTaskUpdate updateSubTaskRequest, int subTaskId)
     {
-        var subTask = _subTaskRepository.Find(subTaskId);
+        var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
 
-        if (subTask is null)
-            throw new Exception("SubTask not found!");
-
-        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId);
-
-        if (mainTask is null)
-            throw new Exception("mainTask not found!");
+        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (userEmail != "system@mail.com")
+        {
+            if (userId != mainTask.UserId.ToString()) throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
+        }
 
         //Se a subtarefa está presente na tabela subscriptions
         if (IsSubTaskInSubscriptions(subTaskId) == true)
         {
             //se a pessoa que criou, é a mesma que esta tentando dar update.
             if (userId == mainTask.UserId.ToString())
-            throw new UnauthorizedAccessException("This task cannot be finished by you");        
+                throw new UnauthorizedAccessException("This subtask cannot be finished by you");
         }
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
