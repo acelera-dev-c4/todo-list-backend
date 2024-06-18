@@ -43,7 +43,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MainTasks");
+                    b.ToTable("MainTasks", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Notifications", b =>
@@ -68,7 +68,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.SubTask", b =>
@@ -92,7 +92,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("MainTaskId");
 
-                    b.ToTable("SubTasks");
+                    b.ToTable("SubTasks", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Subscription", b =>
@@ -115,7 +115,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("SubTaskIdSubscriber");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.User", b =>
@@ -137,7 +137,7 @@ namespace Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.MainTask", b =>

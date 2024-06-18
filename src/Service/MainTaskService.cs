@@ -1,14 +1,11 @@
 using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
-using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Infra;
 
 namespace Service;
 
@@ -20,8 +17,7 @@ public interface IMainTaskService
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
     List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
-    List<MainTask>? GetByUserNameOrTaskDescription(string search);
-        
+    Task NotifyWithUrl(int mainTaskId, string url);
 }
 
 public class MainTaskService : IMainTaskService
@@ -29,7 +25,7 @@ public class MainTaskService : IMainTaskService
     private readonly IMainTaskRepository _mainTaskRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserService _userService;
-    WebhooksService notService = new WebhooksService();
+    NotificationHttpClient notificationClient = new();
 
     public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService)
     {
@@ -74,7 +70,7 @@ public class MainTaskService : IMainTaskService
         }
 
         mainTask.Description = mainTaskUpdate.Description;
-                
+
         return _mainTaskRepository.Update(mainTask);
     }
 
@@ -101,7 +97,7 @@ public class MainTaskService : IMainTaskService
         List<User>? foundUsers = new();
         bool validMainTaskId = mainTaskId != null;
         bool validUserName = !userName.IsNullOrEmpty();
-        bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();     
+        bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();
 
 
         if (validMainTaskId)
@@ -121,7 +117,7 @@ public class MainTaskService : IMainTaskService
             foreach (var task in tasksByDesc)
             {
                 if (!result.Contains(task))
-                    result.Add(task); 
+                    result.Add(task);
             };
         }
 
@@ -137,14 +133,23 @@ public class MainTaskService : IMainTaskService
                     foreach (var task in listFromUser!)
                     {
                         if (!result.Contains(task))
-                        {                            
+                        {
                             result.Add(task);
                         }
                     }
                 }
             }
-        }     
+        }
 
         return result;
+    }
+
+    public async Task NotifyWithUrl(int mainTaskId, string url)
+    {
+        var task = _mainTaskRepository.Find(mainTaskId);
+        if (task != null)
+            task.UrlNotificationWebhook = url;
+        else
+            throw new FileNotFoundException("MainTask Not Found, url to notify was not updated");
     }
 }

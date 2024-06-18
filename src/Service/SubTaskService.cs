@@ -5,6 +5,7 @@ using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Security.Claims;
+using Infra;
 
 namespace Service;
 
@@ -24,9 +25,7 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
-    private readonly WebhooksService _webhooksService = new();
-
-    
+    private readonly NotificationHttpClient _notificationHttpClient = new();    
 
     public SubTaskService(ISubTaskRepository subTaskRepository, 
                           IMainTaskRepository mainTaskRepository, 
@@ -143,7 +142,7 @@ public class SubTaskService : ISubTaskService
         bool newStatus = VerifyFinished(mainTaskId);
         _mainTaskService.Find(mainTaskId)!.Completed = newStatus;
         //if (newStatus != originalStatus) 
-        //    _webhooksService.NotifyMainTaskIsFinished(mainTaskId);
+        //    _notificationHttpClient.NotifyMainTaskIsFinished(mainTaskId);
         _myDBContext.SaveChanges();
     }
 }

@@ -1,10 +1,10 @@
 ﻿
-namespace Service;
-public class WebhooksService
+namespace Infra;
+public class NotificationHttpClient
 {
     private readonly HttpClient httpClient;
 
-    public WebhooksService()
+    public NotificationHttpClient()
     {
         httpClient = new HttpClient();
         httpClient.BaseAddress = new Uri("https://localhost:7056/");
