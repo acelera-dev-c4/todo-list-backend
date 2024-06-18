@@ -52,6 +52,8 @@ public class ExceptionHandler
 
         if (ex is NotFoundException) code = HttpStatusCode.NotFound;
 
+        if (ex is BadRequestException) code = HttpStatusCode.BadRequest;
+
         var result = JsonSerializer.Serialize(new { error = ex.Message });
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = (int)code;
