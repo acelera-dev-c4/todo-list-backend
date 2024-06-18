@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Service;
 
 namespace Api.Controllers;
@@ -28,21 +27,21 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpGet("search")]
-    public IActionResult Get([FromQuery] int? MainTaskId, 
-                             [FromQuery] string? UserName, 
+    public IActionResult Get([FromQuery] int? MainTaskId,
+                             [FromQuery] string? UserName,
                              [FromQuery] string? MainTaskDescription)
     {
         if (MainTaskId == null && string.IsNullOrEmpty(UserName) && string.IsNullOrEmpty(MainTaskDescription))
-            return BadRequest("At least one parameter is required (MainTaskId, UserName, MainTaskDescription)");   
+            return BadRequest("At least one parameter is required (MainTaskId, UserName, MainTaskDescription)");
 
         var mainTasks = _mainTaskService.SearchByParams(MainTaskId, UserName, MainTaskDescription);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] MainTaskRequest mainTaskRequest)
+    public async Task<IActionResult> Post([FromBody] MainTaskRequest mainTaskRequest)
     {
-        var newMainTask = _mainTaskService.Create(mainTaskRequest);
+        var newMainTask = await _mainTaskService.Create(mainTaskRequest);
         return Ok(newMainTask);
     }
 
