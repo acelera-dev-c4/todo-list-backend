@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
 
@@ -48,6 +49,10 @@ public class ExceptionHandler
         {
             code = HttpStatusCode.Forbidden;
         }
+
+        if (ex is NotFoundException) code = HttpStatusCode.NotFound;
+
+        if (ex is BadRequestException) code = HttpStatusCode.BadRequest;
 
         var result = JsonSerializer.Serialize(new { error = ex.Message });
         httpContext.Response.ContentType = "application/json";
