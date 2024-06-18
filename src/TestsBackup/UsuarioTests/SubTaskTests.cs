@@ -1,10 +1,8 @@
+using Api.Controllers;
+using Domain.Models;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Microsoft.EntityFrameworkCore;
-using Api.Controllers;
-using FluentAssertions;
-using Infra.DB;
-using Domain.Models;
 using Service;
 
 namespace Tests
@@ -26,10 +24,6 @@ namespace Tests
             new SubTask { Id = 1, MainTaskId = 4, Description = "Subtask4", Finished = true }
 
         };
-
-
-
-
             _mockContext.Setup(m => m.List(1)).Returns(subtask);
 
             _controller = new SubTaskController(_mockContext.Object);
@@ -62,21 +56,21 @@ namespace Tests
             item.Should().BeEquivalentTo(new SubTaskRequest { MainTaskId = 1, Description = "Very Cool Subtask" });
         }
         [Fact]
-        public void Put_UpdatesSubtask_Success()
+        public async Task Put_UpdatesSubtask_Success()
         {
             //arrange
             var newSubTask = new SubTask() { MainTaskId = 1, Id = 1, Description = "New subtask", Finished = true };
             var newSubTaskUpdate = new SubTaskUpdate() { Description = "New subtask", Finished = true };
 
-            _mockContext.Setup(m => m.Update(newSubTaskUpdate, 1)).Returns(newSubTask);
-            
+            _mockContext.Setup(m => m.Update(newSubTaskUpdate, 1)).ReturnsAsync(newSubTask);
+
 
             //act
-            var result = _controller.Put(1, newSubTaskUpdate);
+            var result = await _controller.Put(1, newSubTaskUpdate);
             var item = (result as OkObjectResult)?.Value as SubTask;
 
             //assert
-            item.Should().BeEquivalentTo(new SubTask { MainTaskId = 1, Id = 1, Description = "New subtask", Finished = true});
+            item.Should().BeEquivalentTo(new SubTask { MainTaskId = 1, Id = 1, Description = "New subtask", Finished = true });
 
         }
 
