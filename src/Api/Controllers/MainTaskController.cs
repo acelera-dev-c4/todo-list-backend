@@ -48,7 +48,6 @@ public class MainTaskController : ControllerBase
         return Ok(newMainTask);
     }
 
-    [AllowAnonymous]
     [HttpPost("SetUrlWebhook")]
     public async Task<IActionResult> AdviseSubscriptionToMainTask([FromBody] JsonElement content)
     {
@@ -69,6 +68,7 @@ public class MainTaskController : ControllerBase
     [HttpPut("{mainTaskId}")]
     public IActionResult Put(int mainTaskId, [FromBody] MainTaskUpdate updateMainTask)
     {
+
         var mainTask = _mainTaskService.Update(updateMainTask, mainTaskId);
         return Ok(mainTask);
     }

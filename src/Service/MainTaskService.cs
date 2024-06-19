@@ -155,6 +155,19 @@ public class MainTaskService : IMainTaskService
 
     public async Task NotifyWithUrl(int mainTaskId, string url)
     {
+        var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+
+        Console.WriteLine("\n\nLoguei po ----------\n\n");
+
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        var mainTask = _mainTaskRepository.Find(mainTaskId);
+
+        if (userEmail != "system@mail.com")
+        {
+            if (userId != mainTask.UserId.ToString()) throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
+        }
+
         var task = _mainTaskRepository.Find(mainTaskId);
         if (task != null)
         {            
