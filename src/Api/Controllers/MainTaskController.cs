@@ -1,5 +1,6 @@
 ﻿using Domain.Request;
 using Infra;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -47,14 +48,13 @@ public class MainTaskController : ControllerBase
         var newMainTask = _mainTaskService.Create(mainTaskRequest);
         return Ok(newMainTask);
     }
-
-    [AllowAnonymous]
-    [HttpPost("SetUrlWebhook")]
-    public async Task<IActionResult> AdviseSubscriptionToMainTask([FromBody] JsonElement content)
-    {
-        string url = content.GetProperty("url").GetString()!;
+        
+    [HttpPut("SetUrlWebhook")]
+    public async Task<IActionResult> SetUrlWebhook([FromBody] JsonElement content)
+    {        
         int mainTaskId = content.GetProperty("mainTaskId").GetInt32();
-
+        string url = content.GetProperty("url").GetString()!;
+        
         try
         {
             await _mainTaskService.NotifyWithUrl(mainTaskId, url);

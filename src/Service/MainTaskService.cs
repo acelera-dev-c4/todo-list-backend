@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Infra;
+using Domain.Exceptions;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Service;
 
@@ -73,11 +75,19 @@ public class MainTaskService : IMainTaskService
         return _mainTaskRepository.Update(mainTask);
     }
 
-    public MainTask UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId)
+    public MainTask UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId) // metodo exclusivo para o notification api
     {
         var mainTask = _mainTaskRepository.Find(mainTaskId);
+
         if (mainTask is null)
-            throw new Exception("mainTask not found!");
+            throw new NotFoundException("mainTask not found!");
+
+        var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+        
+        if (userEmail != "system@mail.com")
+        {
+            throw new UnauthorizedAccessException("You are not authorized to change Url value ");
+        }
 
         mainTask.UrlNotificationWebhook = mainTaskUpdate.UrlNotificationWebhook!;
         return _mainTaskRepository.Update(mainTask);
