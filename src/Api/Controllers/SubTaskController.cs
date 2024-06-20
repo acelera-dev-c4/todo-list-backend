@@ -29,8 +29,8 @@ public class SubTaskController : Controller
     [HttpPost]
     public IActionResult Post([FromBody] SubTaskRequest newSubTask)
     {
-        _subTaskService.Create(newSubTask);
-        return Ok(newSubTask);
+        var createdSubTask = _subTaskService.Create(newSubTask);
+        return Ok(createdSubTask);
     }
 
     [HttpPut("{subTaskId}")]
