@@ -11,6 +11,8 @@ public interface ISubTaskRepository
     SubTask? Find(int subTaskId);
     Task<SubTask> Update(SubTask subTask);
     void Delete(int subTaskId);
+    Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
+    
 }
 
 public class SubTaskRepository : ISubTaskRepository
@@ -57,5 +59,13 @@ public class SubTaskRepository : ISubTaskRepository
     public void Delete(int subTaskId)
     {
         _myDBContext.SubTasks.Where(x => x.Id == subTaskId).ExecuteDelete();
+    }
+
+    public async Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
+    {
+        var subTask = await _myDBContext.SubTasks.FindAsync(subTaskId);
+        subTask!.Finished = finishedSubTask;
+        _myDBContext.SaveChanges();
+        return subTask;
     }
 }

@@ -15,8 +15,9 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    Task SetCompletedOrNot(int mainTaskId);
-    Task<bool> VerifyFinished(int mainTaskId);
+    void SetCompletedOrNot(int mainTaskId);
+    bool VerifyFinished(int mainTaskId);
+    Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
 {
@@ -178,5 +179,13 @@ public class SubTaskService : ISubTaskService
     {
         _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId);
         await _myDBContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
+    {
+        var subtask = await _subTaskRepository.UpdateSubtaskFinished(subTaskId, finishedSubTask);
+
+        if (subtask is null)
+            throw new NotFoundException("SubTask not found!");
     }
 }

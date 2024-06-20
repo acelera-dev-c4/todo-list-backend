@@ -40,6 +40,13 @@ public class SubTaskController : Controller
         return Ok(updatedSubTask);
     }
 
+    [HttpPut("finished/{subTaskId}")]
+    public async Task<IActionResult> Put([FromRoute] int subTaskId, [FromBody] UpdateSubtaskFinished finished)
+    {
+        await _subTaskService.UpdateSubtaskFinished(subTaskId, finished.Finished);
+        return Ok(finished);
+    }
+
     [HttpDelete("{subTaskId}")]
     public IActionResult Delete([FromRoute] int subTaskId)
     {
