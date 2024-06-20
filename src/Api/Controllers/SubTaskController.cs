@@ -34,9 +34,9 @@ public class SubTaskController : Controller
     }
 
     [HttpPut("{subTaskId}")]
-    public IActionResult Put([FromRoute] int subTaskId, [FromBody] SubTaskUpdate updateSubTask)
+    public async Task<IActionResult> Put([FromRoute] int subTaskId, [FromBody] SubTaskUpdate updateSubTask)
     {
-        var updatedSubTask = _subTaskService.Update(updateSubTask, subTaskId);
+        var updatedSubTask = await _subTaskService.Update(updateSubTask, subTaskId);
         return Ok(updatedSubTask);
     }
 

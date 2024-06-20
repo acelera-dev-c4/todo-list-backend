@@ -1,20 +1,16 @@
 using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
-using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service;
 
 public interface IMainTaskService
 {
-    MainTask Create(MainTaskRequest mainTask);
+    Task<MainTask> Create(MainTaskRequest mainTask);
     void Delete(int mainTaskId);
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
@@ -35,10 +31,14 @@ public class MainTaskService : IMainTaskService
         _userService = userService;
     }
 
-    public MainTask Create(MainTaskRequest mainTaskRequest)
+    public async Task<MainTask> Create(MainTaskRequest mainTaskRequest)
     {
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId != mainTaskRequest.UserId.ToString()) throw new UnauthorizedAccessException("You don't have permission to create this task.");
+
         var newMainTask = MainTaskMapper.ToClass(mainTaskRequest);
-        return _mainTaskRepository.Create(newMainTask);
+        return await _mainTaskRepository.Create(newMainTask);
     }
 
     public List<MainTask>? Get(int userId)
@@ -98,7 +98,7 @@ public class MainTaskService : IMainTaskService
         List<User>? foundUsers = new();
         bool validMainTaskId = mainTaskId != null;
         bool validUserName = !userName.IsNullOrEmpty();
-        bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();     
+        bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();
 
 
         if (validMainTaskId)
@@ -118,7 +118,7 @@ public class MainTaskService : IMainTaskService
             foreach (var task in tasksByDesc)
             {
                 if (!result.Contains(task))
-                    result.Add(task); 
+                    result.Add(task);
             };
         }
 
@@ -134,13 +134,13 @@ public class MainTaskService : IMainTaskService
                     foreach (var task in listFromUser!)
                     {
                         if (!result.Contains(task))
-                        {                            
+                        {
                             result.Add(task);
                         }
                     }
                 }
             }
-        }     
+        }
 
         return result;
     }

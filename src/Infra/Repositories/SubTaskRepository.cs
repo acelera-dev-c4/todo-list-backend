@@ -1,7 +1,6 @@
 using Domain.Models;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Infra.Repositories;
 
@@ -10,9 +9,10 @@ public interface ISubTaskRepository
     SubTask Create(SubTask subTask);
     List<SubTask> Get(int mainTaskId);
     SubTask? Find(int subTaskId);
-    SubTask Update(SubTask subTask);
+    Task<SubTask> Update(SubTask subTask);
     void Delete(int subTaskId);
     Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
+    
 }
 
 public class SubTaskRepository : ISubTaskRepository
@@ -42,10 +42,17 @@ public class SubTaskRepository : ISubTaskRepository
         return _myDBContext.SubTasks.Find(subTaskId);
     }
 
-    public SubTask Update(SubTask subTaskUpdate)
+    public async Task<SubTask> Update(SubTask subTaskUpdate)
     {
-        _myDBContext.SubTasks.Update(subTaskUpdate);
-        _myDBContext.SaveChanges();
+        await _myDBContext.SubTasks
+             .Where(st => st.Id == subTaskUpdate.Id)
+             .ExecuteUpdateAsync(st => st
+                 .SetProperty(subTask => subTask.MainTaskId, subTaskUpdate.MainTaskId)
+                 .SetProperty(subTask => subTask.Description, subTaskUpdate.Description)
+                 .SetProperty(subTask => subTask.Finished, subTaskUpdate.Finished)
+             );
+
+        await _myDBContext.SaveChangesAsync();
         return subTaskUpdate;
     }
 

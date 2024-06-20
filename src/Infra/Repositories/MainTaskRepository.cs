@@ -1,18 +1,17 @@
 using Domain.Models;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 
 namespace Infra.Repositories;
 
 public interface IMainTaskRepository
 {
-    MainTask Create(MainTask mainTask);
+    Task<MainTask> Create(MainTask mainTask);
     List<MainTask> Get(int userId);
     MainTask? Find(int mainTaskId);
     List<MainTask> FindByDescription(string desc);
     MainTask Update(MainTask mainTask);
-    void Delete(int mainTaskId);    
+    void Delete(int mainTaskId);
 }
 
 public class MainTaskRepository : IMainTaskRepository
@@ -24,15 +23,15 @@ public class MainTaskRepository : IMainTaskRepository
         _myDBContext = myDBContext;
     }
 
-    public MainTask Create(MainTask mainTask)
+    public async Task<MainTask> Create(MainTask mainTask)
     {
-        _myDBContext.MainTasks.Add(mainTask);
-        _myDBContext.SaveChanges();
+        await _myDBContext.MainTasks.AddAsync(mainTask);
+        await _myDBContext.SaveChangesAsync();
         return mainTask;
     }
 
     public List<MainTask> Get(int userId)
-    {        
+    {
         return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
     }
 
@@ -42,7 +41,7 @@ public class MainTaskRepository : IMainTaskRepository
     }
 
     public List<MainTask> FindByDescription(string desc)
-    { 
+    {
         return _myDBContext.MainTasks.Where(x => x.Description!.Contains(desc)).ToList();
     }
 
