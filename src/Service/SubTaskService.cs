@@ -15,8 +15,8 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    void SetCompletedOrNot(int mainTaskId);
-    bool VerifyFinished(int mainTaskId);
+    Task SetCompletedOrNot(int mainTaskId);
+    Task<bool> VerifyFinished(int mainTaskId);
     Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
