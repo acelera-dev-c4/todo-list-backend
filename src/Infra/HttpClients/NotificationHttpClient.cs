@@ -24,11 +24,8 @@ public class NotificationHttpClient
     }
 
    
-    public async Task<HttpResponseMessage> CreateNotification(int subscriptionId, string message, bool readed)
+    public async Task<HttpResponseMessage> CreateNotification(string token, int subscriptionId, string message, bool readed)
     {
-        try
-            {
-
             var payload = new
             {
                 subscriptionId,
@@ -36,17 +33,12 @@ public class NotificationHttpClient
                 readed
             };
 
-            string jsonPayload = JsonSerializer.Serialize(payload);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        string jsonPayload = JsonSerializer.Serialize(payload);
             HttpContent content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var result = await _httpClient.PostAsync($"{_httpClient.BaseAddress}Notification", content);
             return result;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
-        return null;
 
     }
 }

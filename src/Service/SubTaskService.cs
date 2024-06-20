@@ -148,6 +148,10 @@ public class SubTaskService : ISubTaskService
                 return false;
         }
 
+        //var userToken = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+
         if (IsMainTaskInSubscriptions(mainTaskId))
         {
             var subscriptions = _myDBContext.Subscriptions.Where(u => u.MainTaskIdTopic == mainTaskId).ToList();
@@ -155,7 +159,7 @@ public class SubTaskService : ISubTaskService
 
             foreach (Subscription subscription in subscriptions)
             {
-                await _notificationHttpClient.CreateNotification(
+                await _notificationHttpClient.CreateNotification(token,
                     (int)subscription.Id!,
                     "A tarefa " + mainTask!.Description + " foi concluida.",
                     false
