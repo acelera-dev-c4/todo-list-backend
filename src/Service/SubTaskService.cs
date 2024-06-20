@@ -10,12 +10,12 @@ namespace Service;
 
 public interface ISubTaskService
 {
-    SubTask Create(SubTaskRequest subTaskRequest);
-    List<SubTask> List(int mainTaskId);
+    Task<SubTask> Create(SubTaskRequest subTaskRequest);
+    Task<List<SubTask>> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
-    void Delete(int subTaskId);
+    Task Delete(int subTaskId);
     Task SetCompletedOrNot(int mainTaskId);
-    bool VerifyFinished(int mainTaskId);
+    Task<bool> VerifyFinished(int mainTaskId);
 }
 public class SubTaskService : ISubTaskService
 {
@@ -51,27 +51,24 @@ public class SubTaskService : ISubTaskService
             return false;
         }
         return true;
-
-
-
     }
 
-    public SubTask Create(SubTaskRequest subTaskRequest)
+    public async Task<SubTask> Create(SubTaskRequest subTaskRequest)
     {
         var newSubTask = SubTaskMapper.ToClass(subTaskRequest);
-        return _subTaskRepository.Create(newSubTask);
+        return await _subTaskRepository.Create(newSubTask);
     }
 
-    public async void Delete(int subTaskId)
+    public async Task Delete(int subTaskId)
     {
-        var subTask = _subTaskRepository.Find(subTaskId);
+        var subTask = await _subTaskRepository.Find(subTaskId);
 
         if (subTask is null)
-            throw new Exception("subTask not found!");
+            throw new NotFoundException("SubTask not found!");
 
         var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId);
         if (mainTask is null)
-            throw new Exception("mainTask not found!");
+            throw new NotFoundException("MainTask not found!");
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -80,17 +77,17 @@ public class SubTaskService : ISubTaskService
             throw new UnauthorizedAccessException("You don't have permission to delete this subtask.");
         }
 
-        _subTaskRepository.Delete(subTaskId);
+        await _subTaskRepository.Delete(subTaskId);
     }
 
-    public List<SubTask> List(int mainTaskId)
+    public async Task<List<SubTask>> List(int mainTaskId)
     {
-        return _subTaskRepository.Get(mainTaskId);
+        return await _subTaskRepository.Get(mainTaskId);
     }
 
     public async Task<SubTask> Update(SubTaskUpdate updateSubTaskRequest, int subTaskId)
     {
-        var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
+        var subTask = await _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
 
         var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
 
@@ -123,9 +120,9 @@ public class SubTaskService : ISubTaskService
     /// </summary>
     /// <param name="mainTaskId"></param>
     /// <returns></returns>
-    public bool VerifyFinished(int mainTaskId)
+    public async Task<bool> VerifyFinished(int mainTaskId)
     {
-        var list = List(mainTaskId);
+        var list = await List(mainTaskId);
         foreach (var item in list)
         {
             if (!item.Finished)
@@ -147,7 +144,7 @@ public class SubTaskService : ISubTaskService
             throw new NotFoundException("MainTask not found!");
         }
 
-        mainTask.Completed = VerifyFinished(mainTaskId);
+        mainTask.Completed = await VerifyFinished(mainTaskId);
 
         await _myDBContext.SaveChangesAsync();
     }

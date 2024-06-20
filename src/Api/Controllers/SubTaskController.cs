@@ -20,16 +20,16 @@ public class SubTaskController : Controller
     }
 
     [HttpGet("{mainTaskId}")]
-    public IActionResult Get([FromRoute] int mainTaskId)
+    public async Task<IActionResult> Get([FromRoute] int mainTaskId)
     {
-        var mainTasks = _subTaskService.List(mainTaskId);
+        var mainTasks = await _subTaskService.List(mainTaskId);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] SubTaskRequest newSubTask)
+    public async Task<IActionResult> Post([FromBody] SubTaskRequest newSubTask)
     {
-        _subTaskService.Create(newSubTask);
+        await _subTaskService.Create(newSubTask);
         return Ok(newSubTask);
     }
 
@@ -41,9 +41,9 @@ public class SubTaskController : Controller
     }
 
     [HttpDelete("{subTaskId}")]
-    public IActionResult Delete([FromRoute] int subTaskId)
+    public async Task<IActionResult> Delete([FromRoute] int subTaskId)
     {
-        _subTaskService.Delete(subTaskId);
+        await _subTaskService.Delete(subTaskId);
         return NoContent();
     }
 }
