@@ -1,6 +1,5 @@
 ﻿using Domain.Request;
 using Infra;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace Api.Controllers;
 public class MainTaskController : ControllerBase
 {
     private readonly IMainTaskService _mainTaskService;
-    NotificationHttpClient _notificationHttpClient = new();
+    NotificationHttpClient _notificationHttpClient = new(); // nao funcionou com DI
 
     public MainTaskController(IMainTaskService mainTaskService)
     {
@@ -48,16 +47,16 @@ public class MainTaskController : ControllerBase
         var newMainTask = _mainTaskService.Create(mainTaskRequest);
         return Ok(newMainTask);
     }
-        
+
     [HttpPut("SetUrlWebhook")]
     public async Task<IActionResult> SetUrlWebhook([FromBody] JsonElement content)
-    {        
+    {
         int mainTaskId = content.GetProperty("mainTaskId").GetInt32();
         string url = content.GetProperty("url").GetString()!;
-        
+
         try
         {
-            await _mainTaskService.NotifyWithUrl(mainTaskId, url);
+            await _mainTaskService.SetUrlWebhook(mainTaskId, url);
             return Ok("Url set for future notification");
         }
         catch (Exception e)

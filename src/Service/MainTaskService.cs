@@ -19,7 +19,7 @@ public interface IMainTaskService
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
     List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
-    Task NotifyWithUrl(int mainTaskId, string url);
+    Task SetUrlWebhook(int mainTaskId, string url);
 }
 
 public class MainTaskService : IMainTaskService
@@ -163,7 +163,7 @@ public class MainTaskService : IMainTaskService
         return result;
     }
 
-    public async Task NotifyWithUrl(int mainTaskId, string url)
+    public async Task SetUrlWebhook(int mainTaskId, string url)
     {
         var task = _mainTaskRepository.Find(mainTaskId);
         if (task != null)
@@ -174,6 +174,6 @@ public class MainTaskService : IMainTaskService
             UpdateUrl(updated, mainTaskId);
         }
         else
-            throw new FileNotFoundException("MainTask Not Found, url to notify was not updated");
+            throw new NotFoundException("MainTask Not Found, url to notify was not updated");
     }
 }
