@@ -10,6 +10,11 @@ using Microsoft.OpenApi.Models;
 using Service;
 using System.Text;
 
+using FluentAssertions.Common;
+using Microsoft.OpenApi.Models;
+using Infra;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -36,6 +41,13 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddHttpClient("notificationClient", client =>
+{
+    var notificationUri = builder.Configuration.GetValue<string>("NotificationApi:BaseUrl");
+    client.BaseAddress = new Uri(notificationUri);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 builder.Services.AddTransient<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -45,6 +57,7 @@ builder.Services.AddScoped<ISubTaskService, SubTaskService>();
 builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<NotificationHttpClient>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
