@@ -1,16 +1,16 @@
 using Api.Middlewares;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
 using Domain.Options;
+using Infra;
 using Infra.DB;
 using Infra.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Service;
 using System.Text;
-using FluentAssertions.Common;
-using Microsoft.OpenApi.Models;
-using Infra;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -6,6 +6,7 @@ using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Infra;
 
 namespace Service;
 
@@ -26,9 +27,7 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
-    private readonly NotificationHttpClient _notificationHttpClient;
-
-
+    private readonly NotificationHttpClient _notificationHttpClient;    
     public SubTaskService(ISubTaskRepository subTaskRepository,
                           IMainTaskRepository mainTaskRepository,
                           IHttpContextAccessor httpContextAccessor,
