@@ -10,3 +10,8 @@ public class SubTaskUpdate
     public string? Description { get; set; }
     public bool Finished { get; set; }
 }
+
+public class UpdateSubtaskFinished
+{
+    public bool Finished { get; set; }
+}
