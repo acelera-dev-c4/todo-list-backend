@@ -5,11 +5,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests
 {
@@ -28,7 +23,6 @@ namespace Tests
             new MainTask {UserId = 1, Id = 2, Description = "MainTask2"},
             new MainTask {UserId = 1, Id = 3, Description = "MainTask3"}
         };
-
             _mockContext.Setup(m => m.Get(1)).Returns(mainTasks);
 
             _controller = new MainTaskController(_mockContext.Object);
@@ -41,33 +35,31 @@ namespace Tests
 
             var list = (result as OkObjectResult)?.Value as List<MainTask>;
 
-
             list.Should().NotBeNull();
             list.Should().HaveCount(3);
-
         }
 
         [Fact]
-        public void Post_CreatesNewMainTask_Success()
+        public async Task Post_CreatesNewMainTask_Success()
         {
             //arrange
             var mainTaskRequest = new MainTaskRequest() { UserId = 1, Description = "New Task" };
             var newMainTask = new MainTask() { UserId = 1, Id = 1, Description = "New Task" };
-            _mockContext.Setup(m => m.Create(mainTaskRequest)).Returns(newMainTask);
-        
+            _mockContext.Setup(m => m.Create(mainTaskRequest)).ReturnsAsync(newMainTask);
+
             //act
-            var result = _controller.Post(mainTaskRequest);
+            var result = await _controller.Post(mainTaskRequest);
             var item = (result as OkObjectResult)?.Value as MainTask;
 
             //assert
-            item.Should().BeEquivalentTo(new MainTask() { UserId = 1, Id = 1, Description = "New Task" });            
+            item.Should().BeEquivalentTo(new MainTask() { UserId = 1, Id = 1, Description = "New Task" });
         }
 
         [Fact]
         public void Put_UpdatesMainTask_Success()
         {
             //arrange
-            var mainTaskUpdate = new MainTaskUpdate() { Description = "New Task"};
+            var mainTaskUpdate = new MainTaskUpdate() { Description = "New Task" };
             var newMainTask = new MainTask() { UserId = 1, Id = 1, Description = "New Task" };
 
             _mockContext.Setup(m => m.Update(mainTaskUpdate, 1)).Returns(newMainTask);
@@ -77,8 +69,7 @@ namespace Tests
             var item = (result as OkObjectResult)?.Value as MainTask;
 
             //assert
-            item.Should().BeEquivalentTo(new MainTask { UserId = 1, Id = 1, Description = "New Task"});
-
+            item.Should().BeEquivalentTo(new MainTask { UserId = 1, Id = 1, Description = "New Task" });
         }
 
         [Fact]
@@ -89,7 +80,6 @@ namespace Tests
 
             //assert
             result.Should().BeEquivalentTo(new NoContentResult());
-
         }
     }
 }

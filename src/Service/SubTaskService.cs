@@ -13,10 +13,11 @@ public interface ISubTaskService
 {
     SubTask Create(SubTaskRequest subTaskRequest);
     List<SubTask> List(int mainTaskId);
-    SubTask Update(SubTaskUpdate subTaskUpdate, int subTaskId);
+    Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
     void SetCompletedOrNot(int mainTaskId);
     bool VerifyFinished(int mainTaskId);
+    Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
 {
@@ -92,7 +93,7 @@ public class SubTaskService : ISubTaskService
         return _subTaskRepository.Get(mainTaskId);
     }
 
-    public SubTask Update(SubTaskUpdate updateSubTaskRequest, int subTaskId)
+    public async Task<SubTask> Update(SubTaskUpdate updateSubTaskRequest, int subTaskId)
     {
         var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
 
@@ -111,15 +112,15 @@ public class SubTaskService : ISubTaskService
         {
             //se a pessoa que criou, é a mesma que esta tentando dar update.
             if (userId == mainTask.UserId.ToString())
-                throw new BadRequestException("This task cannot be completed beacuse it has an active sub");        
+                throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
 
-                
+
 
         }
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
         SetCompletedOrNot(subTask.MainTaskId);
-        return _subTaskRepository.Update(subTask);
+        return await _subTaskRepository.Update(subTask);
     }
 
     /// <summary>
@@ -150,5 +151,13 @@ public class SubTaskService : ISubTaskService
         //if (newStatus != originalStatus) 
         //    _notificationHttpClient.NotifyMainTaskIsFinished(mainTaskId);
         _myDBContext.SaveChanges();
+    }
+
+    public async Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
+    {
+        var subtask = await _subTaskRepository.UpdateSubtaskFinished(subTaskId, finishedSubTask);
+
+        if (subtask is null)
+            throw new NotFoundException("SubTask not found!");
     }
 }

@@ -9,11 +9,12 @@ using Infra;
 using Domain.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 
+
 namespace Service;
 
 public interface IMainTaskService
 {
-    MainTask Create(MainTaskRequest mainTask);
+    Task<MainTask> Create(MainTaskRequest mainTask);
     void Delete(int mainTaskId);
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
@@ -36,10 +37,14 @@ public class MainTaskService : IMainTaskService
         _userService = userService;
     }
 
-    public MainTask Create(MainTaskRequest mainTaskRequest)
+    public async Task<MainTask> Create(MainTaskRequest mainTaskRequest)
     {
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId != mainTaskRequest.UserId.ToString()) throw new UnauthorizedAccessException("You don't have permission to create this task.");
+
         var newMainTask = MainTaskMapper.ToClass(mainTaskRequest);
-        return _mainTaskRepository.Create(newMainTask);
+        return await _mainTaskRepository.Create(newMainTask);
     }
 
     public List<MainTask>? Get(int userId)

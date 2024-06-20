@@ -1,4 +1,4 @@
-﻿using Domain.Request;
+using Domain.Request;
 using Infra;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -87,3 +87,4 @@ public class MainTaskController : ControllerBase
         return response.IsSuccessStatusCode ? Ok(response) : StatusCode((int)response.StatusCode, $"Failed to delete subscription. Status code: {response.StatusCode}");
     }
 }
+
