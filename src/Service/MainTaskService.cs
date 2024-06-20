@@ -15,7 +15,7 @@ public interface IMainTaskService
     List<MainTask>? Get(int userId);
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
-    List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
+    Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
 }
 
 public class MainTaskService : IMainTaskService
@@ -92,7 +92,7 @@ public class MainTaskService : IMainTaskService
         _mainTaskRepository.Delete(mainTaskId);
     }
 
-    public List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription)
+    public async Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription)
     {
         List<MainTask>? result = new();
         List<User>? foundUsers = new();
@@ -124,7 +124,7 @@ public class MainTaskService : IMainTaskService
 
         if (validUserName)
         {
-            foundUsers = _userService.GetByName(userName!);
+            foundUsers = await _userService.GetByName(userName!);
 
             if (!foundUsers.IsNullOrEmpty())
             {
