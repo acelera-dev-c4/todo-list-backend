@@ -42,9 +42,9 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] MainTaskRequest mainTaskRequest)
+    public async Task<IActionResult> Post([FromBody] MainTaskRequest mainTaskRequest)
     {
-        var newMainTask = _mainTaskService.Create(mainTaskRequest);
+        var newMainTask = await _mainTaskService.Create(mainTaskRequest);
         return Ok(newMainTask);
     }
 
