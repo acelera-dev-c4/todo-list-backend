@@ -14,7 +14,7 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    void SetCompletedOrNot(int mainTaskId);
+    Task SetCompletedOrNot(int mainTaskId);
     bool VerifyFinished(int mainTaskId);
 }
 public class SubTaskService : ISubTaskService
@@ -62,14 +62,14 @@ public class SubTaskService : ISubTaskService
         return _subTaskRepository.Create(newSubTask);
     }
 
-    public void Delete(int subTaskId)
+    public async void Delete(int subTaskId)
     {
         var subTask = _subTaskRepository.Find(subTaskId);
 
         if (subTask is null)
             throw new Exception("subTask not found!");
 
-        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId);
+        var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId);
         if (mainTask is null)
             throw new Exception("mainTask not found!");
 
@@ -92,7 +92,7 @@ public class SubTaskService : ISubTaskService
     {
         var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
 
-        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
+        var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
@@ -114,7 +114,7 @@ public class SubTaskService : ISubTaskService
         }
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
-        SetCompletedOrNot(subTask.MainTaskId);
+        await SetCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
     }
 
@@ -138,9 +138,17 @@ public class SubTaskService : ISubTaskService
     /// Sets a mainTask as completed or not completed.
     /// </summary>
     /// <param name="mainTaskId"></param>
-    public void SetCompletedOrNot(int mainTaskId)
+    public async Task SetCompletedOrNot(int mainTaskId)
     {
-        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId);
-        _myDBContext.SaveChanges();
+        var mainTask = await _mainTaskService.Find(mainTaskId);
+
+        if (mainTask == null)
+        {
+            throw new NotFoundException("MainTask not found!");
+        }
+
+        mainTask.Completed = VerifyFinished(mainTaskId);
+
+        await _myDBContext.SaveChangesAsync();
     }
 }

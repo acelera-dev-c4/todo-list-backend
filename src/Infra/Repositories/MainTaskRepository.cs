@@ -7,11 +7,11 @@ namespace Infra.Repositories;
 public interface IMainTaskRepository
 {
     Task<MainTask> Create(MainTask mainTask);
-    List<MainTask> Get(int userId);
-    MainTask? Find(int mainTaskId);
-    List<MainTask> FindByDescription(string desc);
-    MainTask Update(MainTask mainTask);
-    void Delete(int mainTaskId);
+    Task<List<MainTask>> Get(int userId);
+    Task<MainTask?> Find(int mainTaskId);
+    Task<List<MainTask>> FindByDescription(string desc);
+    Task<MainTask> Update(MainTask mainTask);
+    Task Delete(int mainTaskId);
 }
 
 public class MainTaskRepository : IMainTaskRepository
@@ -30,31 +30,35 @@ public class MainTaskRepository : IMainTaskRepository
         return mainTask;
     }
 
-    public List<MainTask> Get(int userId)
+    public async Task<List<MainTask>> Get(int userId)
     {
-        return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
+        return await _myDBContext.MainTasks.Where(x => x.UserId == userId).ToListAsync();
     }
 
-    public MainTask? Find(int mainTaskId)
+    public async Task<MainTask?> Find(int mainTaskId)
     {
-        return _myDBContext.MainTasks.Find(mainTaskId);
+        return await _myDBContext.MainTasks.FindAsync(mainTaskId);
     }
 
-    public List<MainTask> FindByDescription(string desc)
+    public async Task<List<MainTask>> FindByDescription(string desc)
     {
-        return _myDBContext.MainTasks.Where(x => x.Description!.Contains(desc)).ToList();
+        return await _myDBContext.MainTasks.Where(x => x.Description!.Contains(desc)).ToListAsync();
     }
 
-    public MainTask Update(MainTask mainTaskUpdate)
+    public async Task<MainTask> Update(MainTask mainTaskUpdate)
     {
-        _myDBContext.MainTasks.Update(mainTaskUpdate);
-        _myDBContext.SaveChanges();
+        await _myDBContext.MainTasks
+            .Where(mt => mt.Id == mainTaskUpdate.Id)
+            .ExecuteUpdateAsync(mt => mt
+                .SetProperty(mainTask => mainTask.Description, mainTaskUpdate.Description)
+            );
+        await _myDBContext.SaveChangesAsync();
         return mainTaskUpdate;
     }
 
-    public void Delete(int mainTaskId)
+    public async Task Delete(int mainTaskId)
     {
-        _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
+        await _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDeleteAsync();
     }
 
 }

@@ -1,3 +1,4 @@
+using Domain.Exceptions;
 using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
@@ -11,11 +12,11 @@ namespace Service;
 public interface IMainTaskService
 {
     Task<MainTask> Create(MainTaskRequest mainTask);
-    void Delete(int mainTaskId);
-    List<MainTask>? Get(int userId);
-    MainTask? Find(int mainTaskId);
-    MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
-    List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
+    Task Delete(int mainTaskId);
+    Task<List<MainTask>> Get(int userId);
+    Task<MainTask?> Find(int mainTaskId);
+    Task<MainTask> Update(MainTaskUpdate mainTask, int mainTaskId);
+    Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
 }
 
 public class MainTaskService : IMainTaskService
@@ -41,27 +42,27 @@ public class MainTaskService : IMainTaskService
         return await _mainTaskRepository.Create(newMainTask);
     }
 
-    public List<MainTask>? Get(int userId)
+    public async Task<List<MainTask>> Get(int userId)
     {
-        return _mainTaskRepository.Get(userId);
+        return await _mainTaskRepository.Get(userId);
     }
 
-    public MainTask? Find(int mainTaskId)
+    public async Task<MainTask?> Find(int mainTaskId)
     {
-        var mainTask = _mainTaskRepository.Find(mainTaskId);
+        var mainTask = await _mainTaskRepository.Find(mainTaskId);
 
         if (mainTask is null)
-            throw new Exception("mainTask not found!");
+            throw new NotFoundException("MainTask not found!");
 
         return mainTask;
     }
 
-    public MainTask Update(MainTaskUpdate mainTaskUpdate, int mainTaskId)
+    public async Task<MainTask> Update(MainTaskUpdate mainTaskUpdate, int mainTaskId)
     {
-        var mainTask = _mainTaskRepository.Find(mainTaskId);
+        var mainTask = await _mainTaskRepository.Find(mainTaskId);
 
         if (mainTask is null)
-            throw new Exception("mainTask not found!");
+            throw new NotFoundException("MainTask not found!");
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -72,15 +73,15 @@ public class MainTaskService : IMainTaskService
 
         mainTask.Description = mainTaskUpdate.Description;
 
-        return _mainTaskRepository.Update(mainTask);
+        return await _mainTaskRepository.Update(mainTask);
     }
 
-    public void Delete(int mainTaskId)
+    public async Task Delete(int mainTaskId)
     {
-        var mainTask = _mainTaskRepository.Find(mainTaskId);
+        var mainTask = await _mainTaskRepository.Find(mainTaskId);
 
         if (mainTask is null)
-            throw new Exception("mainTask not found!");
+            throw new NotFoundException("MainTask not found!");
 
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -89,10 +90,10 @@ public class MainTaskService : IMainTaskService
             throw new UnauthorizedAccessException("You don't have permission to delete this task.");
         }
 
-        _mainTaskRepository.Delete(mainTaskId);
+        await _mainTaskRepository.Delete(mainTaskId);
     }
 
-    public List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription)
+    public async Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription)
     {
         List<MainTask>? result = new();
         List<User>? foundUsers = new();
@@ -100,10 +101,9 @@ public class MainTaskService : IMainTaskService
         bool validUserName = !userName.IsNullOrEmpty();
         bool validMainTaskDescription = !mainTaskDescription.IsNullOrEmpty();
 
-
         if (validMainTaskId)
         {
-            MainTask? foundById = _mainTaskRepository.Find((int)mainTaskId!);
+            MainTask? foundById = await _mainTaskRepository.Find((int)mainTaskId!);
 
             if (foundById != null)
             {
@@ -114,7 +114,7 @@ public class MainTaskService : IMainTaskService
 
         if (validMainTaskDescription)
         {
-            List<MainTask>? tasksByDesc = _mainTaskRepository.FindByDescription(mainTaskDescription!);
+            List<MainTask>? tasksByDesc = await _mainTaskRepository.FindByDescription(mainTaskDescription!);
             foreach (var task in tasksByDesc)
             {
                 if (!result.Contains(task))
@@ -124,13 +124,13 @@ public class MainTaskService : IMainTaskService
 
         if (validUserName)
         {
-            foundUsers = _userService.GetByName(userName!);
+            foundUsers = await _userService.GetByName(userName!);
 
             if (!foundUsers.IsNullOrEmpty())
             {
                 foreach (var user in foundUsers!)
                 {
-                    var listFromUser = Get(user.Id);
+                    var listFromUser = await Get(user.Id);
                     foreach (var task in listFromUser!)
                     {
                         if (!result.Contains(task))

@@ -1,8 +1,8 @@
-﻿using Infra.Repositories;
-using Domain.Mappers;
+﻿using Domain.Mappers;
+using Domain.Models;
 using Domain.Request;
 using Domain.Responses;
-using Domain.Models;
+using Infra.Repositories;
 
 namespace Service;
 
@@ -13,7 +13,7 @@ public interface IUserService
     User? GetById(int userId);
     List<UserResponse> List();
     UserResponse Update(UserUpdate userUpdate);
-    List<User>? GetByName(string name);
+    Task<List<User>?> GetByName(string name);
 
 }
 
@@ -46,9 +46,9 @@ public class UserService : IUserService
         return _userRepository.Get(userId);
     }
 
-    public List<User>? GetByName(string name)
+    public async Task<List<User>?> GetByName(string name)
     {
-        return _userRepository.GetByName(name);
+        return await _userRepository.GetByName(name);
     }
 
     public List<UserResponse> List()

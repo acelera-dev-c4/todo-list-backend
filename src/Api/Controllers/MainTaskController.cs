@@ -20,21 +20,21 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-    public IActionResult Get([FromRoute] int userId)
+    public async Task<IActionResult> Get([FromRoute] int userId)
     {
-        var mainTasks = _mainTaskService.Get(userId);
+        var mainTasks = await _mainTaskService.Get(userId);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
     [HttpGet("search")]
-    public IActionResult Get([FromQuery] int? MainTaskId,
+    public async Task<IActionResult> Get([FromQuery] int? MainTaskId,
                              [FromQuery] string? UserName,
                              [FromQuery] string? MainTaskDescription)
     {
         if (MainTaskId == null && string.IsNullOrEmpty(UserName) && string.IsNullOrEmpty(MainTaskDescription))
             return BadRequest("At least one parameter is required (MainTaskId, UserName, MainTaskDescription)");
 
-        var mainTasks = _mainTaskService.SearchByParams(MainTaskId, UserName, MainTaskDescription);
+        var mainTasks = await _mainTaskService.SearchByParams(MainTaskId, UserName, MainTaskDescription);
         return mainTasks is null ? NotFound() : Ok(mainTasks);
     }
 
@@ -46,16 +46,16 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpPut("{mainTaskId}")]
-    public IActionResult Put(int mainTaskId, [FromBody] MainTaskUpdate updateMainTask)
+    public async Task<IActionResult> Put(int mainTaskId, [FromBody] MainTaskUpdate updateMainTask)
     {
-        var mainTask = _mainTaskService.Update(updateMainTask, mainTaskId);
+        var mainTask = await _mainTaskService.Update(updateMainTask, mainTaskId);
         return Ok(mainTask);
     }
 
     [HttpDelete("{mainTaskId}")]
-    public IActionResult Delete(int mainTaskId)
+    public async Task<IActionResult> Delete(int mainTaskId)
     {
-        _mainTaskService.Delete(mainTaskId);
+        await _mainTaskService.Delete(mainTaskId);
         return NoContent();
     }
 }

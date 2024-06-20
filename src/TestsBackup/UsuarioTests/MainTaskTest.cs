@@ -23,15 +23,15 @@ namespace Tests
             new MainTask {UserId = 1, Id = 2, Description = "MainTask2"},
             new MainTask {UserId = 1, Id = 3, Description = "MainTask3"}
         };
-            _mockContext.Setup(m => m.Get(1)).Returns(mainTasks);
+            _mockContext.Setup(m => m.Get(1)).ReturnsAsync(mainTasks);
 
             _controller = new MainTaskController(_mockContext.Object);
         }
 
         [Fact]
-        public void Get_ReturnsAll_Success()
+        public async Task Get_ReturnsAll_Success()
         {
-            var result = _controller.Get(1);
+            var result = await _controller.Get(1);
 
             var list = (result as OkObjectResult)?.Value as List<MainTask>;
 
@@ -56,16 +56,16 @@ namespace Tests
         }
 
         [Fact]
-        public void Put_UpdatesMainTask_Success()
+        public async Task Put_UpdatesMainTask_Success()
         {
             //arrange
             var mainTaskUpdate = new MainTaskUpdate() { Description = "New Task" };
             var newMainTask = new MainTask() { UserId = 1, Id = 1, Description = "New Task" };
 
-            _mockContext.Setup(m => m.Update(mainTaskUpdate, 1)).Returns(newMainTask);
+            _mockContext.Setup(m => m.Update(mainTaskUpdate, 1)).ReturnsAsync(newMainTask);
 
             //act
-            var result = _controller.Put(1, mainTaskUpdate);
+            var result = await _controller.Put(1, mainTaskUpdate);
             var item = (result as OkObjectResult)?.Value as MainTask;
 
             //assert
@@ -73,10 +73,10 @@ namespace Tests
         }
 
         [Fact]
-        public void Delete_DeletesMainTask_Success()
+        public async Task Delete_DeletesMainTask_Success()
         {
             //act
-            var result = _controller.Delete(1);
+            var result = await _controller.Delete(1);
 
             //assert
             result.Should().BeEquivalentTo(new NoContentResult());
