@@ -1,6 +1,7 @@
 ﻿using Domain.Exceptions;
 using Domain.Mappers;
 using Domain.Models;
+using Infra;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -14,8 +15,8 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    void SetCompletedOrNot(int mainTaskId);
-    bool VerifyFinished(int mainTaskId);
+    Task SetCompletedOrNot(int mainTaskId);
+    Task<bool> VerifyFinished(int mainTaskId);
     Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
@@ -25,13 +26,15 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
+    private readonly NotificationHttpClient _notificationHttpClient;
 
 
     public SubTaskService(ISubTaskRepository subTaskRepository,
                           IMainTaskRepository mainTaskRepository,
                           IHttpContextAccessor httpContextAccessor,
                           MyDBContext myDbContext,
-                          IMainTaskService mainTaskService
+                          IMainTaskService mainTaskService,
+                          NotificationHttpClient notificationHttpClient
                           )
     {
         _subTaskRepository = subTaskRepository;
@@ -39,6 +42,7 @@ public class SubTaskService : ISubTaskService
         _httpContextAccessor = httpContextAccessor;
         _myDBContext = myDbContext;
         _mainTaskService = mainTaskService;
+        _notificationHttpClient = notificationHttpClient;
 
     }
     private bool IsSubTaskInSubscriptions(int subTaskId)
@@ -53,7 +57,19 @@ public class SubTaskService : ISubTaskService
         }
         return true;
 
+    }
 
+    private bool IsMainTaskInSubscriptions(int mainTaskId)
+    {
+        if (_myDBContext.Subscriptions.Any(subscription => subscription.MainTaskIdTopic == mainTaskId) == true)
+        {
+            return true;
+        }
+        if (_myDBContext.Subscriptions.Any(subscription => subscription.MainTaskIdTopic == mainTaskId) == false)
+        {
+            return false;
+        }
+        return true;
 
     }
 
@@ -115,7 +131,7 @@ public class SubTaskService : ISubTaskService
         }
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
-        SetCompletedOrNot(subTask.MainTaskId);
+        await SetCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
     }
 
@@ -124,7 +140,7 @@ public class SubTaskService : ISubTaskService
     /// </summary>
     /// <param name="mainTaskId"></param>
     /// <returns></returns>
-    public bool VerifyFinished(int mainTaskId)
+    public async Task<bool> VerifyFinished(int mainTaskId)
     {
         var list = List(mainTaskId);
         foreach (var item in list)
@@ -132,6 +148,26 @@ public class SubTaskService : ISubTaskService
             if (!item.Finished)
                 return false;
         }
+
+        //var userToken = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+
+        if (IsMainTaskInSubscriptions(mainTaskId))
+        {
+            var subscriptions = _myDBContext.Subscriptions.Where(u => u.MainTaskIdTopic == mainTaskId).ToList();
+            var mainTask = _myDBContext.MainTasks.FirstOrDefault(m => m.Id == mainTaskId);
+
+            foreach (Subscription subscription in subscriptions)
+            {
+                await _notificationHttpClient.CreateNotification(token,
+                    (int)subscription.Id!,
+                    "A tarefa " + mainTask!.Description + " foi concluida.",
+                    false
+                    );
+            }
+        }
+
         return true;
     }
 
@@ -139,10 +175,10 @@ public class SubTaskService : ISubTaskService
     /// Sets a mainTask as completed or not completed.
     /// </summary>
     /// <param name="mainTaskId"></param>
-    public void SetCompletedOrNot(int mainTaskId)
+    public async Task SetCompletedOrNot(int mainTaskId)
     {
-        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId);
-        _myDBContext.SaveChanges();
+        _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId);
+        await _myDBContext.SaveChangesAsync();
     }
 
     public async Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
