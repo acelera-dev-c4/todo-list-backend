@@ -22,13 +22,14 @@ public class NotificationHttpClient
     }
 
    
-    public async Task<HttpResponseMessage> CreateNotification(string token, int subscriptionId, string message, bool readed)
+    public async Task<HttpResponseMessage> CreateNotification(string token, int subscriptionId, string message, bool readed, int userId)
     {
             var payload = new
             {
                 subscriptionId,
                 message,
-                readed
+                readed,
+                userId
             };
 
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

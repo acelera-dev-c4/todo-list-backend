@@ -16,8 +16,8 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    Task SetCompletedOrNot(int mainTaskId);
-    Task<bool> VerifyFinished(int mainTaskId);
+    Task SetCompletedOrNot(int mainTaskId, int userIdSubscriber);
+    Task<bool> VerifyFinished(int mainTaskId, int userIdSubscriber);
     Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
@@ -125,12 +125,17 @@ public class SubTaskService : ISubTaskService
             if (userId == mainTask.UserId.ToString())
                 throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
 
-
-
         }
+
+        var mainTaskId = subTask.MainTaskId;
+
+        var taskAssinante = _mainTaskRepository.Find(mainTaskId) ?? throw new NotFoundException("Maintask not found!");
+
+        
+
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
-        await SetCompletedOrNot(subTask.MainTaskId);
+        await SetCompletedOrNot(subTask.MainTaskId, taskAssinante.UserId);
         return await _subTaskRepository.Update(subTask);
     }
 
@@ -139,7 +144,7 @@ public class SubTaskService : ISubTaskService
     /// </summary>
     /// <param name="mainTaskId"></param>
     /// <returns></returns>
-    public async Task<bool> VerifyFinished(int mainTaskId)
+    public async Task<bool> VerifyFinished(int mainTaskId, int userIdSubscriber)
     {
         var list = List(mainTaskId);
         foreach (var item in list)
@@ -162,7 +167,8 @@ public class SubTaskService : ISubTaskService
                 await _notificationHttpClient.CreateNotification(token,
                     (int)subscription.Id!,
                     "A tarefa " + mainTask!.Description + " foi concluida.",
-                    false
+                    false,
+                    userIdSubscriber
                     );
             }
         }
@@ -174,14 +180,10 @@ public class SubTaskService : ISubTaskService
     /// Sets a mainTask as completed or not completed.
     /// </summary>
     /// <param name="mainTaskId"></param>
-    public async Task SetCompletedOrNot(int mainTaskId)
+    public async Task SetCompletedOrNot(int mainTaskId, int userIdSubscriber)
     {
-        bool originalStatus = _mainTaskService.Find(mainTaskId)!.Completed;
-        bool newStatus = await VerifyFinished(mainTaskId);
-        _mainTaskService.Find(mainTaskId)!.Completed = newStatus;
-        //if (newStatus != originalStatus) 
-        //    _notificationHttpClient.NotifyMainTaskIsFinished(mainTaskId); // -> para usar com metodo do Anderson
-        _myDBContext.SaveChanges();
+        _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId, userIdSubscriber);
+        await _myDBContext.SaveChangesAsync();
     }
 
     public async Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
