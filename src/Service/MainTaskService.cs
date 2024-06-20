@@ -1,13 +1,12 @@
+using Domain.Exceptions;
 using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
+using Infra;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using Infra;
-using Domain.Exceptions;
-using System.IdentityModel.Tokens.Jwt;
 
 
 namespace Service;
@@ -28,13 +27,16 @@ public class MainTaskService : IMainTaskService
     private readonly IMainTaskRepository _mainTaskRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserService _userService;
-    NotificationHttpClient notificationClient = new();
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly NotificationHttpClient _notificationClient;
 
-    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService)
+    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService, IHttpClientFactory httpClientFactory)
     {
         _mainTaskRepository = mainTaskRepository;
         _httpContextAccessor = httpContextAccessor;
         _userService = userService;
+        _httpClientFactory = httpClientFactory;
+        _notificationClient = new(_httpClientFactory);
     }
 
     public async Task<MainTask> Create(MainTaskRequest mainTaskRequest)
@@ -76,7 +78,7 @@ public class MainTaskService : IMainTaskService
             throw new UnauthorizedAccessException("You don't have permission to update this task.");
         }
 
-        mainTask.Description = mainTaskUpdate.Description;        
+        mainTask.Description = mainTaskUpdate.Description;
         return _mainTaskRepository.Update(mainTask);
     }
 
@@ -88,7 +90,7 @@ public class MainTaskService : IMainTaskService
             throw new NotFoundException("mainTask not found!");
 
         var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
-        
+
         if (userEmail != "system@mail.com")
         {
             throw new UnauthorizedAccessException("You are not authorized to change Url value ");
@@ -172,7 +174,7 @@ public class MainTaskService : IMainTaskService
     {
         var task = _mainTaskRepository.Find(mainTaskId);
         if (task != null)
-        {            
+        {
             MainTaskUpdate updated = new();
             updated.Description = task.Description;
             updated.UrlNotificationWebhook = url;

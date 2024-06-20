@@ -15,11 +15,14 @@ namespace Api.Controllers;
 public class MainTaskController : ControllerBase
 {
     private readonly IMainTaskService _mainTaskService;
-    NotificationHttpClient _notificationHttpClient = new(); // nao funcionou com DI
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly Infra.NotificationHttpClient _notificationHttpClient; // nao funcionou com DI
 
-    public MainTaskController(IMainTaskService mainTaskService)
+    public MainTaskController(IMainTaskService mainTaskService, IHttpClientFactory httpClientFactory)
     {
         _mainTaskService = mainTaskService;
+        _httpClientFactory = httpClientFactory;
+        _notificationHttpClient = new(_httpClientFactory);
     }
 
     [HttpGet("{userId}")]

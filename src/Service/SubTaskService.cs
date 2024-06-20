@@ -27,12 +27,7 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
-    private readonly NotificationHttpClient _notificationHttpClient;
-
-    private readonly NotificationHttpClient _notificationHttpClient = new();    
-
-
-
+    private readonly NotificationHttpClient _notificationHttpClient;    
     public SubTaskService(ISubTaskRepository subTaskRepository,
                           IMainTaskRepository mainTaskRepository,
                           IHttpContextAccessor httpContextAccessor,
@@ -182,10 +177,10 @@ public class SubTaskService : ISubTaskService
     public async Task SetCompletedOrNot(int mainTaskId)
     {
         bool originalStatus = _mainTaskService.Find(mainTaskId)!.Completed;
-        bool newStatus = VerifyFinished(mainTaskId);
+        bool newStatus = await VerifyFinished(mainTaskId);
         _mainTaskService.Find(mainTaskId)!.Completed = newStatus;
         //if (newStatus != originalStatus) 
-        //    _notificationHttpClient.NotifyMainTaskIsFinished(mainTaskId);
+        //    _notificationHttpClient.NotifyMainTaskIsFinished(mainTaskId); // -> para usar com metodo do Anderson
         _myDBContext.SaveChanges();
     }
 

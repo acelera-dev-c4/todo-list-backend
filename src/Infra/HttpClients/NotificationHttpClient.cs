@@ -9,8 +9,6 @@ namespace Infra;
 public class NotificationHttpClient
 {
     private readonly HttpClient _httpClient;
-
-
     public NotificationHttpClient(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("notificationClient");
