@@ -16,8 +16,8 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    Task SetCompletedOrNot(int mainTaskId, int userIdSubscriber);
-    Task<bool> VerifyFinished(int mainTaskId, int userIdSubscriber);
+    Task SetCompletedOrNot(int mainTaskId);
+    Task<bool> VerifyFinished(int mainTaskId);
     Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
@@ -116,13 +116,9 @@ public class SubTaskService : ISubTaskService
                 throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
         }
 
-        var mainTaskId = subTask.MainTaskId;
-
-        var taskAssinante = _mainTaskRepository.Find(mainTaskId) ?? throw new NotFoundException("Maintask not found!");
-
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
-        await SetCompletedOrNot(subTask.MainTaskId, taskAssinante.UserId);
+        await SetCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
     }
 
@@ -131,7 +127,7 @@ public class SubTaskService : ISubTaskService
     /// </summary>
     /// <param name="mainTaskId"></param>
     /// <returns></returns>
-    public async Task<bool> VerifyFinished(int mainTaskId, int userIdSubscriber)
+    public async Task<bool> VerifyFinished(int mainTaskId)
     {
         var list = List(mainTaskId);
         foreach (var item in list)
@@ -140,22 +136,25 @@ public class SubTaskService : ISubTaskService
                 return false;
         }
 
-        //var userToken = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         if (token is null) throw new BadRequestException("Invalid user authentication");
 
         if (IsMainTaskInSubscriptions(mainTaskId))
         {
             var subscriptions = await _notificationHttpClient.GetSubscriptionsByMainTaskId(mainTaskId, token);
+
             var mainTask = _mainTaskRepository.Find(mainTaskId);
 
             foreach (Subscription subscription in subscriptions)
             {
+                var subtaskSubscription = _subTaskRepository.Find(subscription.SubTaskIdSubscriber);
+                var maintaskSubscription = _mainTaskRepository.Find(subtaskSubscription!.MainTaskId);
+
                 await _notificationHttpClient.CreateNotification(token,
                     (int)subscription.Id!,
                     "A tarefa " + mainTask!.Description + " foi concluida.",
                     false,
-                    userIdSubscriber
+                    maintaskSubscription!.UserId
                     );
             }
         }
@@ -167,9 +166,9 @@ public class SubTaskService : ISubTaskService
     /// Sets a mainTask as completed or not completed.
     /// </summary>
     /// <param name="mainTaskId"></param>
-    public async Task SetCompletedOrNot(int mainTaskId, int userIdSubscriber)
+    public async Task SetCompletedOrNot(int mainTaskId)
     {
-        _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId, userIdSubscriber);
+        _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId);
         await _myDBContext.SaveChangesAsync();
     }
 
