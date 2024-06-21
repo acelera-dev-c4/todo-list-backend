@@ -128,11 +128,11 @@ public class DBSeed
 
             var notifications = new Notifications[]
             {
-                new Notifications { SubscriptionId = (int)subscriptions[0].Id!, Message = $"Tarefa {tasks[0].Description!} Completa!", Readed = false },
-                new Notifications { SubscriptionId = (int)subscriptions[1].Id!, Message = $"Tarefa {tasks[2].Description!} Completa!", Readed = false },
-                new Notifications { SubscriptionId = (int)subscriptions[2].Id!, Message = $"Tarefa {tasks[4].Description!} Completa!", Readed = false },
-                new Notifications { SubscriptionId = (int)subscriptions[3].Id!, Message = $"Tarefa {tasks[6].Description!} Completa!", Readed = false },
-                new Notifications { SubscriptionId = (int)subscriptions[4].Id!, Message = $"Tarefa {tasks[5].Description!} Completa!", Readed = false }
+                new Notifications { SubscriptionId = (int)subscriptions[0].Id!, Message = $"Tarefa {tasks[0].Description!} Completa!", Readed = false, UserId = 1 },
+                new Notifications { SubscriptionId = (int)subscriptions[1].Id!, Message = $"Tarefa {tasks[2].Description!} Completa!", Readed = false, UserId = 2 },
+                new Notifications { SubscriptionId = (int)subscriptions[2].Id!, Message = $"Tarefa {tasks[4].Description!} Completa!", Readed = false, UserId = 0 },
+                new Notifications { SubscriptionId = (int)subscriptions[3].Id!, Message = $"Tarefa {tasks[6].Description!} Completa!", Readed = false, UserId = 1 },
+                new Notifications { SubscriptionId = (int)subscriptions[4].Id!, Message = $"Tarefa {tasks[5].Description!} Completa!", Readed = false, UserId = 0 }
             };
 
             _context.Notifications.AddRange(notifications);
