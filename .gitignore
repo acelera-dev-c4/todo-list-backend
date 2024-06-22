@@ -430,3 +430,4 @@ appsettings.Development.json
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,visualstudio,visualstudiocode
 
 .DS_Store
+/docs/.$MODELO.drawio.bkp
