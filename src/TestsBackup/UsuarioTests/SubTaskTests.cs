@@ -56,17 +56,19 @@ namespace Tests
             item.Should().BeEquivalentTo(new SubTask { Id = 1, MainTaskId = 1, Description = "Very Cool Subtask", Finished = false });
         }
         [Fact]
-        public void Put_UpdatesSubtask_Success()
+        public async Task Put_UpdatesSubtask_Success()
         {
             //arrange
             var newSubTask = new SubTask() { MainTaskId = 1, Id = 1, Description = "New subtask", Finished = true };
             var newSubTaskUpdate = new SubTaskUpdate() { Description = "New subtask", Finished = true };
 
-            _mockContext.Setup(m => m.Update(newSubTaskUpdate, 1)).Returns(newSubTask);
+
+            _mockContext.Setup(m => m.Update(newSubTaskUpdate, 1)).ReturnsAsync(newSubTask);
+
 
 
             //act
-            var result = _controller.Put(1, newSubTaskUpdate);
+            var result = await _controller.Put(1, newSubTaskUpdate);
             var item = (result as OkObjectResult)?.Value as SubTask;
 
             //assert

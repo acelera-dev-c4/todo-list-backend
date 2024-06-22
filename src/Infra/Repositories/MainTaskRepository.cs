@@ -6,9 +6,10 @@ namespace Infra.Repositories;
 
 public interface IMainTaskRepository
 {
-    MainTask Create(MainTask mainTask);
+    Task<MainTask> Create(MainTask mainTask);
     List<MainTask> Get(int userId);
     MainTask? Find(int mainTaskId);
+    List<MainTask> FindByDescription(string desc);
     MainTask Update(MainTask mainTask);
     void Delete(int mainTaskId);
 }
@@ -22,10 +23,10 @@ public class MainTaskRepository : IMainTaskRepository
         _myDBContext = myDBContext;
     }
 
-    public MainTask Create(MainTask mainTask)
+    public async Task<MainTask> Create(MainTask mainTask)
     {
-        _myDBContext.MainTasks.Add(mainTask);
-        _myDBContext.SaveChanges();
+        await _myDBContext.MainTasks.AddAsync(mainTask);
+        await _myDBContext.SaveChangesAsync();
         return mainTask;
     }
 
@@ -39,6 +40,11 @@ public class MainTaskRepository : IMainTaskRepository
         return _myDBContext.MainTasks.Find(mainTaskId);
     }
 
+    public List<MainTask> FindByDescription(string desc)
+    {
+        return _myDBContext.MainTasks.Where(x => x.Description!.Contains(desc)).ToList();
+    }
+
     public MainTask Update(MainTask mainTaskUpdate)
     {
         _myDBContext.MainTasks.Update(mainTaskUpdate);
@@ -50,4 +56,5 @@ public class MainTaskRepository : IMainTaskRepository
     {
         _myDBContext.MainTasks.Where(x => x.Id == mainTaskId).ExecuteDelete();
     }
+
 }

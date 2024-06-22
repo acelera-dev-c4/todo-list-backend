@@ -40,6 +40,12 @@ namespace Service
             return new AuthResponse
             {
                 Jwt = token,
+                User = new UserResponse
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email
+                }
             };
         }
     }

@@ -4,6 +4,7 @@ using Infra.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infra.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240620210157_criando_campo_userId_notification")]
+    partial class criando_campo_userId_notification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("MainTasks", (string)null);
+                    b.ToTable("MainTasks");
                 });
 
             modelBuilder.Entity("Domain.Models.Notifications", b =>
@@ -71,7 +74,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Domain.Models.SubTask", b =>
@@ -95,7 +98,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("MainTaskId");
 
-                    b.ToTable("SubTasks", (string)null);
+                    b.ToTable("SubTasks");
                 });
 
             modelBuilder.Entity("Domain.Models.Subscription", b =>
@@ -118,7 +121,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("SubTaskIdSubscriber");
 
-                    b.ToTable("Subscriptions", (string)null);
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("Domain.Models.User", b =>
@@ -140,7 +143,7 @@ namespace Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Domain.Models.MainTask", b =>
