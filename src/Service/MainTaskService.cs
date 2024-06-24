@@ -20,6 +20,7 @@ public interface IMainTaskService
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
     List<MainTask>? SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
     Task SetUrlWebhook(int mainTaskId, string url);
+    void UpdateUrlOnDB(string newUrl);
 }
 
 public class MainTaskService : IMainTaskService
@@ -29,6 +30,7 @@ public class MainTaskService : IMainTaskService
     private readonly IUserService _userService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly NotificationHttpClient _notificationClient;
+
 
     public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService, IHttpClientFactory httpClientFactory)
     {
@@ -182,5 +184,48 @@ public class MainTaskService : IMainTaskService
         }
         else
             throw new NotFoundException("MainTask Not Found, url to notify was not updated");
+    }
+
+    public async void UpdateUrlOnDB(string newUrl) // acesso apenas ao system user
+    {
+        var tasks = _mainTaskRepository.GetAll();
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        var subscriptions = await _notificationClient.GetSubscriptions(token!);
+
+        MainTaskUpdate updated;
+
+        foreach (MainTask task in tasks)
+        {
+            if (subscriptions.Any(s => s.MainTaskIdTopic == task.Id))
+            {
+                updated = new();
+                updated.Description = task.Description;
+                updated.UrlNotificationWebhook = newUrl;
+                UpdateUrl(updated, (int)task.Id!);
+
+                var mainTask = _mainTaskRepository.Find((int)task.Id!);
+
+                if (mainTask is null)
+                    continue;
+
+                mainTask.UrlNotificationWebhook = updated.UrlNotificationWebhook!;
+                _mainTaskRepository.Update(mainTask);
+            }
+            else
+            {
+                updated = new();
+                updated.Description = task.Description;
+                updated.UrlNotificationWebhook = newUrl;
+                UpdateUrl(updated, (int)task.Id!);
+
+                var mainTask = _mainTaskRepository.Find((int)task.Id!);
+
+                if (mainTask is null)
+                    continue;
+
+                mainTask.UrlNotificationWebhook = "";
+                _mainTaskRepository.Update(mainTask);
+            }
+        }
     }
 }

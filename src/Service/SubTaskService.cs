@@ -16,9 +16,9 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    Task SetCompletedOrNot(int mainTaskId);
+    Task SetMainTaskCompletedOrNot(int mainTaskId);
     Task<bool> VerifyFinished(int mainTaskId);
-    Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
+    Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
 {
@@ -94,12 +94,10 @@ public class SubTaskService : ISubTaskService
         return _subTaskRepository.Get(mainTaskId);
     }
 
-    public async Task<SubTask> Update(SubTaskUpdate updateSubTaskRequest, int subTaskId)
+    public async Task<SubTask> Update(SubTaskUpdate updateSubTaskRequest, int subTaskId) // Apenas para chamadas da NotificationApi pq email system user
     {
         var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
-
         var mainTask = _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
-
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
 
@@ -118,7 +116,7 @@ public class SubTaskService : ISubTaskService
 
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
-        await SetCompletedOrNot(subTask.MainTaskId);
+        await SetMainTaskCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
     }
 
@@ -151,11 +149,12 @@ public class SubTaskService : ISubTaskService
                 var maintaskSubscription = _mainTaskRepository.Find(subtaskSubscription!.MainTaskId);
 
                 await _notificationHttpClient.CreateNotification(token,
-                    (int)subscription.Id!,
-                    "A tarefa " + mainTask!.Description + " foi concluida.",
-                    false,
-                    maintaskSubscription!.UserId
-                    );
+                                                                 (int)subscription.Id!,
+                                                                 "A tarefa " + mainTask!.Description + " foi concluida.",
+                                                                 false,
+                                                                 maintaskSubscription!.UserId,
+                                                                 mainTask.UrlNotificationWebhook
+                                                                 );
             }
         }
 
@@ -166,17 +165,39 @@ public class SubTaskService : ISubTaskService
     /// Sets a mainTask as completed or not completed.
     /// </summary>
     /// <param name="mainTaskId"></param>
-    public async Task SetCompletedOrNot(int mainTaskId)
+    public async Task SetMainTaskCompletedOrNot(int mainTaskId)
     {
         _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId);
         await _myDBContext.SaveChangesAsync();
     }
 
-    public async Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
+    public async Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
     {
-        var subtask = await _subTaskRepository.UpdateSubtaskFinished(subTaskId, finishedSubTask);
+        var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
+        SubTaskUpdate request = new()
+        {
+            Description = subTask.Description,
+            Finished = finishedSubTask
+        };        
+        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
 
-        if (subtask is null)
-            throw new NotFoundException("SubTask not found!");
+        if (userEmail != "system@mail.com")
+        {
+            if (userId != mainTask.UserId.ToString()) throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
+        }
+        //Se a subtarefa está presente na tabela subscriptions
+        if (await IsSubTaskInSubscriptions(subTaskId) == true)
+        {
+            //se a pessoa que criou, é a mesma que esta tentando dar update.
+            if (userId == mainTask.UserId.ToString())
+                throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
+        }
+
+        subTask.Description = request.Description;
+        subTask.Finished = request.Finished;
+        await SetMainTaskCompletedOrNot(subTask.MainTaskId);
+        return await _subTaskRepository.Update(subTask);
     }
 }

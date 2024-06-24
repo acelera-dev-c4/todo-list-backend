@@ -89,5 +89,11 @@ public class MainTaskController : ControllerBase
 
         return response.IsSuccessStatusCode ? Ok(response) : StatusCode((int)response.StatusCode, $"Failed to delete subscription. Status code: {response.StatusCode}");
     }
+
+    [HttpPut("updateUrlOnDb")] // acesso apenas ao system user
+    public IActionResult UpdateUrlOnDB(string newUrl)
+    {
+        _mainTaskService.UpdateUrlOnDB(newUrl); return NoContent();
+    }
 }
 

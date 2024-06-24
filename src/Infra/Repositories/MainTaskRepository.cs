@@ -8,6 +8,7 @@ public interface IMainTaskRepository
 {
     Task<MainTask> Create(MainTask mainTask);
     List<MainTask> Get(int userId);
+    List<MainTask> GetAll();
     MainTask? Find(int mainTaskId);
     List<MainTask> FindByDescription(string desc);
     MainTask Update(MainTask mainTask);
@@ -33,6 +34,11 @@ public class MainTaskRepository : IMainTaskRepository
     public List<MainTask> Get(int userId)
     {
         return _myDBContext.MainTasks.Where(x => x.UserId == userId).ToList();
+    }
+
+    public List<MainTask> GetAll()
+    {
+        return _myDBContext.MainTasks.ToList();
     }
 
     public MainTask? Find(int mainTaskId)
