@@ -145,7 +145,7 @@ public class MainTaskService : IMainTaskService
             {
                 if (!result.Contains(task))
                     result.Add(task);
-            };
+            }
         }
 
         if (validUserName)

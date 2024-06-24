@@ -65,7 +65,7 @@ public class SubTaskRepository : ISubTaskRepository
     {
         var subTask = await _myDBContext.SubTasks.FindAsync(subTaskId);
         subTask!.Finished = finishedSubTask;
-        _myDBContext.SaveChanges();
+        await _myDBContext.SaveChangesAsync();
         return subTask;
     }
 }
