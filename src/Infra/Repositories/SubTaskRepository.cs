@@ -6,13 +6,13 @@ namespace Infra.Repositories;
 
 public interface ISubTaskRepository
 {
-    SubTask Create(SubTask subTask);
-    List<SubTask> Get(int mainTaskId);
-    SubTask? Find(int subTaskId);
+    Task<SubTask> Create(SubTask newSubTask);
+    Task<List<SubTask>> Get(int mainTaskId);
+    Task<SubTask?> Find(int subTaskId);
     Task<SubTask> Update(SubTask subTask);
-    void Delete(int subTaskId);
+    Task Delete(int subTaskId);
     Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
-    
+
 }
 
 public class SubTaskRepository : ISubTaskRepository
@@ -25,21 +25,21 @@ public class SubTaskRepository : ISubTaskRepository
         _myDBContext = myDbContext;
     }
 
-    public SubTask Create(SubTask newSubTask)
+    public async Task<SubTask> Create(SubTask newSubTask)
     {
-        _myDBContext.SubTasks.Add(newSubTask);
-        _myDBContext.SaveChanges();
+        await _myDBContext.SubTasks.AddAsync(newSubTask);
+        await _myDBContext.SaveChangesAsync();
         return newSubTask;
     }
 
-    public List<SubTask> Get(int mainTaskId)
+    public async Task<List<SubTask>> Get(int mainTaskId)
     {
-        return _myDBContext.SubTasks.Where(x => x.MainTaskId == mainTaskId).ToList();
+        return await _myDBContext.SubTasks.Where(x => x.MainTaskId == mainTaskId).ToListAsync();
     }
 
-    public SubTask? Find(int subTaskId)
+    public async Task<SubTask?> Find(int subTaskId)
     {
-        return _myDBContext.SubTasks.Find(subTaskId);
+        return await _myDBContext.SubTasks.FindAsync(subTaskId);
     }
 
     public async Task<SubTask> Update(SubTask subTaskUpdate)
@@ -56,16 +56,16 @@ public class SubTaskRepository : ISubTaskRepository
         return subTaskUpdate;
     }
 
-    public void Delete(int subTaskId)
+    public async Task Delete(int subTaskId)
     {
-        _myDBContext.SubTasks.Where(x => x.Id == subTaskId).ExecuteDelete();
+        await _myDBContext.SubTasks.Where(x => x.Id == subTaskId).ExecuteDeleteAsync();
     }
 
     public async Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
     {
         var subTask = await _myDBContext.SubTasks.FindAsync(subTaskId);
         subTask!.Finished = finishedSubTask;
-        _myDBContext.SaveChanges();
+        await _myDBContext.SaveChangesAsync();
         return subTask;
     }
 }
