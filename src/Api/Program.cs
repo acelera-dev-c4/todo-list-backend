@@ -99,7 +99,7 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
-    }); ;
+    });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
             {
                 {

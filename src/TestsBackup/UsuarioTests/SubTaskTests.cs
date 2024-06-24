@@ -24,15 +24,15 @@ namespace Tests
             new SubTask { Id = 1, MainTaskId = 4, Description = "Subtask4", Finished = true }
 
         };
-            _mockContext.Setup(m => m.List(1)).Returns(subtask);
+            _mockContext.Setup(m => m.List(1)).ReturnsAsync(subtask);
 
             _controller = new SubTaskController(_mockContext.Object);
         }
 
         [Fact]
-        public void Get_ReturnsAll_Success()
+        public async Task Get_ReturnsAll_Success()
         {
-            var result = _controller.Get(1);
+            var result = await _controller.Get(1);
 
             var list = (result as OkObjectResult)?.Value as List<SubTask>;
 
@@ -43,14 +43,14 @@ namespace Tests
         }
 
         [Fact]
-        public void Post_CreatesNewSubTask_Success()
+        public async Task Post_CreatesNewSubTask_Success()
         {
             var subTaskTest = new SubTaskRequest { MainTaskId = 1, Description = "Very Cool Subtask" };
             var subTasktest2 = new SubTask { Id = 1, MainTaskId = 1, Description = "Very Cool Subtask", Finished = false };
-            _mockContext.Setup(x => x.Create(subTaskTest)).Returns(subTasktest2);
+            _mockContext.Setup(x => x.Create(subTaskTest)).ReturnsAsync(subTasktest2);
 
 
-            var result = _controller.Post(subTaskTest);
+            var result = await _controller.Post(subTaskTest);
             var item = (result as OkObjectResult)?.Value as SubTask;
 
             item.Should().BeEquivalentTo(new SubTask { Id = 1, MainTaskId = 1, Description = "Very Cool Subtask", Finished = false });
@@ -77,10 +77,10 @@ namespace Tests
         }
 
         [Fact]
-        public void Delete_DeletesSubtask_Success()
+        public async Task Delete_DeletesSubtask_Success()
         {
             //act
-            var result = _controller.Delete(1);
+            var result = await _controller.Delete(1);
 
             //assert
             result.Should().BeEquivalentTo(new NoContentResult());
