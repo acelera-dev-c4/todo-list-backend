@@ -190,7 +190,7 @@ public class MainTaskService : IMainTaskService
 
     public async void UpdateUrlOnDB(string newUrl) // acesso apenas ao system user
     {
-        var tasks = _mainTaskRepository.GetAll();
+        var tasks = await _mainTaskRepository.GetAll();
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         var subscriptions = await _notificationClient.GetSubscriptions(token!);
 
@@ -203,30 +203,30 @@ public class MainTaskService : IMainTaskService
                 updated = new();
                 updated.Description = task.Description;
                 updated.UrlNotificationWebhook = newUrl;
-                UpdateUrl(updated, (int)task.Id!);
+                await UpdateUrl(updated, (int)task.Id!);
 
-                var mainTask = _mainTaskRepository.Find((int)task.Id!);
+                var mainTask = await _mainTaskRepository.Find((int)task.Id!);
 
                 if (mainTask is null)
                     continue;
 
                 mainTask.UrlNotificationWebhook = updated.UrlNotificationWebhook!;
-                _mainTaskRepository.Update(mainTask);
+                await _mainTaskRepository.Update(mainTask);
             }
             else
             {
                 updated = new();
                 updated.Description = task.Description;
                 updated.UrlNotificationWebhook = newUrl;
-                UpdateUrl(updated, (int)task.Id!);
+                await UpdateUrl(updated, (int)task.Id!);
 
-                var mainTask = _mainTaskRepository.Find((int)task.Id!);
+                var mainTask = await _mainTaskRepository.Find((int)task.Id!);
 
                 if (mainTask is null)
                     continue;
 
                 mainTask.UrlNotificationWebhook = "";
-                _mainTaskRepository.Update(mainTask);
+                await _mainTaskRepository.Update(mainTask);
             }
         }
     }

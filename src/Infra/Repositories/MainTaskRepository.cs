@@ -35,13 +35,9 @@ public class MainTaskRepository : IMainTaskRepository
     {
         return await _myDBContext.MainTasks.Where(x => x.UserId == userId).ToListAsync();
     }
-        public List<MainTask> GetAll()
+    public async Task<List<MainTask>> GetAll()
     {
-        return _myDBContext.MainTasks.ToList();
-    }
-    public List<MainTask> GetAll()
-    {
-        return _myDBContext.MainTasks.ToList();
+        return await _myDBContext.MainTasks.ToListAsync();
     }
     public async Task<MainTask?> Find(int mainTaskId)
     {

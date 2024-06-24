@@ -177,13 +177,13 @@ public class SubTaskService : ISubTaskService
 
     public async Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
     {
-        var subTask = _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
+        var subTask = await _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
         SubTaskUpdate request = new()
         {
             Description = subTask.Description,
             Finished = finishedSubTask
         };        
-        var mainTask = _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
+        var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
 
