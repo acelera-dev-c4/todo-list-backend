@@ -1,9 +1,11 @@
 ﻿using Domain.Exceptions;
 using Domain.Mappers;
 using Domain.Models;
+using Infra;
 using Infra.DB;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace Service;
@@ -14,8 +16,9 @@ public interface ISubTaskService
     List<SubTask> List(int mainTaskId);
     Task<SubTask> Update(SubTaskUpdate subTaskUpdate, int subTaskId);
     void Delete(int subTaskId);
-    void SetCompletedOrNot(int mainTaskId);
-    bool VerifyFinished(int mainTaskId);
+    Task SetCompletedOrNot(int mainTaskId);
+    Task<bool> VerifyFinished(int mainTaskId);
+    Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask);
 }
 public class SubTaskService : ISubTaskService
 {
@@ -24,13 +27,13 @@ public class SubTaskService : ISubTaskService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MyDBContext _myDBContext;
     private readonly IMainTaskService _mainTaskService;
-
-
+    private readonly NotificationHttpClient _notificationHttpClient;
     public SubTaskService(ISubTaskRepository subTaskRepository,
                           IMainTaskRepository mainTaskRepository,
                           IHttpContextAccessor httpContextAccessor,
                           MyDBContext myDbContext,
-                          IMainTaskService mainTaskService
+                          IMainTaskService mainTaskService,
+                          NotificationHttpClient notificationHttpClient
                           )
     {
         _subTaskRepository = subTaskRepository;
@@ -38,22 +41,25 @@ public class SubTaskService : ISubTaskService
         _httpContextAccessor = httpContextAccessor;
         _myDBContext = myDbContext;
         _mainTaskService = mainTaskService;
+        _notificationHttpClient = notificationHttpClient;
 
     }
-    private bool IsSubTaskInSubscriptions(int subTaskId)
+    private async Task<bool> IsSubTaskInSubscriptions(int subTaskId)
     {
-        if (_myDBContext.Subscriptions.Any(subscription => subscription.SubTaskIdSubscriber == subTaskId) == true)
-        {
-            return true;
-        }
-        if (_myDBContext.Subscriptions.Any(subscription => subscription.SubTaskIdSubscriber == subTaskId) == false)
-        {
-            return false;
-        }
-        return true;
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        if (token is null) throw new BadRequestException("Invalid user authentication");
+        var subscriptions = await _notificationHttpClient.GetSubscriptionsBySubTaskId(subTaskId, token);
 
+        return subscriptions.IsSuccessStatusCode;
+    }
 
+    private bool IsMainTaskInSubscriptions(int mainTaskId)
+    {
+        var mainTask = _myDBContext.MainTasks.FirstOrDefault(m => m.Id == mainTaskId);
 
+        if (mainTask is null) throw new NotFoundException("Maintask not found!");
+
+        return mainTask.UrlNotificationWebhook.IsNullOrEmpty() ? false : true;
     }
 
     public SubTask Create(SubTaskRequest subTaskRequest)
@@ -103,18 +109,16 @@ public class SubTaskService : ISubTaskService
         }
 
         //Se a subtarefa está presente na tabela subscriptions
-        if (IsSubTaskInSubscriptions(subTaskId) == true)
+        if (await IsSubTaskInSubscriptions(subTaskId) == true)
         {
             //se a pessoa que criou, é a mesma que esta tentando dar update.
             if (userId == mainTask.UserId.ToString())
                 throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
-
-
-
         }
+
         subTask.Description = updateSubTaskRequest.Description;
         subTask.Finished = updateSubTaskRequest.Finished;
-        SetCompletedOrNot(subTask.MainTaskId);
+        await SetCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
     }
 
@@ -123,7 +127,7 @@ public class SubTaskService : ISubTaskService
     /// </summary>
     /// <param name="mainTaskId"></param>
     /// <returns></returns>
-    public bool VerifyFinished(int mainTaskId)
+    public async Task<bool> VerifyFinished(int mainTaskId)
     {
         var list = List(mainTaskId);
         foreach (var item in list)
@@ -131,6 +135,30 @@ public class SubTaskService : ISubTaskService
             if (!item.Finished)
                 return false;
         }
+
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        if (token is null) throw new BadRequestException("Invalid user authentication");
+
+        if (IsMainTaskInSubscriptions(mainTaskId))
+        {
+            var subscriptions = await _notificationHttpClient.GetSubscriptionsByMainTaskId(mainTaskId, token);
+
+            var mainTask = _mainTaskRepository.Find(mainTaskId);
+
+            foreach (Subscription subscription in subscriptions)
+            {
+                var subtaskSubscription = _subTaskRepository.Find(subscription.SubTaskIdSubscriber);
+                var maintaskSubscription = _mainTaskRepository.Find(subtaskSubscription!.MainTaskId);
+
+                await _notificationHttpClient.CreateNotification(token,
+                    (int)subscription.Id!,
+                    "A tarefa " + mainTask!.Description + " foi concluida.",
+                    false,
+                    maintaskSubscription!.UserId
+                    );
+            }
+        }
+
         return true;
     }
 
@@ -138,9 +166,17 @@ public class SubTaskService : ISubTaskService
     /// Sets a mainTask as completed or not completed.
     /// </summary>
     /// <param name="mainTaskId"></param>
-    public void SetCompletedOrNot(int mainTaskId)
+    public async Task SetCompletedOrNot(int mainTaskId)
     {
-        _mainTaskService.Find(mainTaskId)!.Completed = VerifyFinished(mainTaskId);
-        _myDBContext.SaveChanges();
+        _mainTaskService.Find(mainTaskId)!.Completed = await VerifyFinished(mainTaskId);
+        await _myDBContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
+    {
+        var subtask = await _subTaskRepository.UpdateSubtaskFinished(subTaskId, finishedSubTask);
+
+        if (subtask is null)
+            throw new NotFoundException("SubTask not found!");
     }
 }

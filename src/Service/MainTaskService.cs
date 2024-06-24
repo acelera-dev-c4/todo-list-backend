@@ -1,10 +1,13 @@
+using Domain.Exceptions;
 using Domain.Mappers;
 using Domain.Models;
 using Domain.Request;
+using Infra;
 using Infra.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+
 
 namespace Service;
 
@@ -23,12 +26,16 @@ public class MainTaskService : IMainTaskService
     private readonly IMainTaskRepository _mainTaskRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserService _userService;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly NotificationHttpClient _notificationClient;
 
-    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService)
+    public MainTaskService(IMainTaskRepository mainTaskRepository, IHttpContextAccessor httpContextAccessor, IUserService userService, IHttpClientFactory httpClientFactory)
     {
         _mainTaskRepository = mainTaskRepository;
         _httpContextAccessor = httpContextAccessor;
         _userService = userService;
+        _httpClientFactory = httpClientFactory;
+        _notificationClient = new(_httpClientFactory);
     }
 
     public async Task<MainTask> Create(MainTaskRequest mainTaskRequest)
@@ -71,7 +78,24 @@ public class MainTaskService : IMainTaskService
         }
 
         mainTask.Description = mainTaskUpdate.Description;
+        return _mainTaskRepository.Update(mainTask);
+    }
 
+    public MainTask UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId) // metodo exclusivo para o notification api
+    {
+        var mainTask = _mainTaskRepository.Find(mainTaskId);
+
+        if (mainTask is null)
+            throw new NotFoundException("mainTask not found!");
+
+        var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+
+        if (userEmail != "system@mail.com")
+        {
+            throw new UnauthorizedAccessException("You are not authorized to change Url value ");
+        }
+
+        mainTask.UrlNotificationWebhook = mainTaskUpdate.UrlNotificationWebhook!;
         return _mainTaskRepository.Update(mainTask);
     }
 
@@ -143,5 +167,19 @@ public class MainTaskService : IMainTaskService
         }
 
         return result;
+    }
+
+    public async Task SetUrlWebhook(int mainTaskId, string url)
+    {
+        var task = _mainTaskRepository.Find(mainTaskId);
+        if (task != null)
+        {
+            MainTaskUpdate updated = new();
+            updated.Description = task.Description;
+            updated.UrlNotificationWebhook = url;
+            UpdateUrl(updated, mainTaskId);
+        }
+        else
+            throw new NotFoundException("MainTask Not Found, url to notify was not updated");
     }
 }

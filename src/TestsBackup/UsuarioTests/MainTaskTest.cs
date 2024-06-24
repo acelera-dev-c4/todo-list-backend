@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Service;
+using System.Net.Http;
 
 namespace Tests
 {
@@ -25,7 +26,12 @@ namespace Tests
         };
             _mockContext.Setup(m => m.Get(1)).Returns(mainTasks);
 
-            _controller = new MainTaskController(_mockContext.Object);
+            var mockHttpClientFactory = new Mock<IHttpClientFactory>();
+            var _httpClient = new HttpClient();
+            mockHttpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(_httpClient);
+
+            _controller = new MainTaskController(_mockContext.Object, mockHttpClientFactory.Object);
+            
         }
 
         [Fact]

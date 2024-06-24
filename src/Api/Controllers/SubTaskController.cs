@@ -29,8 +29,8 @@ public class SubTaskController : Controller
     [HttpPost]
     public IActionResult Post([FromBody] SubTaskRequest newSubTask)
     {
-        _subTaskService.Create(newSubTask);
-        return Ok(newSubTask);
+        var createdSubTask = _subTaskService.Create(newSubTask);
+        return Ok(createdSubTask);
     }
 
     [HttpPut("{subTaskId}")]
@@ -38,6 +38,13 @@ public class SubTaskController : Controller
     {
         var updatedSubTask = await _subTaskService.Update(updateSubTask, subTaskId);
         return Ok(updatedSubTask);
+    }
+
+    [HttpPut("finished/{subTaskId}")]
+    public async Task<IActionResult> Put([FromRoute] int subTaskId, [FromBody] UpdateSubtaskFinished finished)
+    {
+        await _subTaskService.UpdateSubtaskFinished(subTaskId, finished.Finished);
+        return Ok(finished);
     }
 
     [HttpDelete("{subTaskId}")]

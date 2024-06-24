@@ -8,4 +8,5 @@ public class MainTaskRequest
 public class MainTaskUpdate
 {
     public string? Description { get; set; }
+    public string? UrlNotificationWebhook { get; set; }
 }
