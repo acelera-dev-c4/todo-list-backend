@@ -19,6 +19,7 @@ public interface IMainTaskService
     MainTask? Find(int mainTaskId);
     MainTask Update(MainTaskUpdate mainTask, int mainTaskId);
     Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
+    Task SetUrlWebhook(int mainTaskId, string url);
 }
 
 public class MainTaskService : IMainTaskService
