@@ -21,32 +21,32 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult List()
+    public async Task<IActionResult> List()
     {
-        var users = _userService.List();
+        var users = await _userService.List();
         return Ok(users);
     }
 
     [HttpPost]
     [AllowAnonymous] //Acesso anônimo
-    public IActionResult Post([FromBody] UserRequest user)
+    public async Task<IActionResult> Post([FromBody] UserRequest user)
     {
-        var newUser = _userService.Create(user);
+        var newUser = await _userService.Create(user);
         return Ok(newUser);
     }
 
 
     [HttpPut]
-    public IActionResult Put([FromBody] UserUpdate user)
+    public async Task<IActionResult> Put([FromBody] UserUpdate user)
     {
-        var updatedUser = _userService.Update(user);
+        var updatedUser = await _userService.Update(user);
         return Ok(updatedUser);
     }
 
     [HttpDelete]
-    public IActionResult Delete(int userId)
+    public async Task<IActionResult> Delete(int userId)
     {
-        _userService.Delete(userId);
+        await _userService.Delete(userId);
         return NoContent();
     }
 }

@@ -1,19 +1,20 @@
-﻿using Infra.Repositories;
+﻿using Domain.Exceptions;
 using Domain.Mappers;
+using Domain.Models;
 using Domain.Request;
 using Domain.Responses;
-using Domain.Models;
+using Infra.Repositories;
 
 namespace Service;
 
 public interface IUserService
 {
-    UserResponse Create(UserRequest user);
-    void Delete(int userId);
-    User? GetById(int userId);
-    List<UserResponse> List();
-    UserResponse Update(UserUpdate userUpdate);
-    List<User>? GetByName(string name);
+    Task<UserResponse> Create(UserRequest user);
+    Task Delete(int userId);
+    Task<User?> GetById(int userId);
+    Task<List<UserResponse>> List();
+    Task<UserResponse> Update(UserUpdate userUpdate);
+    Task<List<User>?> GetByName(string name);
 
 }
 
@@ -28,45 +29,45 @@ public class UserService : IUserService
         _hashingService = hashingService;
     }
 
-    public UserResponse Create(UserRequest user)
+    public async Task<UserResponse> Create(UserRequest user)
     {
         var newUser = UserMapper.ToEntity(user);
         newUser.Password = _hashingService.Hash(newUser.Password!);
-        var createdUser = _userRepository.Create(newUser);
+        var createdUser = await _userRepository.Create(newUser);
         return UserMapper.ToResponse(createdUser);
     }
 
-    public void Delete(int userId)
+    public async Task Delete(int userId)
     {
-        _userRepository.Delete(userId);
+        await _userRepository.Delete(userId);
     }
 
-    public User? GetById(int userId)
+    public async Task<User?> GetById(int userId)
     {
-        return _userRepository.Get(userId);
+        return await _userRepository.Get(userId);
     }
 
-    public List<User>? GetByName(string name)
+    public async Task<List<User>?> GetByName(string name)
     {
-        return _userRepository.GetByName(name);
+        return await _userRepository.GetByName(name);
     }
 
-    public List<UserResponse> List()
+    public async Task<List<UserResponse>> List()
     {
-        var users = _userRepository.GetAll();
+        var users = await _userRepository.GetAll();
         var userResponse = users.Select(user => UserMapper.ToResponse(user)).ToList();
         return userResponse;
     }
 
-    public UserResponse Update(UserUpdate userUpdate)
+    public async Task<UserResponse> Update(UserUpdate userUpdate)
     {
-        var existingUser = _userRepository.Get(userUpdate.Id);
+        var existingUser = await _userRepository.Get(userUpdate.Id);
 
         if (existingUser is null)
-            throw new Exception("User not found!");
+            throw new NotFoundException("User not found!");
 
         var updatedUser = UserMapper.ToEntity(userUpdate);
-        _userRepository.Update(updatedUser);
+        await _userRepository.Update(updatedUser);
         return UserMapper.ToResponse(updatedUser);
     }
 }

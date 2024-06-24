@@ -1,19 +1,19 @@
+using Domain.Exceptions;
+using Domain.Models;
 using Infra.DB;
 using Microsoft.EntityFrameworkCore;
-using Domain.Models;
-using System.Text;
 
 namespace Infra.Repositories;
 
 public interface IUserRepository
 {
-    User Create(User user);
-    User? Get(int userId);
-    List<User> GetAll();
-    User Update(User userUpdate);
-    void Delete(int userId);
+    Task<User> Create(User user);
+    Task<User?> Get(int userId);
+    Task<List<User>> GetAll();
+    Task<User> Update(User userUpdate);
+    Task Delete(int userId);
     Task<User?> FindByUsernameAsync(string username);
-    List<User> GetByName(string name);
+    Task<List<User>> GetByName(string name);
 }
 
 public class UserRepository : IUserRepository
@@ -30,54 +30,49 @@ public class UserRepository : IUserRepository
         return await _myDBContext.Users.FirstOrDefaultAsync(u => u.Email == username);
     }
 
-    public User Create(User newUser)
+    public async Task<User> Create(User newUser)
     {
-        _myDBContext.Users.Add(newUser);
-        _myDBContext.SaveChanges();
+        await _myDBContext.Users.AddAsync(newUser);
+        await _myDBContext.SaveChangesAsync();
         return newUser;
     }
 
-    public User? Get(int userId)
+    public async Task<User?> Get(int userId)
     {
-        return _myDBContext.Users.Find(userId);
+        return await _myDBContext.Users.FindAsync(userId);
     }
 
-    public List<User> GetAll()
+    public async Task<List<User>> GetAll()
     {
-        return _myDBContext.Users.ToList();
+        return await _myDBContext.Users.ToListAsync();
     }
 
-    public User Update(User userUpdate)
+    public async Task<User> Update(User userUpdate)
     {
-        var updatedUser = _myDBContext.Users.FirstOrDefault(x => x.Id == userUpdate.Id);
-        if (updatedUser is null)
-        {
-            throw new Exception("User not found!");
-        }
-        else
-        {
-            updatedUser.Name = userUpdate.Name;
-            updatedUser.Password = userUpdate.Password;
-            updatedUser.Email = userUpdate.Email;
+        var updatedUser = await _myDBContext.Users.
+            FirstOrDefaultAsync(x => x.Id == userUpdate.Id) ?? throw new NotFoundException("User not found!");
 
-            _myDBContext.SaveChanges();
-            return userUpdate;
-        }
+        updatedUser.Name = userUpdate.Name;
+        updatedUser.Password = userUpdate.Password;
+        updatedUser.Email = userUpdate.Email;
+
+        await _myDBContext.SaveChangesAsync();
+        return userUpdate;
     }
 
-    public void Delete(int userId)
+    public async Task Delete(int userId)
     {
-        var user = Get(userId);
+        var user = await Get(userId);
 
         if (user is null)
-            throw new Exception("User not found!");
+            throw new NotFoundException("User not found!");
 
-        _myDBContext.Users.Where(x => x.Id == userId).ExecuteDelete();
-        _myDBContext.SaveChanges();
+        await _myDBContext.Users.Where(x => x.Id == userId).ExecuteDeleteAsync();
+        await _myDBContext.SaveChangesAsync();
     }
 
-    public List<User> GetByName(string name)
+    public async Task<List<User>> GetByName(string name)
     {
-        return _myDBContext.Users.Where(x => x.Name!.Contains(name)).ToList();
+        return await _myDBContext.Users.Where(x => x.Name!.Contains(name)).ToListAsync();
     }
 }

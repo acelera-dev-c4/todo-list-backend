@@ -1,11 +1,10 @@
+using Api.Controllers;
+using Domain.Request;
+using Domain.Responses;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Api.Controllers;
-using FluentAssertions;
-using Domain.Models;
 using Service;
-using Domain.Responses;
-using Domain.Request;
 
 namespace Tests;
 public class UserTests
@@ -23,15 +22,15 @@ public class UserTests
             new UserResponse { Id = 2, Name = "Maria", Email = "maria@aceleraDev.com" }
         };
 
-        _mockContext.Setup(m => m.List()).Returns(usuarios);
+        _mockContext.Setup(m => m.List()).ReturnsAsync(usuarios);
 
         _controller = new UserController(_mockContext.Object);
     }
 
     [Fact]
-    public void Get_QuandoChamado_RetornaTodosUsuarios()
+    public async Task Get_QuandoChamado_RetornaTodosUsuarios()
     {
-        var result = _controller.List();
+        var result = await _controller.List();
 
         result.Should().BeOfType<OkObjectResult>();
         var list = (result as OkObjectResult)?.Value as List<UserResponse>;
@@ -41,13 +40,13 @@ public class UserTests
     }
 
     [Fact]
-    public void Add_UsuarioValido_DeveRetornarUsuarioCriado()
+    public async Task Add_UsuarioValido_DeveRetornarUsuarioCriado()
     {
         var userRequest = new UserRequest { Name = "Teste 123", Email = "teste@aceleraDev.com", Password = "senha123" };
         var userResponse = new UserResponse { Id = 1, Name = "Teste 123", Email = "teste@aceleraDev.com" };
-        _mockContext.Setup(m => m.Create(userRequest)).Returns(userResponse);
+        _mockContext.Setup(m => m.Create(userRequest)).ReturnsAsync(userResponse);
 
-        var result = _controller.Post(userRequest);
+        var result = await _controller.Post(userRequest);
 
         var item = (result as OkObjectResult)?.Value as UserResponse;
 
