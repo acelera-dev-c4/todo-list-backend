@@ -14,6 +14,7 @@ namespace Service;
 public interface IMainTaskService
 {
     Task<MainTask> Create(MainTaskRequest mainTask);
+
     Task Delete(int mainTaskId);
     Task<List<MainTask>?> Get(int userId);
     Task<MainTask?> Find(int mainTaskId);
@@ -150,7 +151,7 @@ public class MainTaskService : IMainTaskService
 
         if (validUserName)
         {
-            foundUsers = _userService.GetByName(userName!);
+            foundUsers = await _userService.GetByName(userName!);
 
             if (!foundUsers.IsNullOrEmpty())
             {
