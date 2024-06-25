@@ -153,7 +153,7 @@ public class SubTaskService : ISubTaskService
 
                 await _notificationHttpClient.CreateNotification(token,
                     (int)subscription.Id!,
-                    "A tarefa " + mainTask!.Description + " foi concluida.",
+                    $"A tarefa \"{mainTask!.Description}\" foi concluida.",
                     false,
                     maintaskSubscription!.UserId
                     );
