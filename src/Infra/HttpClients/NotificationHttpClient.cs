@@ -39,7 +39,7 @@ public class NotificationHttpClient
 
         string jsonPayload = System.Text.Json.JsonSerializer.Serialize(payload);
         HttpContent content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-        var result = await _httpClient.PostAsync(url, content);        
+        var result = await _httpClient.PostAsync(url, content);
         result.EnsureSuccessStatusCode();
         return result;
     }
@@ -59,7 +59,7 @@ public class NotificationHttpClient
 
         response.Result.EnsureSuccessStatusCode();
         var jsonString = await response.Result.Content.ReadAsStringAsync();
-        return  JsonConvert.DeserializeObject<List<Subscription>>(jsonString)!;
+        return JsonConvert.DeserializeObject<List<Subscription>>(jsonString)!;
     }
 
     public async Task<List<Subscription>> GetSubscriptions(string token)

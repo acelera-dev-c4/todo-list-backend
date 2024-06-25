@@ -177,12 +177,7 @@ public class SubTaskService : ISubTaskService
 
     public async Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
     {
-        var subTask = await _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
-        SubTaskUpdate request = new()
-        {
-            Description = subTask.Description,
-            Finished = finishedSubTask
-        };        
+        var subTask = await _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");    
         var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
@@ -192,15 +187,14 @@ public class SubTaskService : ISubTaskService
             if (userId != mainTask.UserId.ToString()) throw new UnauthorizedAccessException("You don't have permission to update this subtask.");
         }
         //Se a subtarefa está presente na tabela subscriptions
-        if (await IsSubTaskInSubscriptions(subTaskId) == true)
+        if (await IsSubTaskInSubscriptions(subTaskId))
         {
             //se a pessoa que criou, é a mesma que esta tentando dar update.
             if (userId == mainTask.UserId.ToString())
                 throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
         }
-
-        subTask.Description = request.Description;
-        subTask.Finished = request.Finished;
+                
+        subTask.Finished = finishedSubTask;
         await SetMainTaskCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
     }
