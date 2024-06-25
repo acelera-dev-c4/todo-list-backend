@@ -90,9 +90,10 @@ public class MainTaskController : ControllerBase
     }
 
     [HttpPut("updateUrlOnDb")] // acesso apenas ao system user
-    public IActionResult UpdateUrlOnDB(string newUrl)
+    public async Task<IActionResult> UpdateUrlOnDB(string newUrl)
     {
-        _mainTaskService.UpdateUrlOnDB(newUrl); return NoContent();
+        var result = await _mainTaskService.UpdateUrlOnDB(newUrl);
+        return Ok(result);
     }
 }
 

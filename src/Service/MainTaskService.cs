@@ -22,7 +22,7 @@ public interface IMainTaskService
     Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
     Task SetUrlWebhook(int mainTaskId, string url);
     Task<MainTask> UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId);
-    void UpdateUrlOnDB(string newUrl);
+    Task<string> UpdateUrlOnDB(string newUrl);
 }
 
 public class MainTaskService : IMainTaskService
@@ -188,24 +188,25 @@ public class MainTaskService : IMainTaskService
             throw new NotFoundException("MainTask Not Found, url to notify was not updated");
     }
 
-    public async void UpdateUrlOnDB(string newUrl) // acesso apenas ao system user
+    public async Task<string> UpdateUrlOnDB(string newUrl) // acesso apenas ao system user
     {
-        var tasks = await _mainTaskRepository.GetAll();
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         var subscriptions = await _notificationClient.GetSubscriptions(token!);
+        var tasks = await _mainTaskRepository.GetAll();
+        tasks = tasks.Where(t => !t.UrlNotificationWebhook.IsNullOrEmpty()).ToList();
 
-        MainTaskUpdate updated;
-
-        foreach (MainTask task in tasks)
+        foreach (MainTask taskInList in tasks)
         {
-            if (subscriptions.Any(s => s.MainTaskIdTopic == task.Id))
+            MainTaskUpdate updated;
+
+            if (subscriptions.Any(s => s.MainTaskIdTopic == taskInList.Id))
             {
                 updated = new();
-                updated.Description = task.Description;
+                updated.Description = taskInList.Description;
                 updated.UrlNotificationWebhook = newUrl;
-                await UpdateUrl(updated, (int)task.Id!);
+                await UpdateUrl(updated, (int)taskInList.Id!);
 
-                var mainTask = await _mainTaskRepository.Find((int)task.Id!);
+                var mainTask = await _mainTaskRepository.Find((int)taskInList.Id!);
 
                 if (mainTask is null)
                     continue;
@@ -216,11 +217,11 @@ public class MainTaskService : IMainTaskService
             else
             {
                 updated = new();
-                updated.Description = task.Description;
+                updated.Description = taskInList.Description;
                 updated.UrlNotificationWebhook = newUrl;
-                await UpdateUrl(updated, (int)task.Id!);
+                await UpdateUrl(updated, (int)taskInList.Id!);
 
-                var mainTask = await _mainTaskRepository.Find((int)task.Id!);
+                var mainTask = await _mainTaskRepository.Find((int)taskInList.Id!);
 
                 if (mainTask is null)
                     continue;
@@ -228,6 +229,9 @@ public class MainTaskService : IMainTaskService
                 mainTask.UrlNotificationWebhook = "";
                 await _mainTaskRepository.Update(mainTask);
             }
+
         }
+
+        return $"Url on DB subscriptions updated to {newUrl}";
     }
 }
