@@ -89,10 +89,15 @@ public class MainTaskController : ControllerBase
         return response.IsSuccessStatusCode ? Ok(response) : StatusCode((int)response.StatusCode, $"Failed to delete subscription. Status code: {response.StatusCode}");
     }
 
-    [HttpPut("updateUrlOnDb")] // acesso apenas ao system user
-    public async Task<IActionResult> UpdateUrlOnDB(string newUrl)
+    /// <summary>
+    /// Updates field: UrlNotificationWebhook on all subscribed MainTasks in the database
+    /// </summary>
+    /// <param name="newUrl"></param>
+    /// <returns></returns>
+    [HttpPut("updateUrl")] // acesso apenas ao system user
+    public async Task<IActionResult> UpdateUrl(string newUrl)
     {
-        var result = await _mainTaskService.UpdateUrlOnDB(newUrl);
+        var result = await _mainTaskService.UpdateUrl(newUrl);
         return Ok(result);
     }
 }

@@ -22,7 +22,7 @@ public interface IMainTaskService
     Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
     Task SetUrlWebhook(int mainTaskId, string url);
     Task<MainTask> UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId);
-    Task<string> UpdateUrlOnDB(string newUrl);
+    Task<string> UpdateUrl(string newUrl);
 }
 
 public class MainTaskService : IMainTaskService
@@ -188,7 +188,7 @@ public class MainTaskService : IMainTaskService
             throw new NotFoundException("MainTask Not Found, url to notify was not updated");
     }
 
-    public async Task<string> UpdateUrlOnDB(string newUrl) // acesso apenas ao system user
+    public async Task<string> UpdateUrl(string newUrl) // acesso apenas ao system user
     {
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         var subscriptions = await _notificationClient.GetSubscriptions(token!);
