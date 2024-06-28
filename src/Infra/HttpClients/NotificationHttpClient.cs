@@ -62,11 +62,11 @@ public class NotificationHttpClient
         return JsonConvert.DeserializeObject<List<Subscription>>(jsonString)!;
     }
 
-    public async Task<List<Subscription>> GetSubscriptions(string token)
+    public async Task<List<Subscription>> GetSubscribedMainTasksIds(string token, int pageNumber, int pageSize)
     {
         SetAuthenticationHeader(token);
 
-        var response = _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscription");
+        var response = _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscriptions?pageNumber={pageNumber}&pageSize={pageSize}");
 
         response.Result.EnsureSuccessStatusCode();
         var jsonString = await response.Result.Content.ReadAsStringAsync();

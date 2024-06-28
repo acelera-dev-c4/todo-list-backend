@@ -191,7 +191,10 @@ public class MainTaskService : IMainTaskService
     public async Task<string> UpdateUrl(string newUrl) // acesso apenas ao system user
     {
         var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        var subscriptions = await _notificationClient.GetSubscriptions(token!);
+        int pageNumber = 1;
+        int pageSize = 50;
+        int totalResults = 0;
+        var subscriptions = await _notificationClient.GetSubscribedMainTasksIds(token!);
         var tasks = await _mainTaskRepository.GetAll();
         tasks = tasks.Where(t => !t.UrlNotificationWebhook.IsNullOrEmpty()).ToList();
 
