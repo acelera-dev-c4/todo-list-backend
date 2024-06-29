@@ -25,7 +25,7 @@ public class NotificationHttpClient
     }
 
 
-    public async Task<HttpResponseMessage> CreateNotification(string token, int subscriptionId, string message, bool readed, int userId)
+    public async Task<HttpResponseMessage> CreateNotification(string token, int subscriptionId, string message, bool readed, int userId, string url)
     {
         var payload = new
         {
@@ -39,7 +39,7 @@ public class NotificationHttpClient
 
         string jsonPayload = System.Text.Json.JsonSerializer.Serialize(payload);
         HttpContent content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-        var result = await _httpClient.PostAsync($"{_httpClient.BaseAddress}Notification", content);
+        var result = await _httpClient.PostAsync(url, content);
         result.EnsureSuccessStatusCode();
         return result;
     }
@@ -60,5 +60,20 @@ public class NotificationHttpClient
         response.Result.EnsureSuccessStatusCode();
         var jsonString = await response.Result.Content.ReadAsStringAsync();
         return JsonConvert.DeserializeObject<List<Subscription>>(jsonString)!;
+    }
+
+    public async Task<(List<int>, int)> GetSubscribedMainTasksIds(string token, int pageNumber, int pageSize)
+    {
+        SetAuthenticationHeader(token);
+
+        var response = _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscription?pageNumber={pageNumber}&pageSize={pageSize}");
+
+        response.Result.EnsureSuccessStatusCode();
+        var jsonString = await response.Result.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeAnonymousType(jsonString, new { MainTaskIds = new List<int>(), TotalCount = 0 });
+
+        var mainTaskIds = result!.MainTaskIds!;
+        var totalCount = result.TotalCount;
+        return (mainTaskIds, totalCount);
     }
 }
