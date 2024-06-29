@@ -22,6 +22,7 @@ public interface IMainTaskService
     Task<List<MainTask>?> SearchByParams(int? mainTaskId, string? userName, string? mainTaskDescription);
     Task SetUrlWebhook(int mainTaskId, string url);
     Task<MainTask> UpdateUrl(MainTaskUpdate mainTaskUpdate, int mainTaskId);
+    Task<string> UpdateUrl(string newUrl);
 }
 
 public class MainTaskService : IMainTaskService
@@ -184,5 +185,29 @@ public class MainTaskService : IMainTaskService
         }
         else
             throw new NotFoundException("MainTask Not Found, url to notify was not updated");
+    }
+
+    public async Task<string> UpdateUrl(string newUrl) // acesso apenas ao system user
+    {
+        var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        int pageNumber = 1;
+        int pageSize = 50;
+        int totalResults = 0;
+        var allMainTaskIds = new List<int>();
+
+        do
+        {
+            var (maiTaskIds, totalCount) = await _notificationClient.GetSubscribedMainTasksIds(token!, pageNumber, pageSize);
+            allMainTaskIds.AddRange(maiTaskIds);
+            totalResults = totalCount;
+            pageNumber++;
+        } while (allMainTaskIds.Count < totalResults);
+
+        foreach (var taskId in allMainTaskIds) 
+        {
+            await _mainTaskRepository.UpdateUrl(newUrl, taskId);
+        }  
+
+        return $"Url on DB subscriptions updated to {newUrl}";
     }
 }

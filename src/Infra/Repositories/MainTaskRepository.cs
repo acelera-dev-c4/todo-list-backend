@@ -11,6 +11,7 @@ public interface IMainTaskRepository
     Task<MainTask?> Find(int mainTaskId);
     Task<List<MainTask>> FindByDescription(string desc);
     Task<MainTask> Update(MainTask mainTask);
+    Task UpdateUrl(string newUrl, int mainTaskId);
     Task Delete(int mainTaskId);
 }
 
@@ -54,6 +55,16 @@ public class MainTaskRepository : IMainTaskRepository
             );
         await _myDBContext.SaveChangesAsync();
         return mainTaskUpdate;
+    }
+
+    public async Task UpdateUrl(string newUrl, int mainTaskId)
+    {
+        var mainTask = await _myDBContext.MainTasks.FirstOrDefaultAsync(mt => mt.Id == mainTaskId);
+        if (mainTask != null)
+        {
+            mainTask.UrlNotificationWebhook = newUrl;
+        }
+        await _myDBContext.SaveChangesAsync();        
     }
 
     public async Task Delete(int mainTaskId)
