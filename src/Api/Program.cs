@@ -43,7 +43,7 @@ builder.Services.AddHttpClient("notificationClient", client =>
     var notificationUri = builder.Configuration.GetValue<string>("NotificationApi:BaseUrl");
     client.BaseAddress = new Uri(notificationUri);
     client.Timeout = TimeSpan.FromSeconds(60);
-});
+}).AddStandardResilienceHandler();
 
 builder.Services.AddTransient<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserService, UserService>();
