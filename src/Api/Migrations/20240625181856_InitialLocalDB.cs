@@ -2,23 +2,14 @@
 
 #nullable disable
 
-namespace Infra.Migrations
+namespace Api.Migrations
 {
     /// <inheritdoc />
-    public partial class Alteracao_para_ingles : Migration
+    public partial class InitialLocalDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "SubTarefas");
-
-            migrationBuilder.DropTable(
-                name: "Tarefas");
-
-            migrationBuilder.DropTable(
-                name: "Usuarios");
-
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -41,7 +32,9 @@ namespace Infra.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Completed = table.Column<bool>(type: "bit", nullable: false),
+                    UrlNotificationWebhook = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,10 +68,73 @@ namespace Infra.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubTaskIdSubscriber = table.Column<int>(type: "int", nullable: false),
+                    MainTaskIdTopic = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_MainTasks_MainTaskIdTopic",
+                        column: x => x.MainTaskIdTopic,
+                        principalTable: "MainTasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_SubTasks_SubTaskIdSubscriber",
+                        column: x => x.SubTaskIdSubscriber,
+                        principalTable: "SubTasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubscriptionId = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Readed = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Subscriptions_SubscriptionId",
+                        column: x => x.SubscriptionId,
+                        principalTable: "Subscriptions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_MainTasks_UserId",
                 table: "MainTasks",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SubscriptionId",
+                table: "Notifications",
+                column: "SubscriptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_MainTaskIdTopic",
+                table: "Subscriptions",
+                column: "MainTaskIdTopic");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_SubTaskIdSubscriber",
+                table: "Subscriptions",
+                column: "SubTaskIdSubscriber");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubTasks_MainTaskId",
@@ -90,6 +146,12 @@ namespace Infra.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Subscriptions");
+
+            migrationBuilder.DropTable(
                 name: "SubTasks");
 
             migrationBuilder.DropTable(
@@ -97,72 +159,6 @@ namespace Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.CreateTable(
-                name: "Usuarios",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Senha = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tarefas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tarefas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tarefas_Usuarios_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SubTarefas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Concluida = table.Column<bool>(type: "bit", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdTarefa = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubTarefas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SubTarefas_Tarefas_IdTarefa",
-                        column: x => x.IdTarefa,
-                        principalTable: "Tarefas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubTarefas_IdTarefa",
-                table: "SubTarefas",
-                column: "IdTarefa");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tarefas_IdUsuario",
-                table: "Tarefas",
-                column: "IdUsuario");
         }
     }
 }

@@ -194,46 +194,20 @@ public class MainTaskService : IMainTaskService
         int pageNumber = 1;
         int pageSize = 50;
         int totalResults = 0;
-        var subscriptions = await _notificationClient.GetSubscribedMainTasksIds(token!);
-        var tasks = await _mainTaskRepository.GetAll();
-        tasks = tasks.Where(t => !t.UrlNotificationWebhook.IsNullOrEmpty()).ToList();
+        var allMainTaskIds = new List<int>();
 
-        foreach (MainTask taskInList in tasks)
+        do
         {
-            MainTaskUpdate updated;
+            var (maiTaskIds, totalCount) = await _notificationClient.GetSubscribedMainTasksIds(token!, pageNumber, pageSize);
+            allMainTaskIds.AddRange(maiTaskIds);
+            totalResults = totalCount;
+            pageNumber++;
+        } while (allMainTaskIds.Count < totalResults);
 
-            if (subscriptions.Any(s => s.MainTaskIdTopic == taskInList.Id))
-            {
-                updated = new();
-                updated.Description = taskInList.Description;
-                updated.UrlNotificationWebhook = newUrl;
-                await UpdateUrl(updated, (int)taskInList.Id!);
-
-                var mainTask = await _mainTaskRepository.Find((int)taskInList.Id!);
-
-                if (mainTask is null)
-                    continue;
-
-                mainTask.UrlNotificationWebhook = updated.UrlNotificationWebhook!;
-                await _mainTaskRepository.Update(mainTask);
-            }
-            else
-            {
-                updated = new();
-                updated.Description = taskInList.Description;
-                updated.UrlNotificationWebhook = newUrl;
-                await UpdateUrl(updated, (int)taskInList.Id!);
-
-                var mainTask = await _mainTaskRepository.Find((int)taskInList.Id!);
-
-                if (mainTask is null)
-                    continue;
-
-                mainTask.UrlNotificationWebhook = "";
-                await _mainTaskRepository.Update(mainTask);
-            }
-
-        }
+        foreach (var taskId in allMainTaskIds) 
+        {
+            await _mainTaskRepository.UpdateUrl(newUrl, taskId);
+        }  
 
         return $"Url on DB subscriptions updated to {newUrl}";
     }

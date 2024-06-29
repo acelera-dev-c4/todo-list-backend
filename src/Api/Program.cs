@@ -58,7 +58,7 @@ builder.Services.AddScoped<NotificationHttpClient>();
 
 builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AceleraDev"),
-        sqlOptions => sqlOptions.MigrationsAssembly("Infra")));
+        sqlOptions => sqlOptions.MigrationsAssembly("Api")));
 
 var tokenOptions = builder.Configuration.GetSection("Token").Get<TokenOptions>();
 if (tokenOptions == null || string.IsNullOrEmpty(tokenOptions.Key))

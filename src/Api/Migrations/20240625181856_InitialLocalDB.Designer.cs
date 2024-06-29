@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infra.Migrations
+namespace Api.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240611223911_add_Completed_Field_in_MainTask")]
-    partial class add_Completed_Field_in_MainTask
+    [Migration("20240625181856_InitialLocalDB")]
+    partial class InitialLocalDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,10 @@ namespace Infra.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UrlNotificationWebhook")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -47,6 +51,34 @@ namespace Infra.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("MainTasks");
+                });
+
+            modelBuilder.Entity("Domain.Models.Notifications", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Readed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Domain.Models.SubTask", b =>
@@ -71,6 +103,29 @@ namespace Infra.Migrations
                     b.HasIndex("MainTaskId");
 
                     b.ToTable("SubTasks");
+                });
+
+            modelBuilder.Entity("Domain.Models.Subscription", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+
+                    b.Property<int>("MainTaskIdTopic")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubTaskIdSubscriber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainTaskIdTopic");
+
+                    b.HasIndex("SubTaskIdSubscriber");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("Domain.Models.User", b =>
@@ -104,12 +159,36 @@ namespace Infra.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Models.Notifications", b =>
+                {
+                    b.HasOne("Domain.Models.Subscription", null)
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Models.SubTask", b =>
                 {
                     b.HasOne("Domain.Models.MainTask", null)
                         .WithMany()
                         .HasForeignKey("MainTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Models.Subscription", b =>
+                {
+                    b.HasOne("Domain.Models.MainTask", null)
+                        .WithMany()
+                        .HasForeignKey("MainTaskIdTopic")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.SubTask", null)
+                        .WithMany()
+                        .HasForeignKey("SubTaskIdSubscriber")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

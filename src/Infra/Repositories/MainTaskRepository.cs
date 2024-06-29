@@ -7,11 +7,11 @@ namespace Infra.Repositories;
 public interface IMainTaskRepository
 {
     Task<MainTask> Create(MainTask mainTask);
-    Task<List<MainTask>> GetAll();
     Task<List<MainTask>> Get(int userId);
     Task<MainTask?> Find(int mainTaskId);
     Task<List<MainTask>> FindByDescription(string desc);
     Task<MainTask> Update(MainTask mainTask);
+    Task UpdateUrl(string newUrl, int mainTaskId);
     Task Delete(int mainTaskId);
 }
 
@@ -35,10 +35,7 @@ public class MainTaskRepository : IMainTaskRepository
     {
         return await _myDBContext.MainTasks.Where(x => x.UserId == userId).ToListAsync();
     }
-    public async Task<List<MainTask>> GetAll()
-    {
-        return await _myDBContext.MainTasks.ToListAsync();
-    }
+
     public async Task<MainTask?> Find(int mainTaskId)
     {
         return await _myDBContext.MainTasks.FindAsync(mainTaskId);
@@ -58,6 +55,16 @@ public class MainTaskRepository : IMainTaskRepository
             );
         await _myDBContext.SaveChangesAsync();
         return mainTaskUpdate;
+    }
+
+    public async Task UpdateUrl(string newUrl, int mainTaskId)
+    {
+        var mainTask = await _myDBContext.MainTasks.FirstOrDefaultAsync(mt => mt.Id == mainTaskId);
+        if (mainTask != null)
+        {
+            mainTask.UrlNotificationWebhook = newUrl;
+        }
+        await _myDBContext.SaveChangesAsync();        
     }
 
     public async Task Delete(int mainTaskId)

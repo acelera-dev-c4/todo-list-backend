@@ -4,19 +4,16 @@ using Infra.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infra.Migrations
+namespace Api.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240613233439_Add_Subscription_And_Notification_Table")]
-    partial class Add_Subscription_And_Notification_Table
+    partial class MyDBContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +34,10 @@ namespace Infra.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlNotificationWebhook")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -65,6 +66,9 @@ namespace Infra.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
