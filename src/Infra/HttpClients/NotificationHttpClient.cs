@@ -66,10 +66,10 @@ public class NotificationHttpClient
     {
         SetAuthenticationHeader(token);
 
-        var response = _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscription?pageNumber={pageNumber}&pageSize={pageSize}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscription?pageNumber={pageNumber}&pageSize={pageSize}");
 
-        response.Result.EnsureSuccessStatusCode();
-        var jsonString = await response.Result.Content.ReadAsStringAsync();
+        response.EnsureSuccessStatusCode();
+        var jsonString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeAnonymousType(jsonString, new { MainTaskIds = new List<int>(), TotalCount = 0 });
 
         var mainTaskIds = result!.MainTaskIds!;
