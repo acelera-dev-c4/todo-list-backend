@@ -23,7 +23,7 @@ public class SubTaskController : Controller
     public async Task<IActionResult> Get([FromRoute] int mainTaskId)
     {
         var mainTasks = await _subTaskService.List(mainTaskId);
-        return mainTasks is null ? NotFound() : Ok(mainTasks);
+        return mainTasks is null ? Ok($"No MainTask found with Id {mainTaskId} ") : Ok(mainTasks);
     }
 
     [HttpPost]
