@@ -71,10 +71,11 @@ public class SubTaskService : ISubTaskService
 
     public async Task Delete(int subTaskId)
     {
-        
-        if (await IsSubTaskInSubscriptions(subTaskId))
+         if (await IsSubTaskInSubscriptions(subTaskId))
+        {
             throw new BadRequestException("SubTask can't be deleted because it is a MainTask subscriber!");
-        
+        }
+
         var subTask = await _subTaskRepository.Find(subTaskId);
 
         if (subTask is null)
@@ -183,7 +184,7 @@ public class SubTaskService : ISubTaskService
 
     public async Task<SubTask> UpdateSubtaskFinished(int subTaskId, bool finishedSubTask)
     {
-        var subTask = await _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");    
+        var subTask = await _subTaskRepository.Find(subTaskId) ?? throw new NotFoundException("SubTask not found!");
         var mainTask = await _mainTaskRepository.Find(subTask.MainTaskId) ?? throw new NotFoundException("MainTask not found!");
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var userEmail = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
@@ -199,7 +200,7 @@ public class SubTaskService : ISubTaskService
             if (userId == mainTask.UserId.ToString())
                 throw new BadRequestException("This task cannot be completed beacuse it has an active sub");
         }
-                
+
         subTask.Finished = finishedSubTask;
         await SetMainTaskCompletedOrNot(subTask.MainTaskId);
         return await _subTaskRepository.Update(subTask);
