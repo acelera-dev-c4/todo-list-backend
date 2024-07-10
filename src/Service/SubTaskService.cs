@@ -71,6 +71,10 @@ public class SubTaskService : ISubTaskService
 
     public async Task Delete(int subTaskId)
     {
+        
+        if (await IsSubTaskInSubscriptions(subTaskId))
+            throw new BadRequestException("SubTask can't be deleted because it is a MainTask subscriber!");
+        
         var subTask = await _subTaskRepository.Find(subTaskId);
 
         if (subTask is null)
