@@ -51,7 +51,7 @@ public class SubTaskService : ISubTaskService
         if (token is null) throw new BadRequestException("Invalid user authentication");
         var subscriptions = await _notificationHttpClient.GetSubscriptionsBySubTaskId(subTaskId, token);
 
-        return subscriptions.IsSuccessStatusCode;
+        return subscriptions.Count > 0 ? true : false;
     }
 
     private async Task<bool> IsMainTaskInSubscriptions(int mainTaskId)
