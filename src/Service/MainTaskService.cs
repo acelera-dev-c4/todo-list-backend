@@ -113,9 +113,10 @@ public class MainTaskService : IMainTaskService
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (mainTask.UserId.ToString() != userId)
-        {
             throw new UnauthorizedAccessException("You don't have permission to delete this task.");
-        }
+
+        if (!mainTask.UrlNotificationWebhook.IsNullOrEmpty())
+            throw new BadRequestException("Task can't be deleted because it is subscribed by someone else!");
 
         await _mainTaskRepository.Delete(mainTaskId);
     }
@@ -203,10 +204,10 @@ public class MainTaskService : IMainTaskService
             pageNumber++;
         } while (allMainTaskIds.Count < totalResults);
 
-        foreach (var taskId in allMainTaskIds) 
+        foreach (var taskId in allMainTaskIds)
         {
             await _mainTaskRepository.UpdateUrl(newUrl, taskId);
-        }  
+        }
 
         return $"Url on DB subscriptions updated to {newUrl}";
     }
