@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infra.Migrations
+namespace Api.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240613233439_Add_Subscription_And_Notification_Table")]
-    partial class Add_Subscription_And_Notification_Table
+    [Migration("20240708170626_Diogenes-LocalDB")]
+    partial class DiogenesLocalDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,10 @@ namespace Infra.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlNotificationWebhook")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -65,6 +69,9 @@ namespace Infra.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
