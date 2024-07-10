@@ -44,11 +44,23 @@ public class NotificationHttpClient
         return result;
     }
 
-    public async Task<HttpResponseMessage> GetSubscriptionsBySubTaskId(int subTaskId, string token)
+    public async Task<List<Subscription>> GetSubscriptionsBySubTaskId(int subTaskId, string token)
     {
         SetAuthenticationHeader(token);
 
-        return await _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscription/SubTaskId?subtaskId={subTaskId}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}Subscription/SubTaskId?subtaskId={subTaskId}");
+        response.EnsureSuccessStatusCode();
+        var jsonString = await response.Content.ReadAsStringAsync();
+        try
+        {
+            var resList = JsonConvert.DeserializeObject<List<Subscription>>(jsonString);
+            return resList ?? new List<Subscription>();
+        }
+        catch (JsonSerializationException)
+        {
+            var resSingle = JsonConvert.DeserializeObject<Subscription>(jsonString);
+            return resSingle != null ? new List<Subscription> { resSingle } : new List<Subscription>();
+        }
     }
 
     public async Task<List<Subscription>> GetSubscriptionsByMainTaskId(int mainTaskId, string token)
